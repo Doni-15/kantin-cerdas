@@ -30,7 +30,7 @@ class FoundationScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   'UI produk akan dibangun mengikuti design system '
-                  'Kantin Hangat.',
+                  'Kantin Kampus Praktis.',
                   style: textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),

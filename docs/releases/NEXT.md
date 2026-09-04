@@ -5,8 +5,9 @@ fondasi `v0.1`. Seluruh butir berikut masih rencana dan belum tersedia pada
 `v0.1.0-alpha.2`:
 
 - app shell untuk area mahasiswa dan pengelola;
-- design tokens “Kantin Hangat” untuk warna, tipografi, spacing, radius, dan
+- design tokens “Kantin Kampus Praktis” untuk warna, tipografi, spacing, radius, dan
   theme;
 - navigasi dasar antarhalaman utama;
 - fake data lokal untuk skenario demo tanpa backend;
-- reusable components yang benar-benar dipakai oleh lebih dari satu layar.
+- reusable components yang benar-benar dipakai oleh lebih dari satu layar;
+- primitive menu row, floating assistant, coachmark, dan bottom sheet yang mengikuti design system v2.

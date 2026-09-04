@@ -63,10 +63,13 @@ flutter build apk --debug
 
 ## Aturan perubahan UI
 
-- Mengikuti design system Kantin Hangat.
-- Menyertakan screenshot pada Pull Request jika tampilan berubah.
-- Diperiksa pada lebar 360, 390, dan 412 dp jika tampilan berubah.
-- Memiliki keadaan loading, kosong, berhasil, dan gagal jika relevan.
+- Mengikuti design system Kantin Kampus Praktis.
+- Mengutamakan grouped list dan divider; kartu, border, serta shadow hanya dipakai ketika membantu struktur.
+- Menampilkan floating assistant hanya pada Beranda dan Detail Stan sesuai state yang dikunci.
+- Menyertakan screenshot 390 dp dan satu lebar pembanding pada Pull Request jika tampilan berubah.
+- Diperiksa pada lebar 360, 390, dan 412 dp, text scale besar, keyboard, dan reduced motion jika relevan.
+- Memiliki keadaan loading, kosong, berhasil, gagal/retry, offline, dan disabled jika relevan.
+- Tidak mengaktifkan fitur yang hanya terlihat pada mockup tetapi belum tercantum di Mini-SRS.
 - Tidak menaruh logika bisnis besar langsung di widget.
 
 ## Keamanan repository
