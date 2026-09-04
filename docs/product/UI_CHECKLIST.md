@@ -2,7 +2,8 @@
 
 **Dokumen:** Checklist implementasi dan version control fase UI  
 **Versi dokumen:** 1.1  
-**Cakupan:** `v0.1.0-alpha.1` sampai `v0.7.0-beta.1`  
+**Cakupan:** `v0.1.0-alpha.1` sampai `v0.7.0-beta.1`, termasuk maintenance
+`v0.1.0-alpha.2`
 **Platform:** Android dengan Flutter  
 **Mode data:** Dummy/fake repository  
 **Baseline visual:** “Kantin Hangat”  
@@ -36,7 +37,7 @@ Aturan pencatatan:
 Perbedaan nomor versi:
 
 ```text
-pubspec.yaml : 0.3.0-alpha.1+3
+pubspec.yaml : 0.3.0-alpha.1+4
 Git tag      : v0.3.0-alpha.1
 ```
 
@@ -98,7 +99,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 | Versi | Target hasil | Waktu | Status | Tag |
 |---|---|---:|---|---|
-| `v0.1.0-alpha.1` | Fondasi Flutter, Git, quality gate, dan acuan desain | Hari 1 | ⬜ | ⬜ |
+| `v0.1.0-alpha.1` | Fondasi Flutter, Git, quality gate, dan acuan desain | Hari 1 | 🟨 | 🟩 |
 | `v0.2.0-alpha.1` | Implementasi “Kantin Hangat”, app shell, dan fake data | Hari 2–3 | ⬜ | ⬜ |
 | `v0.3.0-alpha.1` | Katalog, pencarian, dan filter | Hari 4–5 | ⬜ | ⬜ |
 | `v0.4.0-alpha.1` | UI Asisten Pilih Menu | Hari 6–7 | ⬜ | ⬜ |
@@ -132,15 +133,15 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [x] **UI-110** — Membuat minimal satu smoke test bawaan proyek.
 - [x] **UI-111** — Menyiapkan CI untuk menjalankan format check, analyze, dan test pada pull request.
 - [x] **UI-112** — Menambahkan template pull request.
-- [ ] **UI-113** — Membuat label GitHub: `feature`, `bug`, `ui`, `test`, `docs`, `blocked`, dan `release`.
-- [ ] **UI-114** — Membuat milestone GitHub untuk `v0.1` sampai `v0.7`.
+- [x] **UI-113** — Membuat label GitHub: `feature`, `bug`, `ui`, `test`, `docs`, `blocked`, dan `release`.
+- [x] **UI-114** — Membuat milestone GitHub untuk `v0.1` sampai `v0.7`.
 
 ### C. Latihan Git
 
 - [x] **UI-115** — Menetapkan `main` sebagai branch utama.
 - [x] **UI-116** — Menulis aturan nama branch dan Conventional Commits di `CONTRIBUTING.md` atau `README.md`.
 - [ ] **UI-117** — Membuat minimal satu branch `chore/project-bootstrap`.
-- [ ] **UI-118** — Membuat pull request pertama, meminta review, lalu melakukan squash merge.
+- [ ] **UI-118** — Membuat Pull Request, memeriksa diff, menunggu CI, lalu melakukan squash merge.
 - [ ] **UI-119** — Menghapus branch yang sudah di-merge.
 - [x] **UI-120** — Menambahkan mockup terpilih “Kantin Hangat” untuk mahasiswa, pengelola, dan papan komponen ke dokumentasi proyek.
 
@@ -156,14 +157,18 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Semua issue milestone `v0.1` sudah ditutup.
 - [x] `CHANGELOG.md` telah diperbarui.
 - [x] Versi `pubspec.yaml` sudah `0.1.0-alpha.1+1`.
-- [ ] Tag `v0.1.0-alpha.1` dibuat dari commit terbaru di `main` dan di-push.
+- [x] Tag `v0.1.0-alpha.1` dibuat dari commit terbaru di `main` dan di-push.
+
+> `v0.1.0-alpha.2` hanya merapikan fondasi kolaborasi, struktur source, dan
+> dokumentasi. Versi maintenance ini tidak menyelesaikan item UI produk dan
+> tidak menjadi alasan untuk mencentang validasi emulator/perangkat.
 
 ---
 
 ## `v0.2.0-alpha.1` — App Shell, Design System, dan Fake Data
 
 **Target:** semua halaman utama bisa dinavigasi dan memiliki fondasi UI/data yang siap diganti ke backend.  
-**Versi `pubspec.yaml`:** `0.2.0-alpha.1+2`
+**Versi `pubspec.yaml`:** `0.2.0-alpha.1+3`
 
 ### A. Design system
 
@@ -233,7 +238,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Format, analyze, dan seluruh test berhasil.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.2.0-alpha.1+2`.
+- [ ] Versi `pubspec.yaml` sudah `0.2.0-alpha.1+3`.
 - [ ] Tag `v0.2.0-alpha.1` dibuat dan di-push.
 
 ---
@@ -242,7 +247,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 **Target:** mahasiswa bisa menemukan menu secara manual tanpa AI.  
 **Requirement terkait:** FR-01, FR-02, dan fallback FR-06  
-**Versi `pubspec.yaml`:** `0.3.0-alpha.1+3`
+**Versi `pubspec.yaml`:** `0.3.0-alpha.1+4`
 
 ### A. Daftar stan dan menu
 
@@ -300,7 +305,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Format, analyze, dan seluruh test berhasil.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.3.0-alpha.1+3`.
+- [ ] Versi `pubspec.yaml` sudah `0.3.0-alpha.1+4`.
 - [ ] Tag `v0.3.0-alpha.1` dibuat dan di-push.
 
 ---
@@ -309,7 +314,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 **Target:** alur AI lengkap dapat didemonstrasikan dengan respons terkontrol dari fake service.  
 **Requirement terkait:** FR-03 sampai FR-06  
-**Versi `pubspec.yaml`:** `0.4.0-alpha.1+4`
+**Versi `pubspec.yaml`:** `0.4.0-alpha.1+5`
 
 ### A. Antarmuka asisten
 
@@ -373,7 +378,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Format, analyze, dan seluruh test berhasil.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.4.0-alpha.1+4`.
+- [ ] Versi `pubspec.yaml` sudah `0.4.0-alpha.1+5`.
 - [ ] Tag `v0.4.0-alpha.1` dibuat dan di-push.
 
 ---
@@ -382,7 +387,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 **Target:** mahasiswa dapat menyelesaikan alur pemesanan satu stan menggunakan data lokal.  
 **Requirement terkait:** FR-07 dan FR-08  
-**Versi `pubspec.yaml`:** `0.5.0-alpha.1+5`
+**Versi `pubspec.yaml`:** `0.5.0-alpha.1+6`
 
 ### A. Keranjang
 
@@ -445,7 +450,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Format, analyze, dan seluruh test berhasil.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.5.0-alpha.1+5`.
+- [ ] Versi `pubspec.yaml` sudah `0.5.0-alpha.1+6`.
 - [ ] Tag `v0.5.0-alpha.1` dibuat dan di-push.
 
 ---
@@ -454,7 +459,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 **Target:** pengelola dapat mengelola kondisi stan, menu, dan pesanan melalui UI dummy.  
 **Requirement terkait:** FR-09  
-**Versi `pubspec.yaml`:** `0.6.0-alpha.1+6`
+**Versi `pubspec.yaml`:** `0.6.0-alpha.1+7`
 
 ### A. Dashboard dan menu
 
@@ -512,7 +517,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Format, analyze, dan seluruh test berhasil.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.6.0-alpha.1+6`.
+- [ ] Versi `pubspec.yaml` sudah `0.6.0-alpha.1+7`.
 - [ ] Tag `v0.6.0-alpha.1` dibuat dan di-push.
 
 ---
@@ -521,7 +526,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 **Target:** seluruh UI dapat didemonstrasikan end-to-end tanpa backend dan menggunakan satu Android API.  
 **Requirement terkait:** FR-10 dan pemetaan komponen Android  
-**Versi `pubspec.yaml`:** `0.7.0-beta.1+7`
+**Versi `pubspec.yaml`:** `0.7.0-beta.1+8`
 
 ### A. Notifikasi lokal Android
 
@@ -597,7 +602,7 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 - [ ] Seluruh bug blocker/critical sudah ditutup.
 - [ ] Semua pull request milestone sudah di-review dan di-merge.
 - [ ] `CHANGELOG.md` dan petunjuk demo telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.7.0-beta.1+7`.
+- [ ] Versi `pubspec.yaml` sudah `0.7.0-beta.1+8`.
 - [ ] Tag `v0.7.0-beta.1` dibuat dan di-push.
 
 ---

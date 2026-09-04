@@ -11,6 +11,9 @@
 | Baseline fondasi | `v0.1.0-alpha.1` |
 | Tanggal | 4 September 2026 |
 
+`v0.1.0-alpha.2` adalah pemutakhiran maintenance atas fondasi tersebut dan
+tidak mengubah kebutuhan, aktor, alur, atau scope produk pada Mini-SRS ini.
+
 Dokumen ini mendefinisikan **apa yang harus dilakukan sistem** dan batas kualitas yang harus dipenuhi. Detail arsitektur, struktur kelas, endpoint, database, dan pilihan package ditetapkan pada tahap desain atau implementasi dan bukan bagian dari Mini-SRS ini.
 
 ## 1. Tujuan
@@ -259,5 +262,6 @@ Baseline UI dinyatakan siap didemonstrasikan apabila:
 
 - Data stan dan menu disediakan oleh pihak yang berwenang.
 - Mahasiswa dan pengelola memiliki perangkat Android yang didukung.
-- Backend, autentikasi nyata, dan provider AI belum menjadi bagian dari fondasi `v0.1.0-alpha.1`.
+- Backend, autentikasi nyata, dan provider AI belum menjadi bagian dari fondasi
+  `v0.1`.
 - Keputusan baru yang mengubah aktor, alur utama, atau scope wajib memperbarui Mini-SRS sebelum implementasi.
