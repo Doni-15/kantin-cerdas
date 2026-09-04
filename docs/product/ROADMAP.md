@@ -254,7 +254,7 @@ versi berikutnya.
 - Material Symbols Rounded untuk ikon aplikasi.
 - Komponen bersama untuk primary/secondary/tertiary/destructive button beserta state loading dan disabled.
 - Komponen bersama untuk search field, filter chip, menu row, status badge, quantity stepper, dialog, bottom sheet, snackbar, dan sticky cart bar.
-- Komponen loading, skeleton, empty, error, retry, dan success yang konsisten.
+- Komponen loading, skeleton, empty, error/retry, offline, disabled, dan success yang konsisten.
 - Navigasi mahasiswa: Beranda—Pesanan—Profil.
 - Navigasi pengelola: Dashboard—Pesanan—Menu—Profil.
 - Model domain awal: `User`, `Stall`, `MenuItem`, `Order`, dan `Recommendation`.
@@ -283,7 +283,7 @@ test/design-system
 - UI mahasiswa dan pengelola memakai bahasa visual yang sama.
 - Widget utama tidak overflow pada lebar 360, 390, dan 412 dp serta saat text scale diperbesar.
 - UI hanya mengenal repository interface, bukan JSON/API secara langsung.
-- State loading, kosong, gagal, dan berhasil dapat disimulasikan.
+- State loading, kosong, gagal/retry, offline, disabled, dan berhasil dapat disimulasikan.
 - Pull request UI menyertakan screenshot perbandingan terhadap acuan visual.
 - Tag `v0.2.0-alpha.1` dibuat dari `main`.
 
@@ -300,7 +300,7 @@ test/design-system
 - Beranda “Kantin Kampus Praktis” berisi sapaan, search field, kategori, daftar “Cepat jadi”, daftar “Stan yang buka”, dan floating assistant yang tidak mendominasi konten.
 - Daftar stan dan status buka/tutup tanpa jarak, rating, promo, atau elemen delivery.
 - Detail stan dan daftar menu berdasarkan stan.
-- Menu card/detail berisi foto, nama, harga, stan, ketersediaan, tingkat kepedasan, dan estimasi penyajian.
+- Baris menu dan Detail Menu berisi foto, nama, harga, stan, ketersediaan, tingkat kepedasan, serta estimasi penyajian.
 - Pencarian nama menu.
 - Filter kategori, rentang harga, dan tingkat kepedasan memakai filter chip dari design system.
 - Empty state apabila tidak ada menu yang cocok.

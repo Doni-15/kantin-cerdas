@@ -10,4 +10,5 @@ fondasi `v0.1`. Seluruh butir berikut masih rencana dan belum tersedia pada
 - navigasi dasar antarhalaman utama;
 - fake data lokal untuk skenario demo tanpa backend;
 - reusable components yang benar-benar dipakai oleh lebih dari satu layar;
-- primitive menu row, floating assistant, coachmark, dan bottom sheet yang mengikuti design system v2.
+- fondasi menu row, floating assistant, coachmark, dan bottom sheet yang
+  mengikuti design system v2.

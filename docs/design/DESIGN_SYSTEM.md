@@ -472,7 +472,7 @@ Gunakan komponen Flutter bawaan atau primitive proyek sebelum menambah dependenc
 - `OverlayEntry` atau widget overlay yang terkontrol untuk coachmark;
 - `showModalBottomSheet` dengan `isScrollControlled: true` untuk state asisten dibuka;
 - `Semantics`, `Tooltip`, dan focus handling untuk tombol ikon dan perubahan state;
-- abstraksi penyimpanan lokal yang disepakati untuk menyimpan `hasSeenAssistantCoachmark`—jangan menaruh keputusan persistence langsung di widget.
+- abstraksi penyimpanan lokal yang disepakati untuk menyimpan `hasSeenAssistantCoachmark`—jangan menaruh keputusan persistensi langsung di widget.
 
 State minimal floating assistant:
 
