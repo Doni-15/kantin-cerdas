@@ -139,7 +139,7 @@ flutter build apk --debug
 
 Workflow [Flutter CI](.github/workflows/flutter-ci.yml) menjalankan pemeriksaan yang sama pada mesin GitHub setiap kali ada `push` atau Pull Request menuju `main`.
 
-CI digunakan untuk memastikan source dapat diformat, dianalisis, diuji, dan dibangun pada lingkungan baru. CI saat ini tidak melakukan deployment, tidak mengunggah APK sebagai artefak rilis, dan tidak membuat GitHub Release.
+Flutter CI memastikan source dapat diformat, dianalisis, diuji, dan dibangun pada lingkungan baru. Workflow tersebut tidak melakukan deployment atau mengunggah APK sebagai artefak rilis. Penerbitan `v0.1.0-alpha.1` ditangani workflow rilis terpisah yang hanya berjalan setelah CI commit `main` berhasil; workflow itu membuat tag dan GitHub prerelease dari release notes yang telah direview.
 
 ## Versioning dan Release
 
