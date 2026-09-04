@@ -17,6 +17,7 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 - Dokumentasi roadmap, checklist UI, design system “Kantin Hangat”, dan empat mockup.
 - Smoke test untuk layar status fondasi KantinCerdas.
 - Workflow Flutter CI untuk format, analisis, test, dan debug build Android.
+- Workflow terjaga untuk membuat tag dan menerbitkan GitHub prerelease setelah CI `main` berhasil.
 - Template Pull Request, Issue Forms, dan Dependabot mingguan.
 
 ### Changed
