@@ -13,9 +13,7 @@ class KantinCerdasApp extends StatelessWidget {
       title: 'KantinCerdas',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE85D2A),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE85D2A)),
         useMaterial3: true,
       ),
       home: const FoundationScreen(),
@@ -31,9 +29,7 @@ class FoundationScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('KantinCerdas'),
-      ),
+      appBar: AppBar(title: const Text('KantinCerdas')),
       body: SafeArea(
         child: Center(
           child: Padding(
