@@ -1,0 +1,41 @@
+name: Usulan Fitur
+description: Usulkan fitur atau peningkatan untuk KantinCerdas.
+title: "[FEATURE] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah pengguna
+      description: Jelaskan masalah yang ingin diselesaikan, bukan hanya nama fitur.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Solusi yang diusulkan
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area produk
+      options:
+        - Mahasiswa
+        - Pengelola stan
+        - Asisten AI
+        - Pemesanan
+        - Notifikasi
+        - Infrastruktur
+    validations:
+      required: true
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Manfaat
+      description: Jelaskan dampaknya bagi mahasiswa atau pengelola stan.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Gambaran kriteria selesai

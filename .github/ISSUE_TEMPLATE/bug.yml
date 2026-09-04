@@ -1,0 +1,62 @@
+name: Laporan Bug
+description: Laporkan perilaku aplikasi yang salah atau tidak sesuai.
+title: "[BUG] "
+body:
+  - type: checkboxes
+    id: duplicate_check
+    attributes:
+      label: Pemeriksaan awal
+      options:
+        - label: Saya sudah memeriksa bahwa bug ini belum dilaporkan.
+          required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Ringkasan bug
+      description: Jelaskan masalah secara singkat dan jelas.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah reproduksi
+      placeholder: |
+        1. Buka halaman ...
+        2. Tekan tombol ...
+        3. Perhatikan hasil ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Hasil yang diharapkan
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Hasil aktual
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Versi aplikasi
+      placeholder: v0.2.0-alpha.1
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Lingkungan pengujian
+      value: |
+        Perangkat:
+        Versi Android:
+        Versi Flutter:
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshot atau log
+      description: Seret screenshot ke kolom ini dan hapus data sensitif dari log.
