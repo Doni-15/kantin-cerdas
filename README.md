@@ -6,15 +6,32 @@ KantinCerdas adalah aplikasi pre-order **Pesan & Ambil** untuk kantin kampus. Ma
 
 ## Status proyek
 
-| Bagian | Status |
-|---|---|
-| Rilis resmi | Unreleased |
-| Target berikutnya | `v0.1.0-alpha.1` |
-| Tahap aktif | Fondasi aplikasi dan GitHub |
-| Implementasi UI | Belum dimulai |
-| Backend | To Be Continued |
+**Tahap aktif:** fondasi aplikasi dan GitHub.
 
-Nilai `0.1.0-alpha.1+1` di `pubspec.yaml` merupakan target build. Versi tersebut baru menjadi rilis resmi setelah release gate dan CI lulus, kemudian tag Git dibuat.
+### Yang sudah tersedia
+
+- Proyek Flutter untuk Android dengan identitas aplikasi `io.github.doni15.kantincerdas`.
+- Struktur awal aplikasi dan pengujian widget.
+- Design system “Kantin Hangat” beserta empat mockup acuan.
+- Roadmap dan checklist implementasi UI dari fondasi hingga demo.
+- Pemeriksaan otomatis untuk format, analisis, test, dan build APK debug.
+- Template Issue, Pull Request, serta pembaruan dependency mingguan.
+
+### Yang belum tersedia
+
+- Implementasi UI dan alur dummy secara lengkap.
+- Integrasi backend dan data nyata.
+- Rilis aplikasi yang siap dipasang pengguna.
+
+## [Releases](https://github.com/Doni-15/kantin-cerdas/releases)
+
+Belum ada rilis yang dipublikasikan.
+
+- Versi aplikasi saat ini: `0.1.0-alpha.1+1`
+- Target tag pertama: `v0.1.0-alpha.1`
+- Rilis terbaru: **Belum tersedia**
+
+Angka `+1` merupakan build number Flutter. Tag `v0.1.0-alpha.1` baru dibuat setelah fondasi, Mini-SRS, dan seluruh pemeriksaan CI dinyatakan lulus.
 
 ## Ruang lingkup utama
 
@@ -49,7 +66,18 @@ flutter pub get
 flutter run
 ```
 
-## Pemeriksaan kualitas
+## Continuous Integration (CI)
+
+Setiap `push` dan Pull Request menuju `main` diperiksa otomatis oleh GitHub Actions pada lingkungan baru. Pemeriksaannya meliputi:
+
+- konsistensi format kode Dart;
+- hasil `flutter analyze`;
+- seluruh `flutter test`;
+- keberhasilan build APK debug.
+
+Badge **Flutter CI** di bagian atas README berwarna hijau ketika seluruh pemeriksaan berhasil. CI hanya memeriksa kualitas proyek; CI saat ini tidak menerbitkan release dan tidak melakukan deployment.
+
+Pemeriksaan yang sama dapat dijalankan secara lokal:
 
 ```bash
 cd apps/mobile
