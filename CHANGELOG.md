@@ -6,18 +6,30 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 ## [Unreleased]
 
+## [0.1.0-alpha.1] - 2026-09-04
+
 ### Added
 
-- Struktur awal monorepo.
-- Proyek Flutter Android di `apps/mobile`.
-- Identitas Android `io.github.doni15.kantincerdas`.
-- Target build awal `0.1.0-alpha.1+1`.
-- Dokumentasi roadmap, checklist UI, design system, dan mockup.
-- README dan aturan perlindungan file sensitif.
-- Workflow Flutter CI untuk format, analisis, test, dan build Android.
-- Template Pull Request dan Issue Forms untuk tracking pekerjaan.
-- Dependabot mingguan untuk dependency Pub dan GitHub Actions.
+- Fondasi proyek Flutter Android dengan application ID `io.github.doni15.kantincerdas`.
+- Mini-SRS sebagai baseline kebutuhan fungsional dan nonfungsional produk.
+- Struktur awal `lib/app`, `lib/core`, `lib/features`, dan `lib/shared`.
+- Template `.env.example` tanpa secret untuk integrasi backend berikutnya.
+- Dokumentasi roadmap, checklist UI, design system “Kantin Hangat”, dan empat mockup.
+- Smoke test untuk layar status fondasi KantinCerdas.
+- Workflow Flutter CI untuk format, analisis, test, dan debug build Android.
+- Template Pull Request, Issue Forms, dan Dependabot mingguan.
 
 ### Changed
 
-- Nama tampilan aplikasi Android menjadi `KantinCerdas`.
+- Mengganti counter demo bawaan Flutter dengan layar status fondasi KantinCerdas.
+- Menyelaraskan README utama dan README aplikasi dengan status implementasi nyata.
+- Memperluas format check CI ke seluruh proyek Flutter.
+
+### Known limitations
+
+- Alur katalog, pencarian, keranjang, pesanan, pengelola stan, dan notifikasi belum diimplementasikan.
+- Asisten Pilih Menu dan integrasi backend belum tersedia.
+- Rilis ini tidak menyertakan APK siap distribusi dan belum ditujukan untuk penggunaan produksi.
+
+[Unreleased]: https://github.com/Doni-15/kantin-cerdas/compare/v0.1.0-alpha.1...HEAD
+[0.1.0-alpha.1]: https://github.com/Doni-15/kantin-cerdas/releases/tag/v0.1.0-alpha.1
