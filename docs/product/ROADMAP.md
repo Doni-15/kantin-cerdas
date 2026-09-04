@@ -1,10 +1,10 @@
 # Roadmap Pengembangan KantinCerdas
 
 **Dokumen:** Roadmap Produk, Engineering, dan Version Control  
-**Versi roadmap:** 1.1  
+**Versi roadmap:** 2.0  
 **Platform:** Android dengan Flutter  
 **Target produk:** Aplikasi pesan-ambil pada satu kantin kampus dengan Asisten Pilih Menu berbasis AI  
-**Baseline visual:** “Kantin Hangat” — oranye, krem, ramah, dan food-first  
+**Baseline visual:** “Kantin Kampus Praktis” — praktis, hangat, dekat, tenang, dan mudah dipindai  
 **Sumber kebenaran visual:** [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md)
 
 ---
@@ -60,7 +60,7 @@ Posisi proyek pada revisi roadmap ini adalah **arah visual sudah dipilih, sedang
 Alur utama mahasiswa:
 
 ```text
-Beranda → Detail Stan / Asisten AI → Keranjang → Konfirmasi → Status Pesanan → Ambil dan bayar di konter
+Beranda → Detail Stan / Floating Assistant → Bottom Sheet Rekomendasi → Keranjang → Konfirmasi → Status Pesanan → Ambil dan bayar di konter
 ```
 
 Alur utama pengelola:
@@ -73,26 +73,30 @@ Aturan visual utama:
 
 | Bagian | Keputusan yang dikunci |
 |---|---|
-| Arah visual | “Kantin Hangat”: ramah, cepat, dekat, dan menonjolkan makanan |
+| Arah visual | “Kantin Kampus Praktis”: praktis, hangat, dekat, tenang, dan mudah dipindai |
 | Warna merek | `#E85D2A` (`brandOrange`) |
 | Warna tombol/aksi | `#C74418` (`actionOrange`) agar kontras lebih aman |
 | Warna gelap | `#9B341B` (`darkTerracotta`) |
-| Latar utama | `#FFF8EF` (`backgroundWarm`) |
-| Surface hangat | `#FDEDE2` (`surfaceWarm`) |
+| Latar utama | `#FAFAF8` (`backgroundWarm`) |
+| Surface | `#FFFFFF`; `#F7F3F0` hanya untuk section yang perlu dibedakan |
+| Outline | `#DDD6D1` |
 | Teks utama | `#251B17` (`textPrimary`) |
 | Tipografi | Plus Jakarta Sans; fallback Inter/sans-serif sistem |
 | Layout | Grid 8 dp, padding halaman 16 dp, target sentuh minimal 48 × 48 dp |
-| Bentuk | Radius 8, 12, 20, 24, dan pill; shadow digunakan secara hemat |
+| Bentuk | Radius 8, 12, 16, 24, dan pill; shadow digunakan secara hemat |
+| Daftar | Grouped list dan divider; kartu hanya untuk objek mandiri |
+| Asisten | FAB 56 × 56 dp pada Beranda/Detail Stan, coachmark satu kali, lalu modal bottom sheet |
 | Ikon | Material Symbols Rounded; emoji tidak dipakai sebagai ikon UI |
 | Foto | Foto makanan Indonesia yang natural, crop konsisten, tanpa teks/logo |
 
 Navigasi mahasiswa memakai **Beranda—Pesanan—Profil**. Navigasi pengelola memakai **Dashboard—Pesanan—Menu—Profil**. Keranjang muncul sebagai sticky cart bar ketika berisi item, bukan sebagai tab permanen.
 
-Mockup yang menjadi acuan meliputi:
+Full Mockup UI/UX v2 yang menjadi acuan meliputi:
 
-- mahasiswa: Beranda, Detail Stan, Asisten AI, Keranjang, dan Status Pesanan;
-- pengelola: Dashboard, Pesanan Masuk, Detail Pesanan, dan Kelola Menu;
-- papan design system: warna, tipografi, spacing, radius, tombol, input, chip, kartu, status, quantity stepper, dan navigation bar.
+- mahasiswa: 11 layar dari Beranda sampai Profil/Preferensi;
+- pengelola: 6 layar dari Dashboard sampai Profil;
+- state penting: loading, hasil kosong, offline, error/retry, stan tutup, menu habis, coachmark, bottom sheet, dan reduced motion;
+- komponen: warna, tipografi, spacing, radius, tombol, input, chip, grouped list, status, quantity stepper, navigation bar, dan floating assistant.
 
 Setiap perubahan visual harus mengikuti [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md). Jika implementasi perlu menyimpang, keputusan tersebut harus dicatat dalam pull request dan dokumen desain diperbarui.
 
@@ -166,7 +170,7 @@ Versi `0.x` menandakan produk masih dikembangkan. Agar mudah dipelajari, tim mem
 |---|---|---|---|
 | `v0.1.0-alpha.1` | MINOR + alpha | Fondasi proyek, Git, dan acuan desain | Repository, dokumentasi, visual baseline, CI, dan struktur Flutter siap |
 | `v0.1.0-alpha.2` | Pemutakhiran alpha | Perapian fondasi | Struktur source, dokumentasi rilis, dan metadata kolaborasi lebih jelas tanpa fitur produk baru |
-| `v0.2.0-alpha.1` | MINOR + alpha | Penerapan “Kantin Hangat” | Theme/token, komponen bersama, navigasi, state umum, dan fake repository |
+| `v0.2.0-alpha.1` | MINOR + alpha | Penerapan “Kantin Kampus Praktis” | Theme/token, komponen bersama, navigasi, state umum, dan fake repository |
 | `v0.3.0-alpha.1` | MINOR + alpha | Katalog, pencarian, dan filter | Pengguna dapat menemukan menu secara manual |
 | `v0.4.0-alpha.1` | MINOR + alpha | Asisten Pilih Menu | UI AI, ekstraksi kriteria, klarifikasi, rekomendasi, dan fallback dummy |
 | `v0.5.0-alpha.1` | MINOR + alpha | Keranjang dan pemesanan | Alur satu stan, konfirmasi total, nomor, dan status pesanan |
@@ -194,7 +198,7 @@ Versi `0.x` menandakan produk masih dikembangkan. Agar mudah dipelajari, tim mem
 - Membuat repository Git dan proyek Flutter.
 - Menambahkan `.gitignore` Flutter/Android.
 - Menambahkan `README.md`, `ROADMAP.md`, dan [Mini-SRS](MINI_SRS.md).
-- Menambahkan [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md), mockup mahasiswa/pengelola, dan mencatat keputusan “Kantin Hangat”.
+- Menambahkan [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md), mockup mahasiswa/pengelola, dan mencatat keputusan “Kantin Kampus Praktis”.
 - Menambahkan `.env.example`; file `.env` asli wajib masuk `.gitignore`.
 - Menetapkan struktur awal:
 
@@ -244,13 +248,13 @@ versi berikutnya.
 
 ### Fitur
 
-- `ThemeData`/`ColorScheme` berdasarkan token “Kantin Hangat”; warna tidak ditulis berulang di widget.
+- `ThemeData`/`ColorScheme` berdasarkan token “Kantin Kampus Praktis”; warna tidak ditulis berulang di widget.
 - Tipografi Plus Jakarta Sans dengan fallback Inter/sans-serif sistem.
-- Token spacing berbasis grid 8 dp, radius 8/12/20/24/pill, dan elevation yang terbatas.
+- Token spacing berbasis grid 8 dp, radius 8/12/16/24/pill, dan elevation yang terbatas.
 - Material Symbols Rounded untuk ikon aplikasi.
 - Komponen bersama untuk primary/secondary/tertiary/destructive button beserta state loading dan disabled.
-- Komponen bersama untuk search field, filter chip, menu card, status badge, quantity stepper, dialog, bottom sheet, snackbar, dan sticky cart bar.
-- Komponen loading, skeleton, empty, error, retry, dan success yang konsisten.
+- Komponen bersama untuk search field, filter chip, menu row, status badge, quantity stepper, dialog, bottom sheet, snackbar, dan sticky cart bar.
+- Komponen loading, skeleton, empty, error/retry, offline, disabled, dan success yang konsisten.
 - Navigasi mahasiswa: Beranda—Pesanan—Profil.
 - Navigasi pengelola: Dashboard—Pesanan—Menu—Profil.
 - Model domain awal: `User`, `Stall`, `MenuItem`, `Order`, dan `Recommendation`.
@@ -262,7 +266,7 @@ versi berikutnya.
 ### Branch yang digunakan
 
 ```text
-feat/kantin-hangat-theme
+feat/kantin-praktis-theme
 feat/shared-ui-components
 feat/app-navigation
 feat/domain-models
@@ -279,7 +283,7 @@ test/design-system
 - UI mahasiswa dan pengelola memakai bahasa visual yang sama.
 - Widget utama tidak overflow pada lebar 360, 390, dan 412 dp serta saat text scale diperbesar.
 - UI hanya mengenal repository interface, bukan JSON/API secara langsung.
-- State loading, kosong, gagal, dan berhasil dapat disimulasikan.
+- State loading, kosong, gagal/retry, offline, disabled, dan berhasil dapat disimulasikan.
 - Pull request UI menyertakan screenshot perbandingan terhadap acuan visual.
 - Tag `v0.2.0-alpha.1` dibuat dari `main`.
 
@@ -293,10 +297,10 @@ test/design-system
 
 ### Fitur
 
-- Beranda “Kantin Hangat” berisi sapaan, search field, headline singkat, kategori, menu cepat disiapkan, dan panel AI compact.
+- Beranda “Kantin Kampus Praktis” berisi sapaan, search field, kategori, daftar “Cepat jadi”, daftar “Stan yang buka”, dan floating assistant yang tidak mendominasi konten.
 - Daftar stan dan status buka/tutup tanpa jarak, rating, promo, atau elemen delivery.
 - Detail stan dan daftar menu berdasarkan stan.
-- Menu card/detail berisi foto, nama, harga, stan, ketersediaan, tingkat kepedasan, dan estimasi penyajian.
+- Baris menu dan Detail Menu berisi foto, nama, harga, stan, ketersediaan, tingkat kepedasan, serta estimasi penyajian.
 - Pencarian nama menu.
 - Filter kategori, rentang harga, dan tingkat kepedasan memakai filter chip dari design system.
 - Empty state apabila tidak ada menu yang cocok.
@@ -317,7 +321,7 @@ test/catalog-filter
 - Pengguna dapat menemukan menu tanpa menggunakan AI.
 - Hanya menu tersedia yang dapat dipilih untuk dipesan.
 - Filter dapat dihapus dan tidak meninggalkan state lama.
-- Beranda, Detail Stan, dan kartu menu sesuai acuan “Kantin Hangat” pada lebar 360/390/412 dp.
+- Beranda, Detail Stan, dan baris menu sesuai acuan “Kantin Kampus Praktis” pada lebar 360/390/412 dp.
 - Screenshot hasil implementasi dibandingkan dengan mockup mahasiswa.
 - Tag `v0.3.0-alpha.1` dibuat dari `main`.
 
@@ -331,16 +335,14 @@ test/catalog-filter
 
 ### Fitur UI dan kontrak
 
-- Panel AI compact “Masih bingung?” pada beranda dengan CTA “Coba asisten”.
-- Halaman asisten memakai visual “Kantin Hangat” dan tidak diperlakukan sebagai chatbot mengambang di seluruh aplikasi.
-- Input kebutuhan dalam Bahasa Indonesia.
-- Ekstraksi empat kriteria: anggaran, jenis makanan, tingkat kepedasan, dan batas waktu penyajian.
-- Suggestion/input chip untuk contoh kriteria seperti “Di bawah Rp20.000” dan “Tidak pedas”.
-- Pertanyaan klarifikasi jika kriteria penting ambigu.
-- Maksimal lima kartu rekomendasi disertai alasan.
-- Rekomendasi hanya mengacu pada `menuId` yang tersedia.
-- Tombol untuk membuka detail menu dan menambahkan pilihan ke keranjang.
-- Error state, timeout, retry, dan kembali ke filter manual.
+- Floating assistant 56 × 56 dp hanya pada Beranda dan Detail Stan; route lain dan seluruh sisi pengelola menyembunyikannya.
+- Coachmark “Bingung pilih? Aku bantu cari menu.” muncul satu kali setelah konten stabil, dapat ditutup, dan state sudah dilihat disimpan lokal.
+- Pengingat kontekstual hanya muncul saat ada kebutuhan nyata dan maksimal satu kali per sesi.
+- Reduced motion menonaktifkan animasi scale tanpa menghilangkan akses ke asisten.
+- Asisten terbuka sebagai modal bottom sheet yang dimulai dari pilihan budget, waktu tunggu, selera, dan field “Tulis pilihan lain…”.
+- Pertanyaan klarifikasi mempertahankan input dan pilihan sebelumnya.
+- Maksimal lima rekomendasi disertai alasan, data katalog terverifikasi, serta aksi buka detail atau tambah ke keranjang.
+- Error state, timeout, retry, hasil kosong, dan kembali ke filter manual.
 - `FakeAiRecommendationService` untuk demo UI.
 - Interface `AiRecommendationService` agar integrasi AI nyata tidak mengubah halaman.
 
@@ -354,7 +356,7 @@ test/catalog-filter
 ### Branch yang digunakan
 
 ```text
-feat/ai-assistant-ui
+feat/floating-menu-assistant
 feat/ai-criteria-parser-contract
 feat/ai-recommendation-card
 feat/ai-fallback
@@ -365,7 +367,7 @@ feat/ai-fallback
 - Skenario “Rp20.000, tidak pedas, maksimal 10 menit” menghasilkan rekomendasi dummy yang sesuai.
 - Masukan ambigu menghasilkan permintaan klarifikasi.
 - Simulasi kegagalan AI tetap memberikan akses ke filter manual.
-- Panel AI, chip kriteria, dan kartu rekomendasi memakai komponen/tokens design system serta sesuai mockup mahasiswa.
+- Floating assistant, coachmark, bottom sheet, chip kriteria, dan rekomendasi memakai komponen/token design system serta sesuai mockup v2.
 - Tag `v0.4.0-alpha.1` dibuat dari `main`.
 
 ---
@@ -422,7 +424,7 @@ test/order-total
 
 ### Fitur
 
-- Dashboard “Kantin Hangat” berisi status buka/tutup, ringkasan antrean, dan daftar “Perlu tindakan”.
+- Dashboard “Kantin Kampus Praktis” berisi status buka/tutup, ringkasan antrean, dan daftar “Perlu tindakan”.
 - Navigasi pengelola: Dashboard—Pesanan—Menu—Profil.
 - Tampilan Pesanan Masuk dengan filter Baru, Diproses, dan Siap.
 - Detail Pesanan menampilkan item, catatan, total, label bayar di konter, serta aksi Terima/Tolak.
@@ -486,7 +488,7 @@ test/notification-fallback
 - Asisten AI memiliki alur lengkap walaupun respons masih disimulasikan.
 - Notifikasi Android dapat didemonstrasikan pada perangkat/emulator.
 - Tidak ada halaman yang hanya menampilkan loading tanpa batas.
-- Semua layar mahasiswa dan pengelola menggunakan token “Kantin Hangat” dan Material Symbols Rounded secara konsisten.
+- Semua layar mahasiswa dan pengelola menggunakan token “Kantin Kampus Praktis” dan Material Symbols Rounded secara konsisten.
 - Visual QA tidak memiliki temuan blocker/major; bukti screenshot tersedia untuk alur utama.
 - Tidak ada overflow pada lebar target dan harga/total tetap terbaca saat text scale diperbesar.
 - Tag `v0.7.0-beta.1` menjadi versi demo UI sebelum UTS.
@@ -630,7 +632,7 @@ test/order-end-to-end
 | Waktu | Versi yang dituju | Fokus |
 |---|---|---|
 | Hari 1 | `v0.1.0-alpha.1` | Repository, Git workflow, CI, struktur proyek, dan memasukkan acuan desain |
-| Hari 2–3 | `v0.2.0-alpha.1` | Implementasi “Kantin Hangat”, komponen bersama, navigasi, dan fake repository |
+| Hari 2–3 | `v0.2.0-alpha.1` | Implementasi “Kantin Kampus Praktis”, komponen bersama, navigasi, dan fake repository |
 | Hari 4–5 | `v0.3.0-alpha.1` | Katalog, pencarian, dan filter |
 | Hari 6–7 | `v0.4.0-alpha.1` | Asisten AI dengan dummy service |
 | Hari 8 | `v0.5.0-alpha.1` | Keranjang dan pemesanan |
@@ -688,7 +690,7 @@ git push origin v0.3.0-alpha.1
 
 | Prefix | Penggunaan | Contoh |
 |---|---|---|
-| `feat/` | Fitur baru | `feat/ai-assistant-ui` |
+| `feat/` | Fitur baru | `feat/floating-menu-assistant` |
 | `fix/` | Perbaikan bug | `fix/order-total-rounding` |
 | `refactor/` | Perbaikan struktur tanpa fitur baru | `refactor/catalog-repository` |
 | `test/` | Menambah atau memperbaiki test | `test/order-status-transition` |
@@ -755,7 +757,7 @@ Screenshot/video/log test yang relevan.
 - [ ] Format, analyze, dan test berhasil
 - [ ] Tidak ada secret
 - [ ] State loading/error/empty ditangani
-- [ ] UI mengikuti token dan komponen “Kantin Hangat”
+- [ ] UI mengikuti token dan komponen “Kantin Kampus Praktis”
 - [ ] Screenshot pada lebar 390 dp dilampirkan untuk perubahan visual
 - [ ] Dokumentasi diperbarui bila perlu
 ```
@@ -908,7 +910,7 @@ Gunakan `CHANGELOG.md` dengan pola:
 - Deep link ke detail pesanan.
 
 ### Changed
-- Abstraction notifikasi disiapkan untuk FCM.
+- Abstraksi notifikasi disiapkan untuk FCM.
 
 ### Fixed
 - Status tetap terlihat ketika izin notifikasi ditolak.
@@ -922,7 +924,7 @@ Gunakan `CHANGELOG.md` dengan pola:
 ## 15. Urutan Implementasi yang Tidak Boleh Dibalik
 
 ```text
-Kunci acuan visual “Kantin Hangat”
+Kunci acuan visual “Kantin Kampus Praktis” dan Full Mockup UI/UX v2
         ↓
 Fondasi Git, dokumentasi desain, dan arsitektur data
         ↓

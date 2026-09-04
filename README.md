@@ -22,8 +22,8 @@ KantinCerdas dirancang untuk:
 | --- | --- | --- |
 | Proyek Flutter Android | Tersedia | Fondasi khusus KantinCerdas dapat dianalisis, diuji, dan dibangun |
 | Identitas aplikasi | Tersedia | Nama Android `KantinCerdas` dan application ID `io.github.doni15.kantincerdas` |
-| Design system | Terdokumentasi | Token visual, komponen, dan arah desain “Kantin Hangat” |
-| Mockup | Tersedia | Empat papan acuan untuk alur mahasiswa dan pengelola |
+| Design system | Terdokumentasi | Token visual, komponen, dan arah desain “Kantin Kampus Praktis” |
+| Mockup | Pemutakhiran v2 | Empat papan awal tersedia; matriks 11 layar mahasiswa, 6 layar pengelola, dan state penting sudah dipetakan di checklist |
 | Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
 | Otomatisasi GitHub | Aktif | Flutter CI, Issue Forms, Pull Request template, dan Dependabot |
 | UI produk | Fondasi saja | Layar status proyek tersedia; alur mahasiswa dan pengelola belum dibuat |
@@ -58,10 +58,11 @@ Versi awal tidak mencakup delivery, GPS atau peta, pembayaran digital, promo, ra
 
 ## Acuan Desain
 
-Arah visual yang dipilih adalah **“Kantin Hangat”**: ramah, cepat, dan menonjolkan makanan. Ini adalah baseline visual proyek; perubahan arahnya harus melalui keputusan tim dan pembaruan dokumentasi. Implementasi Flutter harus mengikuti token dan pola komponen pada design system.
+Arah visual yang dipilih adalah **“Kantin Kampus Praktis”**: praktis, hangat, dekat, tenang, dan mudah dipindai. Permukaan utama tetap putih atau netral hangat; oranye dipakai untuk merek, aksi utama, dan state aktif. Implementasi Flutter harus mengikuti token, grouped list, perilaku floating assistant, dan batas scope pada design system v2.
 
 - [Design System](docs/design/DESIGN_SYSTEM.md)
-- [Seluruh mockup](docs/design/mockups)
+- [Mockup awal yang tersedia](docs/design/mockups)
+- [Matriks layar Full Mockup UI/UX v2](docs/product/UI_CHECKLIST.md#23-matriks-acuan-full-mockup-uiux-v2)
 
 Mockup merupakan acuan implementasi, bukan bukti bahwa layar tersebut sudah tersedia di aplikasi.
 
