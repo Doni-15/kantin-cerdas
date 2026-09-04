@@ -117,32 +117,32 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 
 ### A. Repository dan proyek
 
-- [ ] **UI-101** — Membuat repository GitHub KantinCerdas.
-- [ ] **UI-102** — Membuat proyek Flutter dengan application ID yang disepakati.
+- [x] **UI-101** — Membuat repository GitHub KantinCerdas.
+- [x] **UI-102** — Membuat proyek Flutter dengan application ID yang disepakati.
 - [ ] **UI-103** — Memastikan proyek dapat dijalankan pada emulator/perangkat Android.
-- [ ] **UI-104** — Menambahkan `.gitignore` untuk Flutter, Android, IDE, build, dan `.env`.
-- [ ] **UI-105** — Menambahkan `.env.example` tanpa nilai rahasia.
-- [ ] **UI-106** — Menambahkan `README.md` berisi cara clone, setup, run, test, dan build.
-- [ ] **UI-107** — Menambahkan Mini-SRS, roadmap, checklist UI, dan [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) ke repository.
+- [x] **UI-104** — Menambahkan `.gitignore` untuk Flutter, Android, IDE, build, dan `.env`.
+- [x] **UI-105** — Menambahkan `.env.example` tanpa nilai rahasia.
+- [x] **UI-106** — Menambahkan `README.md` berisi cara clone, setup, run, test, dan build.
+- [x] **UI-107** — Menambahkan [Mini-SRS](MINI_SRS.md), roadmap, checklist UI, dan [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) ke repository.
 
 ### B. Struktur dan kualitas awal
 
-- [ ] **UI-108** — Menyiapkan struktur `lib/app`, `lib/core`, `lib/features`, dan `lib/shared`.
-- [ ] **UI-109** — Mengaktifkan aturan lint yang disepakati tim.
-- [ ] **UI-110** — Membuat minimal satu smoke test bawaan proyek.
-- [ ] **UI-111** — Menyiapkan CI untuk menjalankan format check, analyze, dan test pada pull request.
-- [ ] **UI-112** — Menambahkan template pull request.
+- [x] **UI-108** — Menyiapkan struktur `lib/app`, `lib/core`, `lib/features`, dan `lib/shared`.
+- [x] **UI-109** — Mengaktifkan aturan lint yang disepakati tim.
+- [x] **UI-110** — Membuat minimal satu smoke test bawaan proyek.
+- [x] **UI-111** — Menyiapkan CI untuk menjalankan format check, analyze, dan test pada pull request.
+- [x] **UI-112** — Menambahkan template pull request.
 - [ ] **UI-113** — Membuat label GitHub: `feature`, `bug`, `ui`, `test`, `docs`, `blocked`, dan `release`.
 - [ ] **UI-114** — Membuat milestone GitHub untuk `v0.1` sampai `v0.7`.
 
 ### C. Latihan Git
 
-- [ ] **UI-115** — Menetapkan `main` sebagai branch utama.
-- [ ] **UI-116** — Menulis aturan nama branch dan Conventional Commits di `CONTRIBUTING.md` atau `README.md`.
+- [x] **UI-115** — Menetapkan `main` sebagai branch utama.
+- [x] **UI-116** — Menulis aturan nama branch dan Conventional Commits di `CONTRIBUTING.md` atau `README.md`.
 - [ ] **UI-117** — Membuat minimal satu branch `chore/project-bootstrap`.
 - [ ] **UI-118** — Membuat pull request pertama, meminta review, lalu melakukan squash merge.
 - [ ] **UI-119** — Menghapus branch yang sudah di-merge.
-- [ ] **UI-120** — Menambahkan mockup terpilih “Kantin Hangat” untuk mahasiswa, pengelola, dan papan komponen ke dokumentasi proyek.
+- [x] **UI-120** — Menambahkan mockup terpilih “Kantin Hangat” untuk mahasiswa, pengelola, dan papan komponen ke dokumentasi proyek.
 
 ### Release gate `v0.1.0-alpha.1`
 
@@ -700,7 +700,7 @@ Fase UI baru boleh dinyatakan selesai jika:
 - [ ] Tidak ada API key atau secret di repository.
 - [ ] Build APK release berhasil dipasang dan dijalankan.
 - [ ] Bug blocker dan critical berjumlah nol.
-- [ ] Roadmap, Mini-SRS, README, design system, changelog, dan skenario demo konsisten.
+- [ ] Roadmap, [Mini-SRS](MINI_SRS.md), README, design system, changelog, dan skenario demo konsisten.
 
 ---
 
