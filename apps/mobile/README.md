@@ -4,10 +4,12 @@ Aplikasi Flutter Android untuk layanan pre-order **Pesan & Ambil** di kantin kam
 
 ## Status
 
-- Rilis resmi: Unreleased
-- Target berikutnya: `v0.1.0-alpha.1`
-- UI saat ini: scaffold awal Flutter
+- Versi source: `0.1.0-alpha.1+1`
+- Tahap: fondasi aplikasi
+- UI saat ini: layar status KantinCerdas; alur produk belum diimplementasikan
 - Backend: To Be Continued
+
+Versi ini bukan aplikasi siap produksi. Katalog, pemesanan, asisten AI, notifikasi, dan integrasi backend masih berada pada milestone berikutnya.
 
 ## Toolchain
 
@@ -26,15 +28,21 @@ flutter run
 ## Pemeriksaan kualitas
 
 ```bash
-dart format --output=none --set-exit-if-changed lib test
+dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test
 flutter build apk --debug
 ```
 
+## Konfigurasi
+
+Template konfigurasi tersedia di [`.env.example`](../../.env.example). Fondasi `v0.1.0-alpha.1` belum membaca environment variable apa pun dan file `.env` asli tidak boleh masuk Git.
+
 ## Dokumentasi proyek
 
 - [README utama](../../README.md)
+- [Mini-SRS](../../docs/product/MINI_SRS.md)
 - [Design System](../../docs/design/DESIGN_SYSTEM.md)
 - [Roadmap](../../docs/product/ROADMAP.md)
 - [Checklist UI](../../docs/product/UI_CHECKLIST.md)
+- [Catatan rilis `v0.1.0-alpha.1`](../../docs/releases/v0.1.0-alpha.1.md)

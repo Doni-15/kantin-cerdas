@@ -46,7 +46,12 @@ jobs:
         run: flutter pub get
 
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed lib test
+        run: |
+          if ! dart format --output=none --set-exit-if-changed .; then
+            dart format .
+            git --no-pager diff -- .
+            exit 1
+          fi
 
       - name: Analyze
         run: flutter analyze

@@ -19,7 +19,7 @@ Roadmap ini menjadi pedoman bersama untuk:
 - mempelajari Git, branch, commit, pull request, tag, dan release secara langsung;
 - menentukan versi aplikasi untuk setiap penambahan fitur dan perbaikan;
 - menerapkan satu design system yang konsisten pada UI mahasiswa dan pengelola;
-- memastikan seluruh kebutuhan pada Mini-SRS dapat ditelusuri sampai ke implementasi dan pengujian.
+- memastikan seluruh kebutuhan pada [Mini-SRS](MINI_SRS.md) dapat ditelusuri sampai ke implementasi dan pengujian.
 
 Roadmap menggunakan **GitHub Flow**: satu branch utama `main` dan branch pendek untuk setiap pekerjaan. Model ini lebih sederhana untuk proyek mahasiswa daripada memelihara branch `develop` dalam waktu lama.
 
@@ -51,7 +51,7 @@ Baseline tidak mencakup:
 - banyak kampus;
 - analitik penjualan lanjutan.
 
-Fitur di luar baseline harus masuk backlog setelah `v1.0.0` dan memerlukan pembaruan Mini-SRS sebelum dikerjakan.
+Fitur di luar baseline harus masuk backlog setelah `v1.0.0` dan memerlukan pembaruan [Mini-SRS](MINI_SRS.md) sebelum dikerjakan.
 
 ### 2.1 Baseline Pengalaman dan Desain yang Dikunci
 
@@ -192,7 +192,7 @@ Versi `0.x` menandakan produk masih dikembangkan. Agar mudah dipelajari, tim mem
 
 - Membuat repository Git dan proyek Flutter.
 - Menambahkan `.gitignore` Flutter/Android.
-- Menambahkan `README.md`, `ROADMAP.md`, dan Mini-SRS.
+- Menambahkan `README.md`, `ROADMAP.md`, dan [Mini-SRS](MINI_SRS.md).
 - Menambahkan [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md), mockup mahasiswa/pengelola, dan mencatat keputusan “Kantin Hangat”.
 - Menambahkan `.env.example`; file `.env` asli wajib masuk `.gitignore`.
 - Menetapkan struktur awal:
@@ -588,7 +588,7 @@ test/order-end-to-end
 - Permission hanya diminta ketika dibutuhkan.
 - Tidak ada crash pada alur utama dan kondisi jaringan gagal.
 - APK release dapat dipasang pada perangkat Android 10+.
-- Mini-SRS, README, CHANGELOG, dan roadmap sesuai implementasi.
+- [Mini-SRS](MINI_SRS.md), README, CHANGELOG, dan roadmap sesuai implementasi.
 
 ---
 
@@ -602,7 +602,7 @@ test/order-end-to-end
 - APK/AAB versi final.
 - Source code pada tag `v1.0.0`.
 - `CHANGELOG.md`.
-- Mini-SRS final.
+- [Mini-SRS](MINI_SRS.md) final.
 - Panduan menjalankan aplikasi.
 - `.env.example`.
 - Akun atau data demo yang aman.
@@ -754,7 +754,7 @@ Screenshot/video/log test yang relevan.
 
 ### Checklist reviewer
 
-- Perubahan sesuai issue dan Mini-SRS.
+- Perubahan sesuai issue dan [Mini-SRS](MINI_SRS.md).
 - Nama variabel/kelas mudah dipahami.
 - Widget tidak langsung mengakses API atau dummy JSON.
 - Error dan kondisi kosong ditangani.
@@ -794,7 +794,7 @@ Pull request tidak boleh digabungkan jika:
 - terdapat API key atau token dalam perubahan;
 - perubahan visual menyimpang dari design system tanpa penjelasan atau pembaruan dokumen;
 - screenshot menunjukkan overflow, teks terpotong, kontras buruk, atau target sentuh terlalu kecil;
-- perubahan menambah fitur di luar scope tanpa pembaruan roadmap dan Mini-SRS.
+- perubahan menambah fitur di luar scope tanpa pembaruan roadmap dan [Mini-SRS](MINI_SRS.md).
 
 ---
 
