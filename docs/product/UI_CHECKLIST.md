@@ -147,15 +147,15 @@ Layar acuan pengelola: **Dashboard, Pesanan Masuk, Detail Pesanan, Kelola Menu**
 ### Release gate `v0.1.0-alpha.1`
 
 - [ ] Anggota lain dapat menjalankan proyek dari hasil clone tanpa file lokal pembuat proyek.
-- [ ] `dart format --set-exit-if-changed .` berhasil.
-- [ ] `flutter analyze` berhasil tanpa error.
-- [ ] `flutter test` berhasil.
-- [ ] Tidak ada secret atau `.env` asli dalam Git.
-- [ ] [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) dan mockup terpilih dapat diakses seluruh anggota tim.
-- [ ] README menyatakan bahwa “Kantin Hangat” adalah baseline visual yang tidak diubah tanpa keputusan tim.
+- [x] `dart format --set-exit-if-changed .` berhasil.
+- [x] `flutter analyze` berhasil tanpa error.
+- [x] `flutter test` berhasil.
+- [x] Tidak ada secret atau `.env` asli dalam Git.
+- [x] [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) dan mockup terpilih dapat diakses seluruh anggota tim.
+- [x] README menyatakan bahwa “Kantin Hangat” adalah baseline visual yang tidak diubah tanpa keputusan tim.
 - [ ] Semua issue milestone `v0.1` sudah ditutup.
-- [ ] `CHANGELOG.md` telah diperbarui.
-- [ ] Versi `pubspec.yaml` sudah `0.1.0-alpha.1+1`.
+- [x] `CHANGELOG.md` telah diperbarui.
+- [x] Versi `pubspec.yaml` sudah `0.1.0-alpha.1+1`.
 - [ ] Tag `v0.1.0-alpha.1` dibuat dari commit terbaru di `main` dan di-push.
 
 ---
