@@ -4,7 +4,7 @@
 
 KantinCerdas adalah aplikasi Android berbasis Flutter untuk layanan pre-order **Pesan & Ambil** di kantin kampus. Mahasiswa dapat memilih menu sebelum tiba, sedangkan pengelola stan dapat memproses pesanan dan memperbarui ketersediaan menu.
 
-Repository ini masih berada pada tahap fondasi. Dokumen produk dan acuan desain sudah tersedia, tetapi UI produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
+Repository ini berada pada tahap fondasi `v0.1.0-alpha.1`. Aplikasi sudah memiliki layar status khusus KantinCerdas, struktur awal, dokumentasi produk, dan otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
 
 ## Tujuan Proyek
 
@@ -20,13 +20,13 @@ KantinCerdas dirancang untuk:
 
 | Area | Status saat ini | Keterangan |
 | --- | --- | --- |
-| Proyek Flutter Android | Tersedia | Scaffold bawaan Flutter dapat dianalisis, diuji, dan dibangun |
+| Proyek Flutter Android | Tersedia | Fondasi khusus KantinCerdas dapat dianalisis, diuji, dan dibangun |
 | Identitas aplikasi | Tersedia | Nama Android `KantinCerdas` dan application ID `io.github.doni15.kantincerdas` |
 | Design system | Terdokumentasi | Token visual, komponen, dan arah desain “Kantin Hangat” |
 | Mockup | Tersedia | Empat papan acuan untuk alur mahasiswa dan pengelola |
-| Roadmap dan checklist UI | Tersedia | Tahapan pengembangan dan release gate telah dipetakan |
+| Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
 | GitHub workflow | Aktif | CI, Issue Forms, Pull Request template, dan Dependabot |
-| UI produk | Belum dimulai | `main.dart` masih menampilkan counter demo bawaan Flutter |
+| UI produk | Fondasi saja | Layar status proyek tersedia; alur mahasiswa dan pengelola belum dibuat |
 | Data dummy dan state aplikasi | Belum tersedia | Dikerjakan pada milestone UI berikutnya |
 | Asisten Pilih Menu berbasis AI | Belum tersedia | Baru berada dalam scope dan rancangan produk |
 | Notifikasi Android | Belum tersedia | Direncanakan untuk status pesanan |
@@ -87,15 +87,23 @@ kantin-cerdas/
 │   └── mobile/
 │       ├── android/
 │       ├── lib/
+│       │   ├── app/
+│       │   ├── core/
+│       │   ├── features/
+│       │   └── shared/
 │       ├── test/
 │       └── pubspec.yaml
 ├── docs/
 │   ├── design/
 │   │   ├── DESIGN_SYSTEM.md
 │   │   └── mockups/
-│   └── product/
-│       ├── ROADMAP.md
-│       └── UI_CHECKLIST.md
+│   ├── product/
+│   │   ├── MINI_SRS.md
+│   │   ├── ROADMAP.md
+│   │   └── UI_CHECKLIST.md
+│   └── releases/
+│       └── v0.1.0-alpha.1.md
+├── .env.example
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 └── README.md
@@ -110,7 +118,8 @@ Persyaratan:
 - Java yang kompatibel dengan toolchain Flutter.
 
 ```bash
-cd apps/mobile
+git clone https://github.com/Doni-15/kantin-cerdas.git
+cd kantin-cerdas/apps/mobile
 flutter pub get
 flutter run
 ```
@@ -120,7 +129,7 @@ flutter run
 Jalankan pemeriksaan berikut dari `apps/mobile`:
 
 ```bash
-dart format --output=none --set-exit-if-changed lib test
+dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test
 flutter build apk --debug
@@ -147,9 +156,11 @@ Dengan alur tersebut, rilis akan tampil otomatis pada panel **Releases** GitHub 
 
 ## Dokumentasi
 
+- [Mini-SRS](docs/product/MINI_SRS.md)
 - [Roadmap pengembangan](docs/product/ROADMAP.md)
 - [Checklist implementasi UI](docs/product/UI_CHECKLIST.md)
 - [Design system](docs/design/DESIGN_SYSTEM.md)
+- [Catatan rilis `v0.1.0-alpha.1`](docs/releases/v0.1.0-alpha.1.md)
 - [Changelog](CHANGELOG.md)
 - [Panduan kontribusi](CONTRIBUTING.md)
 
