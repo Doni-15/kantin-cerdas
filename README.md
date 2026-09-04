@@ -4,7 +4,7 @@
 
 KantinCerdas adalah aplikasi Android berbasis Flutter untuk layanan pre-order **Pesan & Ambil** di kantin kampus. Mahasiswa dapat memilih menu sebelum tiba, sedangkan pengelola stan dapat memproses pesanan dan memperbarui ketersediaan menu.
 
-Repository ini berada pada tahap fondasi `v0.1.0-alpha.1`. Aplikasi sudah memiliki layar status khusus KantinCerdas, struktur awal, dokumentasi produk, dan otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
+Repository ini berada pada tahap fondasi `v0.1.0-alpha.2`. Aplikasi memiliki layar status khusus KantinCerdas, struktur source yang terpisah, dokumentasi produk dan rilis, serta otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
 
 ## Tujuan Proyek
 
@@ -25,7 +25,7 @@ KantinCerdas dirancang untuk:
 | Design system | Terdokumentasi | Token visual, komponen, dan arah desain “Kantin Hangat” |
 | Mockup | Tersedia | Empat papan acuan untuk alur mahasiswa dan pengelola |
 | Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
-| GitHub workflow | Aktif | CI, Issue Forms, Pull Request template, dan Dependabot |
+| Otomatisasi GitHub | Aktif | Flutter CI, Issue Forms, Pull Request template, dan Dependabot |
 | UI produk | Fondasi saja | Layar status proyek tersedia; alur mahasiswa dan pengelola belum dibuat |
 | Data dummy dan state aplikasi | Belum tersedia | Dikerjakan pada milestone UI berikutnya |
 | Asisten Pilih Menu berbasis AI | Belum tersedia | Baru berada dalam scope dan rancangan produk |
@@ -88,9 +88,12 @@ kantin-cerdas/
 │       ├── android/
 │       ├── lib/
 │       │   ├── app/
-│       │   ├── core/
-│       │   ├── features/
-│       │   └── shared/
+│       │   │   ├── foundation_screen.dart
+│       │   │   └── kantin_cerdas_app.dart
+│       │   ├── core/README.md
+│       │   ├── features/README.md
+│       │   ├── shared/README.md
+│       │   └── main.dart
 │       ├── test/
 │       └── pubspec.yaml
 ├── docs/
@@ -102,7 +105,10 @@ kantin-cerdas/
 │   │   ├── ROADMAP.md
 │   │   └── UI_CHECKLIST.md
 │   └── releases/
-│       └── v0.1.0-alpha.1.md
+│       ├── NEXT.md
+│       ├── README.md
+│       ├── v0.1.0-alpha.1.md
+│       └── v0.1.0-alpha.2.md
 ├── .env.example
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
@@ -129,6 +135,7 @@ flutter run
 Jalankan pemeriksaan berikut dari `apps/mobile`:
 
 ```bash
+flutter pub get
 dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test
@@ -137,22 +144,24 @@ flutter build apk --debug
 
 ## Continuous Integration
 
-Workflow [Flutter CI](.github/workflows/flutter-ci.yml) menjalankan pemeriksaan yang sama pada mesin GitHub setiap kali ada `push` atau Pull Request menuju `main`.
+Workflow [Flutter CI](.github/workflows/flutter-ci.yml) menjalankan pemeriksaan yang sama pada mesin GitHub setiap kali ada `push` ke `main` atau Pull Request menuju `main`.
 
-Flutter CI memastikan source dapat diformat, dianalisis, diuji, dan dibangun pada lingkungan baru. Workflow tersebut tidak melakukan deployment atau mengunggah APK sebagai artefak rilis. Penerbitan `v0.1.0-alpha.1` ditangani workflow rilis terpisah yang hanya berjalan setelah CI commit `main` berhasil; workflow itu membuat tag dan GitHub prerelease dari release notes yang telah direview.
+Flutter CI memastikan source dapat diformat, dianalisis, diuji, dan dibangun pada lingkungan baru. Workflow tersebut tidak melakukan deployment, membuat tag, atau mengunggah APK sebagai artefak rilis. Workflow sekali pakai untuk penerbitan `v0.1.0-alpha.1` sudah dipensiunkan setelah tugasnya selesai.
 
 ## Versioning dan Release
 
-KantinCerdas menggunakan Semantic Versioning. Nilai versi pada `pubspec.yaml` adalah versi build aplikasi yang sedang dikerjakan; nilai tersebut belum otomatis menjadi rilis resmi.
+KantinCerdas menggunakan Semantic Versioning. Nilai versi pada `pubspec.yaml` adalah versi build aplikasi yang sedang dikerjakan; nilai tersebut belum otomatis menjadi rilis resmi. Kebijakan lengkap dan riwayat tersedia pada [indeks rilis](docs/releases/README.md).
 
-Rilis resmi hanya dibuat setelah milestone dan release gate terkait selesai. Setiap rilis akan:
+Rilis hanya dibuat setelah scope dan quality gate yang berlaku untuk versinya
+selesai. Milestone fitur dapat tetap open jika masih memiliki validasi yang
+belum terbukti. Setiap rilis akan:
 
 1. menunjuk ke commit `main` yang sudah lulus CI;
-2. memiliki Git tag, misalnya `v0.1.0-alpha.1`;
+2. memiliki annotated Git tag, misalnya `v0.1.0-alpha.2`;
 3. diterbitkan melalui [GitHub Releases](https://github.com/Doni-15/kantin-cerdas/releases);
 4. memiliki release notes yang menjelaskan fitur, validasi, dan keterbatasannya.
 
-Dengan alur tersebut, rilis akan tampil otomatis pada panel **Releases** GitHub seperti rilis SwaDrive. Tag tidak dibuat untuk fitur yang masih berupa rencana.
+Prerelease diterbitkan setelah CI `main` berhasil dan tag diverifikasi menunjuk ke commit yang sama. Tag tidak dibuat untuk fitur yang masih berupa rencana, dan debug APK tidak diunggah sebagai aset rilis.
 
 ## Dokumentasi
 
@@ -160,7 +169,10 @@ Dengan alur tersebut, rilis akan tampil otomatis pada panel **Releases** GitHub 
 - [Roadmap pengembangan](docs/product/ROADMAP.md)
 - [Checklist implementasi UI](docs/product/UI_CHECKLIST.md)
 - [Design system](docs/design/DESIGN_SYSTEM.md)
+- [Kebijakan dan riwayat rilis](docs/releases/README.md)
+- [Rencana rilis berikutnya](docs/releases/NEXT.md)
 - [Catatan rilis `v0.1.0-alpha.1`](docs/releases/v0.1.0-alpha.1.md)
+- [Catatan rilis `v0.1.0-alpha.2`](docs/releases/v0.1.0-alpha.2.md)
 - [Changelog](CHANGELOG.md)
 - [Panduan kontribusi](CONTRIBUTING.md)
 

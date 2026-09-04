@@ -12,7 +12,8 @@ Commit fondasi pertama boleh dikirim langsung ke `main` karena repository masih 
 4. Commit menggunakan Conventional Commits.
 5. Push branch ke GitHub.
 6. Buat Pull Request menuju `main`.
-7. Merge hanya setelah review dan CI lulus.
+7. Periksa diff Pull Request dan merge hanya setelah CI lulus. Jangan mencatat
+   review manusia kecuali review tersebut benar-benar tersedia di GitHub.
 
 ## Nama branch
 
@@ -53,7 +54,8 @@ Jenis commit yang digunakan:
 Jalankan dari folder `apps/mobile` sebelum membuat Pull Request:
 
 ```bash
-dart format --output=none --set-exit-if-changed lib test
+flutter pub get
+dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test
 flutter build apk --debug
@@ -62,8 +64,8 @@ flutter build apk --debug
 ## Aturan perubahan UI
 
 - Mengikuti design system Kantin Hangat.
-- Menyertakan screenshot pada Pull Request.
-- Diperiksa pada lebar 360, 390, dan 412 dp.
+- Menyertakan screenshot pada Pull Request jika tampilan berubah.
+- Diperiksa pada lebar 360, 390, dan 412 dp jika tampilan berubah.
 - Memiliki keadaan loading, kosong, berhasil, dan gagal jika relevan.
 - Tidak menaruh logika bisnis besar langsung di widget.
 
@@ -76,8 +78,17 @@ flutter build apk --debug
 
 ## Versi dan tag
 
-- Fitur baru menaikkan versi minor.
-- Perbaikan bug menaikkan versi patch.
-- Tag hanya dibuat dari commit di `main`.
+- Fitur baru menaikkan versi minor. Perbaikan selama tahap alpha/beta dapat
+  menaikkan nomor prerelease; setelah stabil, perbaikan menaikkan patch.
+- Tag hanya dibuat dari commit di `main` setelah Flutter CI untuk commit tersebut
+  berhasil.
+- Tag rilis bersifat immutable: jangan memindahkan, mengganti, atau force-push
+  tag yang sudah diterbitkan.
 - Nilai versi di `pubspec.yaml` belum otomatis menjadi rilis.
-- Rilis sah setelah release gate dan CI lulus, lalu tag serta GitHub Release dibuat.
+- Release notes disiapkan di `docs/releases`, lalu GitHub Release alpha/beta/rc
+  diterbitkan sebagai prerelease.
+- Flutter CI tidak membuat tag atau Release. Tidak ada workflow hard-coded per
+  versi yang aktif.
+
+Kebijakan dan riwayat lengkap tersedia di
+[`docs/releases/README.md`](docs/releases/README.md).

@@ -109,7 +109,7 @@ MAJOR.MINOR.PATCH-PRERELEASE+BUILD
 Contoh versi Flutter:
 
 ```yaml
-version: 0.7.0-beta.1+7
+version: 0.7.0-beta.1+8
 ```
 
 Artinya:
@@ -165,6 +165,7 @@ Versi `0.x` menandakan produk masih dikembangkan. Agar mudah dipelajari, tim mem
 | Target versi | Jenis | Fokus fitur | Hasil utama |
 |---|---|---|---|
 | `v0.1.0-alpha.1` | MINOR + alpha | Fondasi proyek, Git, dan acuan desain | Repository, dokumentasi, visual baseline, CI, dan struktur Flutter siap |
+| `v0.1.0-alpha.2` | Pemutakhiran alpha | Perapian fondasi | Struktur source, dokumentasi rilis, dan metadata kolaborasi lebih jelas tanpa fitur produk baru |
 | `v0.2.0-alpha.1` | MINOR + alpha | Penerapan “Kantin Hangat” | Theme/token, komponen bersama, navigasi, state umum, dan fake repository |
 | `v0.3.0-alpha.1` | MINOR + alpha | Katalog, pencarian, dan filter | Pengguna dapat menemukan menu secara manual |
 | `v0.4.0-alpha.1` | MINOR + alpha | Asisten Pilih Menu | UI AI, ekstraksi kriteria, klarifikasi, rekomendasi, dan fallback dummy |
@@ -222,9 +223,16 @@ docs/add-project-docs
 - Proyek dapat dijalankan oleh anggota lain dari hasil clone.
 - Tidak ada secret atau file `.env` asli dalam Git.
 - `dart format`, `flutter analyze`, dan `flutter test` berhasil.
-- Pull request pertama sudah direview dan digabungkan.
+- Diff Pull Request pertama diperiksa dan digabungkan setelah CI berhasil.
 - Sumber kebenaran visual dan mockup terpilih tersedia bagi seluruh anggota tim.
 - Tag `v0.1.0-alpha.1` dibuat dari `main`.
+
+### Pemutakhiran `v0.1.0-alpha.2`
+
+Pemutakhiran ini hanya merapikan fondasi kolaborasi, struktur source, dan
+dokumentasi rilis. App shell, design tokens, navigasi, fake data, reusable
+components, serta seluruh fitur produk tetap berada pada `v0.2.0-alpha.1` dan
+versi berikutnya.
 
 ---
 
