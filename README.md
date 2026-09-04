@@ -58,7 +58,7 @@ Versi awal tidak mencakup delivery, GPS atau peta, pembayaran digital, promo, ra
 
 ## Acuan Desain
 
-Arah visual yang dipilih adalah **“Kantin Hangat”**: ramah, cepat, dan menonjolkan makanan. Implementasi Flutter harus mengikuti token dan pola komponen pada design system.
+Arah visual yang dipilih adalah **“Kantin Hangat”**: ramah, cepat, dan menonjolkan makanan. Ini adalah baseline visual proyek; perubahan arahnya harus melalui keputusan tim dan pembaruan dokumentasi. Implementasi Flutter harus mengikuti token dan pola komponen pada design system.
 
 - [Design System](docs/design/DESIGN_SYSTEM.md)
 - [Seluruh mockup](docs/design/mockups)
