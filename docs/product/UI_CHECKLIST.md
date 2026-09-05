@@ -40,7 +40,7 @@ Urutan sumber keputusan:
 
 1. [Mini-SRS](MINI_SRS.md) mengunci kebutuhan dan batas fitur.
 2. [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) v2 mengunci bahasa visual, komponen, dan perilaku interaksi.
-3. Paket **Full Mockup UI/UX v2** menjadi acuan layar dan state untuk review visual.
+3. Paket [**Full Mockup UI/UX v2**](../design/mockups/FULL_MOCKUP_UIUX_V2.pdf) menjadi acuan layar dan state untuk review visual.
 4. Dokumen ini melacak pekerjaan, bukti pengujian, dan release gate.
 
 Jika keempatnya bertentangan, jangan menebak saat implementasi. Catat keputusan tim lalu perbarui dokumen sumber yang tepat dalam pull request yang sama.
@@ -201,7 +201,7 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 - [x] **UI-118** — Membuat Pull Request, memeriksa diff, menunggu CI, lalu melakukan squash merge.
 - [x] **UI-119** — Menghapus branch kerja yang sudah di-merge.
 - [x] **UI-120** — Menambahkan mockup awal mahasiswa dan pengelola ke dokumentasi proyek.
-- [ ] **UI-121** — Menyimpan paket Full Mockup UI/UX v2 pada lokasi tim yang stabil dan menautkannya dari dokumentasi repository.
+- [x] **UI-121** — Menyimpan paket Full Mockup UI/UX v2 pada lokasi tim yang stabil dan menautkannya dari dokumentasi repository.
 
 #### Release gate `v0.1.0-alpha.1`
 
@@ -211,7 +211,7 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 - [x] `flutter test` berhasil.
 - [x] Tidak ada secret atau `.env` asli dalam Git.
 - [x] [`DESIGN_SYSTEM.md`](../design/DESIGN_SYSTEM.md) dan mockup terpilih dapat diakses seluruh anggota tim.
-- [ ] README menyatakan bahwa “Kantin Kampus Praktis” dan Full Mockup UI/UX v2 adalah baseline yang tidak diubah tanpa keputusan tim.
+- [x] README menyatakan bahwa “Kantin Kampus Praktis” dan Full Mockup UI/UX v2 adalah baseline yang tidak diubah tanpa keputusan tim.
 - [ ] Semua issue milestone `v0.1` sudah ditutup.
 - [x] `CHANGELOG.md` telah diperbarui.
 - [x] Versi `pubspec.yaml` sudah `0.1.0-alpha.1+1`.

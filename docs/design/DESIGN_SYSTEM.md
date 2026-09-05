@@ -7,6 +7,7 @@
 **Platform:** Android, implementasi Flutter  
 **Ukuran acuan desain:** 390 × 844 dp  
 **Mode tahap awal:** Dummy data / fake repository
+**Mockup acuan:** [Full Mockup UI/UX v2](mockups/FULL_MOCKUP_UIUX_V2.pdf)
 
 ---
 
