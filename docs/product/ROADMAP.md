@@ -91,7 +91,7 @@ Aturan visual utama:
 
 Navigasi mahasiswa memakai **Beranda—Pesanan—Profil**. Navigasi pengelola memakai **Dashboard—Pesanan—Menu—Profil**. Keranjang muncul sebagai sticky cart bar ketika berisi item, bukan sebagai tab permanen.
 
-Full Mockup UI/UX v2 yang menjadi acuan meliputi:
+[Full Mockup UI/UX v2](../design/mockups/FULL_MOCKUP_UIUX_V2.pdf) yang menjadi acuan meliputi:
 
 - mahasiswa: 11 layar dari Beranda sampai Profil/Preferensi;
 - pengelola: 6 layar dari Dashboard sampai Profil;

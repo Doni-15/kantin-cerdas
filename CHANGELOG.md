@@ -10,6 +10,7 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 - Menyelaraskan design system, roadmap, checklist UI, panduan kontribusi, dan copy layar fondasi dengan Full Mockup UI/UX v2 “Kantin Kampus Praktis”.
 - Mengunci floating assistant sebagai bantuan kontekstual pada Beranda dan Detail Stan, dengan coachmark satu kali, modal bottom sheet, fallback manual, serta dukungan reduced motion.
+- Menggantikan empat PNG mockup awal dengan satu paket PDF Full Mockup UI/UX v2 sebagai acuan visual resmi tim.
 
 ## [0.1.0-alpha.2] - 2026-09-04
 
