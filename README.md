@@ -22,7 +22,7 @@ KantinCerdas dirancang untuk:
 | --- | --- | --- |
 | Proyek Flutter Android | Tersedia | Fondasi khusus KantinCerdas dapat dianalisis, diuji, dan dibangun |
 | Identitas aplikasi | Tersedia | Nama Android `KantinCerdas` dan application ID `io.github.doni15.kantincerdas` |
-| Design system | Dalam pengerjaan | Token, tema, dan komponen bagian A tersedia; validasi perangkat dan app shell masih berlanjut |
+| Design system bagian A | Implementasi dan validasi otomatis selesai | UI-201–UI-207 tersedia; format, analyzer, 17 tes, dan build lulus. [PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9) menunggu merge; review perangkat masih berlanjut |
 | Mockup | Full Mockup UI/UX v2 | Satu PDF acuan berisi 11 layar mahasiswa, 6 layar pengelola, dan state penting |
 | Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
 | Otomatisasi GitHub | Aktif | Flutter CI, Issue Forms, Pull Request template, dan Dependabot |

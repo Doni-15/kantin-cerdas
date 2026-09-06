@@ -16,6 +16,9 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 ### Changed
 
+- Mencatat hasil akhir UI-201–UI-207 pada checklist, roadmap, README, dan
+  rencana rilis: implementasi serta validasi otomatis selesai di PR #9;
+  integrasi ke main dan review perangkat dicatat terpisah.
 - Melengkapi pemetaan warna teks sekunder, surface/container, indikator navigasi aktif, serta gaya komponen pada tema terang dan gelap.
 - Memusatkan token warna, tipografi, spacing, radius, dan ukuran di `lib/shared/design_system/` beserta penyesuaian import.
 - Menyelaraskan design system, roadmap, checklist UI, panduan kontribusi, dan copy layar fondasi dengan Full Mockup UI/UX v2 “Kantin Kampus Praktis”.

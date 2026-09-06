@@ -235,19 +235,41 @@ CI pada commit merge `9985675` lulus. Log lokal membuktikan analyze,
 smoke test, build APK debug, serta pemasangan dan peluncuran di emulator;
 UI-103 dicentang berdasarkan bukti tersebut.
 
-Implementasi lanjutan **UI-201–UI-207** disiapkan pada branch
-`feat/design-system-section-a`: token status/elevation/motion, tipografi,
-komponen tombol, input/pencarian/filter, dialog/sheet/snackbar, dan state
-konten. [Catatan implementasi dan cakupan pengujian](../design/DESIGN_SYSTEM_IMPLEMENTATION.md)
-menjelaskan penggunaan dan batas verifikasinya. Implementasi tersedia pada
-[PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9), beserta CI dan artifact
-screenshot pratinjau. Checkbox bagian A menunggu merge ke `main` setelah CI
-lulus, bukan menandakan belum ada kode.
+**Bagian A: implementasi dan validasi otomatis selesai pada 6 September 2026.**
+Perubahan tersedia dalam [PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9) pada branch
+`feat/design-system-section-a`. [CI commit `fff535b`](https://github.com/Doni-15/kantin-cerdas/actions/runs/34021544192)
+lulus: format, analyzer, **17 tes**, dan build APK debug. Enam screenshot
+pratinjau Flutter pada 360/390/412 dp (terang/gelap) telah diperiksa.
+
+**Status integrasi: menunggu merge PR #9 ke `main`.** Sesuai aturan pencatatan,
+checkbox di bawah menunjukkan penyelesaian setelah merge; status implementasi
+setiap tugas dijelaskan pada tabel hasil bagian A. Review TalkBack dan
+screenshot emulator belum dilakukan untuk komponen baru.
 
 App shell, navigasi, model domain, dan fake repository tetap menjadi
 pekerjaan berikutnya. Milestone `v0.2.0-alpha.1` belum selesai.
 
 #### A. Design system
+
+**Hasil pengerjaan UI-201–UI-207**
+
+| ID | Status pengerjaan | Hasil yang tersedia |
+|---|---|---|
+| UI-201 | ✅ Implementasi selesai | Warna merek, surface, teks, ColorScheme terang/gelap, dan enam pasangan warna status tersedia. Token `waitingText` menjaga kontras teks Menunggu minimal 4.5:1. |
+| UI-202 | ✅ Implementasi selesai | TextTheme Display, Heading, Title, Body, Label, dan Caption memakai Plus Jakarta Sans; bobot 400/500/600/700 terdaftar dan font dimuat pada tes pratinjau. |
+| UI-203 | ✅ Implementasi selesai | Spacing 4/8/12/16/24/32/40/48, radius 8/12/16/24/pill, serta elevation 0/1/3 tersedia dan digunakan pada tema/komponen. |
+| UI-204 | ✅ Implementasi selesai | Empat varian tombol tersedia dengan pressed, focused, loading, dan disabled; tes memastikan aksi loading/disabled terblokir serta kontras pressed/focused tetap memenuhi target. |
+| UI-205 | ✅ Implementasi selesai | Search field dengan hapus, input berlabel/validasi, filter horizontal, dialog konfirmasi, bottom sheet, dan snackbar tersedia pada pratinjau. |
+| UI-206 | ✅ Implementasi selesai | Loading/skeleton statis, empty, error/retry, offline dengan konten tersimpan, disabled dengan alasan, dan success tersedia; retry serta retensi konten offline diuji. |
+| UI-207 | ✅ Validasi otomatis selesai | Tes kontras, target sentuh Android, label, urutan Tab/Enter dan pemulihan fokus, teks 200% pada 360/390/412 dp serta landscape, reduced motion, dan sheet dengan inset keyboard lulus. |
+
+**Bukti bersama:** [CI: format, analyzer, 17 tes, APK debug](https://github.com/Doni-15/kantin-cerdas/actions/runs/34021544192);
+[screenshot pratinjau](https://github.com/Doni-15/kantin-cerdas/actions/runs/34021544192/artifacts/9985661066);
+[berkas dan cara penggunaan komponen](../design/DESIGN_SYSTEM_IMPLEMENTATION.md).
+Screenshot berasal dari render tes Flutter, bukan emulator; artifact disimpan
+7 hari. Pengujian TalkBack perangkat tetap menjadi tindak lanjut validasi manual.
+
+**Checklist integrasi ke `main` — menunggu merge PR #9:**
 
 - [ ] **UI-201** — Membuat token `KcColors`/`ColorScheme` dengan `#E85D2A`, `#C74418`, `#9B341B`, `#F4B740`, `#FAFAF8`, `#FFFFFF`, `#F7F3F0`, `#DDD6D1`, `#251B17`, serta warna status pada design system.
 - [ ] **UI-202** — Membuat `TextTheme` Plus Jakarta Sans untuk Display, Heading, Title, Body, Label, dan Caption.

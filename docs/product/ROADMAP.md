@@ -242,12 +242,16 @@ versi berikutnya.
 
 ## `v0.2.0-alpha.1` — App Shell, Design System, dan Arsitektur Data
 
-> **Progres 6 September 2026: 🟨 Sedang dikerjakan.** Fondasi token/theme,
-> AppBar tetap yang ringkas pada landscape, dan smoke test sudah masuk `main`
-> melalui PR #8; CI commit merge lulus. Bagian A design system sedang
-> dilengkapi pada `feat/design-system-section-a` dengan komponen bersama dan
-> pengujian aksesibilitas. App shell dan fake data belum tersedia.
-> Rincian status mengikuti [UI checklist](UI_CHECKLIST.md).
+> **Progres 6 September 2026: 🟨 Milestone masih berjalan.**
+> **Bagian A (UI-201–UI-207): implementasi dan validasi otomatis selesai**
+> pada [PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9), menunggu merge ke `main`.
+> [CI commit `fff535b`](https://github.com/Doni-15/kantin-cerdas/actions/runs/34021544192)
+> lulus format, analyzer, 17 tes, dan build APK debug. Enam screenshot
+> pratinjau terang/gelap pada 360/390/412 dp telah diperiksa.
+> Fondasi AppBar tetap sudah masuk melalui PR #8.
+> Pekerjaan berikutnya: bagian B app shell/navigasi, lalu domain dan fake data.
+> Review TalkBack/perangkat masih perlu dilakukan. Rincian hasil tiap tugas
+> tersedia di [UI checklist](UI_CHECKLIST.md#a-design-system).
 
 **Jenis versi:** MINOR prarilis alpha  
 **Estimasi:** Hari 2–3  

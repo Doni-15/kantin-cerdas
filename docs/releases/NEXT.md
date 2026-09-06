@@ -19,11 +19,29 @@ Fondasi token/theme, scroll konten dengan AppBar tetap (landscape 48 dp),
 dan smoke test sudah di-merge melalui PR #8. CI pada commit merge `9985675`
 lulus; analyze, test, build, dan peluncuran emulator juga terbukti pada log lokal.
 
-Bagian A design system dilanjutkan pada `feat/design-system-section-a`:
-komponen tombol, field/filter, dialog/sheet/snackbar, state konten, serta
-pemeriksaan aksesibilitas. Status penyelesaian mengikuti
-[UI checklist](../product/UI_CHECKLIST.md) dan
-[catatan implementasi](../design/DESIGN_SYSTEM_IMPLEMENTATION.md).
+## Selesai dikerjakan — bagian A
 
-App shell, navigasi, dan fake repository belum tersedia. Milestone tetap
-berjalan dan belum menjadi rilis `v0.2.0-alpha.1`.
+UI-201–UI-207 sudah diimplementasikan dan tervalidasi otomatis pada
+[PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9); PR ini **belum di-merge** ke `main`.
+
+- Token warna/status, tipografi, spacing, radius, elevation, dan motion.
+- Tombol primary/secondary/tertiary/destructive beserta state interaksinya.
+- Input/pencarian/filter, dialog, bottom sheet, dan snackbar.
+- Loading/skeleton, empty, error/retry, offline, disabled, dan success.
+- Pengujian aksesibilitas/interaksi dan entry point pratinjau komponen.
+
+**Validasi commit `fff535b`:** [CI](https://github.com/Doni-15/kantin-cerdas/actions/runs/34021544192)
+lulus format, analyzer, 17 tes, dan build APK debug. Enam screenshot pratinjau
+terang/gelap pada 360/390/412 dp sudah diperiksa.
+
+## Pekerjaan berikutnya
+
+- Merge PR #9 setelah proses review; centang checklist integrasi setelah merge.
+- Bagian B: app shell dan navigasi mahasiswa/pengelola.
+- Bagian C: model domain, kontrak repository, dan fake data.
+- Komponen visual lanjutan, pengujian app shell, dan release gate v0.2.
+- Review TalkBack serta screenshot emulator untuk bukti pengujian perangkat.
+
+Milestone `v0.2.0-alpha.1` tetap berjalan; belum ada tag atau rilis baru.
+Rincian hasil mengikuti [UI checklist](../product/UI_CHECKLIST.md) dan
+[catatan implementasi](../design/DESIGN_SYSTEM_IMPLEMENTATION.md).
