@@ -23,6 +23,9 @@ void main() {
           );
         }
         await loader.load();
+        final icons = FontLoader('MaterialIcons');
+        icons.addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
+        await icons.load();
       });
       final boundaryKey = GlobalKey();
       await tester.pumpWidget(
@@ -34,7 +37,9 @@ void main() {
           await tester.pump();
         }
         // Indikator loading sengaja berjalan; jangan pumpAndSettle.
-        await tester.pump(const Duration(milliseconds: 500));
+        for (var frame = 0; frame < 6; frame++) {
+          await tester.pump(const Duration(milliseconds: 200));
+        }
         expect(tester.takeException(), isNull);
         final boundary =
             boundaryKey.currentContext!.findRenderObject()

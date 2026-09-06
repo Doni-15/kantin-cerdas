@@ -59,7 +59,10 @@ repository atau fitur pesanan.
 - bottom sheet yang dapat digulir dengan inset keyboard dan teks besar;
 - indikator loading statis serta transisi komponen saat reduced motion aktif.
 
-Hasil eksekusi mengikuti CI pada PR implementasi. Tes widget tidak menggantikan
+Hasil eksekusi mengikuti [CI pada PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9).
+Tes pratinjau memuat font proyek dan menghasilkan enam screenshot (360/390/412 dp,
+terang/gelap) sebagai artifact `design-system-preview` pada CI, disimpan 7 hari.
+Screenshot tersebut merupakan render tes Flutter, bukan tangkapan emulator. Tes widget tidak menggantikan
 review TalkBack pada perangkat atau pemeriksaan visual screenshot. Sebelum
 release gate UI, jalankan pratinjau pada emulator, periksa teks besar dan tema
 terang/gelap, lalu lampirkan screenshot 390 dp serta 360 atau 412 dp.

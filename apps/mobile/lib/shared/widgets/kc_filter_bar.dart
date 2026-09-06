@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_motion.dart';
+import 'package:kantincerdas/shared/design_system/kantin_cerdas_radius.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_size.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_spacing.dart';
 
@@ -33,6 +34,9 @@ class KcFilterBar extends StatelessWidget {
                 ),
                 child: FilterChip(
                   label: Text(option),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(KantinCerdasRadius.pill),
+                  ),
                   selected: selected.contains(option),
                   onSelected: onSelected == null
                       ? null

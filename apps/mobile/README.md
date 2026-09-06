@@ -5,7 +5,7 @@ Aplikasi Flutter Android untuk layanan pre-order **Pesan & Ambil** di kantin kam
 ## Status
 
 - Versi source: `0.1.0-alpha.2+2`
-- Tahap: fondasi aplikasi
+- Tahap: fondasi aplikasi dan implementasi design system bagian A
 - UI saat ini: layar status KantinCerdas; alur produk belum diimplementasikan
 - Backend: To Be Continued
 
@@ -24,6 +24,15 @@ Versi ini bukan aplikasi siap produksi. Katalog, pemesanan, asisten AI, notifika
 flutter pub get
 flutter run
 ```
+
+## Pratinjau design system
+
+```bash
+flutter run -t lib/design_system_preview.dart
+```
+
+Entry point ini untuk mencoba komponen, state, dan tema. `flutter run` biasa
+masih membuka layar fondasi. Lihat [panduan komponen](../../docs/design/DESIGN_SYSTEM_IMPLEMENTATION.md).
 
 ## Pemeriksaan kualitas
 

@@ -4,7 +4,7 @@
 
 KantinCerdas adalah aplikasi Android berbasis Flutter untuk layanan pre-order **Pesan & Ambil** di kantin kampus. Mahasiswa dapat memilih menu sebelum tiba, sedangkan pengelola stan dapat memproses pesanan dan memperbarui ketersediaan menu.
 
-Fondasi `v0.1.0-alpha.2` sedang dikembangkan menuju `v0.2.0-alpha.1`; token desain dan tema mulai diterapkan. Aplikasi memiliki layar status khusus KantinCerdas, struktur source yang terpisah, dokumentasi produk dan rilis, serta otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
+Fondasi `v0.1.0-alpha.2` sedang dikembangkan menuju `v0.2.0-alpha.1`; token, tema, dan komponen bersama bagian A telah diimplementasikan. Aplikasi memiliki layar status khusus KantinCerdas, struktur source yang terpisah, dokumentasi produk dan rilis, serta otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
 
 ## Tujuan Proyek
 
@@ -22,7 +22,7 @@ KantinCerdas dirancang untuk:
 | --- | --- | --- |
 | Proyek Flutter Android | Tersedia | Fondasi khusus KantinCerdas dapat dianalisis, diuji, dan dibangun |
 | Identitas aplikasi | Tersedia | Nama Android `KantinCerdas` dan application ID `io.github.doni15.kantincerdas` |
-| Design system | Dalam pengerjaan | Token di `lib/shared/design_system/` dan tema mulai diterapkan; komponen bersama serta validasi visual belum lengkap |
+| Design system | Dalam pengerjaan | Token, tema, dan komponen bagian A tersedia; validasi perangkat dan app shell masih berlanjut |
 | Mockup | Full Mockup UI/UX v2 | Satu PDF acuan berisi 11 layar mahasiswa, 6 layar pengelola, dan state penting |
 | Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
 | Otomatisasi GitHub | Aktif | Flutter CI, Issue Forms, Pull Request template, dan Dependabot |
@@ -172,6 +172,7 @@ Prerelease diterbitkan setelah CI `main` berhasil dan tag diverifikasi menunjuk 
 - [Roadmap pengembangan](docs/product/ROADMAP.md)
 - [Checklist implementasi UI](docs/product/UI_CHECKLIST.md)
 - [Design system](docs/design/DESIGN_SYSTEM.md)
+- [Komponen dan pratinjau bagian A](docs/design/DESIGN_SYSTEM_IMPLEMENTATION.md)
 - [Kebijakan dan riwayat rilis](docs/releases/README.md)
 - [Rencana rilis berikutnya](docs/releases/NEXT.md)
 - [Catatan rilis `v0.1.0-alpha.1`](docs/releases/v0.1.0-alpha.1.md)
