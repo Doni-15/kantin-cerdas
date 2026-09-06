@@ -8,7 +8,7 @@
 | Baseline desain | **KC-DS-20260906 — LOCKED** |
 | Sumber utama | `Desaign System.zip`, 88 PNG, HTML/CSS/JavaScript, dan aset lokal |
 | Teknologi yang diminta | Flutter untuk UI; data dummy; backend menyusul |
-| Dokumen pendamping | [ROADMAP.md](ROADMAP.md), [README.md](README.md) |
+| Dokumen pendamping | [Roadmap_KantinCerdasv1.0.0.md](Roadmap_KantinCerdasv1.0.0.md), [README.md](../README.md) |
 
 > Dokumen ini menyatakan kebutuhan yang harus dibangun, bukan klaim bahwa aplikasi, pengujian, CI, atau rilisnya sudah tersedia. ZIP sumber adalah paket desain web statis; tidak berisi proyek Flutter atau backend. Seluruh pekerjaan pada roadmap diawali dengan status TODO, kecuali tugas yang ditandai BLOCKED karena keputusan desain.
 
@@ -443,100 +443,100 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 | ID | Referensi | Target | Requirement | Jumlah task |
 | --- | --- | --- | --- | ---: |
-| F00 | [Fondasi visual dan komponen](design/baseline/screens/F00_fondasi_visual_dan_komponen.png) | KantinCerdasv0.1.0 | FR-F00 | 44 |
-| M01 | [Beranda, kunjungan kembali](design/baseline/screens/M01_beranda_kunjungan_kembali.png) | KantinCerdasv0.2.0 | FR-M01 | 17 |
-| M02 | [Pengenalan asisten](design/baseline/screens/M02_pengenalan_asisten.png) | KantinCerdasv0.3.0 | FR-M02 | 4 |
-| M03 | [Beranda dengan cart](design/baseline/screens/M03_beranda_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M03 | 6 |
-| M04 | [Hasil pencarian](design/baseline/screens/M04_hasil_pencarian.png) | KantinCerdasv0.2.0 | FR-M04 | 9 |
-| M05 | [Filter pencarian](design/baseline/screens/M05_filter_pencarian.png) | KantinCerdasv0.2.0 | FR-M05 | 6 |
-| M06 | [Detail stan buka](design/baseline/screens/M06_detail_stan_buka.png) | KantinCerdasv0.2.0 | FR-M06 | 11 |
-| M07 | [Detail stan dengan cart](design/baseline/screens/M07_detail_stan_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M07 | 6 |
-| M08 | [Detail menu](design/baseline/screens/M08_detail_menu.png) | KantinCerdasv0.2.0 | FR-M08 | 8 |
-| M09 | [Menu berhasil ditambahkan](design/baseline/screens/M09_menu_berhasil_ditambahkan.png) | KantinCerdasv0.4.0 | FR-M09 | 5 |
-| M10 | [Asisten pilih menu](design/baseline/screens/M10_asisten_pilih_menu.png) | KantinCerdasv0.3.0 | FR-M10 | 8 |
-| M11 | [Asisten dengan keyboard](design/baseline/screens/M11_asisten_dengan_keyboard.png) | KantinCerdasv0.3.0 | FR-M11 | 4 |
-| M12 | [Asisten meminta klarifikasi](design/baseline/screens/M12_asisten_meminta_klarifikasi.png) | KantinCerdasv0.3.0 | FR-M12 | 5 |
-| M13 | [Hasil rekomendasi](design/baseline/screens/M13_hasil_rekomendasi.png) | KantinCerdasv0.3.0 | FR-M13 | 7 |
-| M14 | [Rekomendasi dengan cart](design/baseline/screens/M14_rekomendasi_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M14 | 5 |
-| M15 | [Asisten gagal](design/baseline/screens/M15_asisten_gagal.png) | KantinCerdasv0.3.0 | FR-M15 | 4 |
-| M16 | [Rekomendasi kosong](design/baseline/screens/M16_rekomendasi_kosong.png) | KantinCerdasv0.3.0 | FR-M16 | 4 |
-| M17 | [Keranjang dua porsi](design/baseline/screens/M17_keranjang_dua_porsi.png) | KantinCerdasv0.4.0 | FR-M17 | 14 |
-| M18 | [Edit catatan item](design/baseline/screens/M18_edit_catatan_item.png) | KantinCerdasv0.4.0 | FR-M18 | 6 |
-| M19 | [Hapus item dengan undo](design/baseline/screens/M19_hapus_item_dengan_undo.png) | KantinCerdasv0.4.0 | FR-M19 | 5 |
-| M20 | [Konfirmasi kosongkan cart](design/baseline/screens/M20_konfirmasi_kosongkan_cart.png) | KantinCerdasv0.4.0 | FR-M20 | 4 |
-| M21 | [Ganti stan](design/baseline/screens/M21_ganti_stan.png) | KantinCerdasv0.4.0 | FR-M21 | 5 |
-| M22 | [Keranjang kosong](design/baseline/screens/M22_keranjang_kosong.png) | KantinCerdasv0.4.0 | FR-M22 | 4 |
-| M23 | [Ketersediaan berubah](design/baseline/screens/M23_ketersediaan_berubah.png) | KantinCerdasv0.4.0 | FR-M23 | 6 |
-| M24 | [Konfirmasi pesanan](design/baseline/screens/M24_konfirmasi_pesanan.png) | KantinCerdasv0.5.0 | FR-M24 | 7 |
-| M25 | [Membuat pesanan](design/baseline/screens/M25_membuat_pesanan.png) | KantinCerdasv0.5.0 | FR-M25 | 5 |
-| M26 | [Pesanan belum terkirim](design/baseline/screens/M26_pesanan_belum_terkirim.png) | KantinCerdasv0.5.0 | FR-M26 | 4 |
-| M27 | [Hasil pengiriman belum diketahui](design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png) | KantinCerdasv0.5.0 | FR-M27 | 6 |
-| M28 | [Pesanan berhasil](design/baseline/screens/M28_pesanan_berhasil.png) | KantinCerdasv0.5.0 | FR-M28 | 7 |
-| M29 | [Pesanan aktif](design/baseline/screens/M29_pesanan_aktif.png) | KantinCerdasv0.5.0 | FR-M29 | 6 |
-| M30 | [Riwayat mahasiswa](design/baseline/screens/M30_riwayat_mahasiswa.png) | KantinCerdasv0.5.0 | FR-M30 | 5 |
-| M31 | [Menunggu konfirmasi](design/baseline/screens/M31_menunggu_konfirmasi.png) | KantinCerdasv0.5.0 | FR-M31 | 6 |
-| M32 | [Pesanan diproses](design/baseline/screens/M32_pesanan_diproses.png) | KantinCerdasv0.5.0 | FR-M32 | 6 |
-| M33 | [Siap diambil](design/baseline/screens/M33_siap_diambil.png) | KantinCerdasv0.5.0 | FR-M33 | 6 |
-| M34 | [Pesanan selesai](design/baseline/screens/M34_pesanan_selesai.png) | KantinCerdasv0.5.0 | FR-M34 | 6 |
-| M35 | [Pesanan ditolak](design/baseline/screens/M35_pesanan_ditolak.png) | KantinCerdasv0.5.0 | FR-M35 | 6 |
-| M36 | [Profil mahasiswa](design/baseline/screens/M36_profil_mahasiswa.png) | KantinCerdasv0.7.0 | FR-M36 | 7 |
-| M37 | [Preferensi makanan](design/baseline/screens/M37_preferensi_makanan.png) | KantinCerdasv0.7.0 | FR-M37 | 6 |
-| P01 | [Dashboard pengelola](design/baseline/screens/P01_dashboard_pengelola.png) | KantinCerdasv0.6.0 | FR-P01 | 16 |
-| P02 | [Dialog menutup stan](design/baseline/screens/P02_dialog_menutup_stan.png) | KantinCerdasv0.6.0 | FR-P02 | 5 |
-| P03 | [Dashboard stan tutup](design/baseline/screens/P03_dashboard_stan_tutup.png) | KantinCerdasv0.6.0 | FR-P03 | 5 |
-| P04 | [Pesanan baru](design/baseline/screens/P04_pesanan_baru.png) | KantinCerdasv0.6.0 | FR-P04 | 6 |
-| P05 | [Pesanan diproses](design/baseline/screens/P05_pesanan_diproses.png) | KantinCerdasv0.6.0 | FR-P05 | 6 |
-| P06 | [Pesanan siap](design/baseline/screens/P06_pesanan_siap.png) | KantinCerdasv0.6.0 | FR-P06 | 6 |
-| P07 | [Riwayat pengelola](design/baseline/screens/P07_riwayat_pengelola.png) | KantinCerdasv0.6.0 | FR-P07 | 6 |
-| P08 | [Detail pesanan baru](design/baseline/screens/P08_detail_pesanan_baru.png) | KantinCerdasv0.6.0 | FR-P08 | 8 |
-| P09 | [Detail pesanan diproses](design/baseline/screens/P09_detail_pesanan_diproses.png) | KantinCerdasv0.6.0 | FR-P09 | 5 |
-| P10 | [Detail siap diambil](design/baseline/screens/P10_detail_siap_diambil.png) | KantinCerdasv0.6.0 | FR-P10 | 4 |
-| P11 | [Konfirmasi penyerahan](design/baseline/screens/P11_konfirmasi_penyerahan.png) | KantinCerdasv0.6.0 | FR-P11 | 5 |
-| P12 | [Detail pesanan selesai](design/baseline/screens/P12_detail_pesanan_selesai.png) | KantinCerdasv0.6.0 | FR-P12 | 4 |
-| P13 | [Konfirmasi penolakan](design/baseline/screens/P13_konfirmasi_penolakan.png) | KantinCerdasv0.6.0 | FR-P13 | 7 |
-| P14 | [Detail pesanan ditolak](design/baseline/screens/P14_detail_pesanan_ditolak.png) | KantinCerdasv0.6.0 | FR-P14 | 4 |
-| P15 | [Kelola menu](design/baseline/screens/P15_kelola_menu.png) | KantinCerdasv0.7.0 | FR-P15 | 8 |
-| P16 | [Gagal ubah ketersediaan](design/baseline/screens/P16_gagal_ubah_ketersediaan.png) | KantinCerdasv0.7.0 | FR-P16 | 4 |
-| P17 | [Pengaturan stan](design/baseline/screens/P17_pengaturan_stan.png) | KantinCerdasv0.7.0 | FR-P17 | 9 |
-| P18 | [Profil pengelola](design/baseline/screens/P18_profil_pengelola.png) | KantinCerdasv0.7.0 | FR-P18 | 7 |
-| Q01 | [Beranda cart — 360 dp](design/baseline/screens/Q01_beranda_cart_360_dp.png) | KantinCerdasv0.9.0 | FR-Q01 | 4 |
-| Q02 | [Detail stan — 412 dp](design/baseline/screens/Q02_detail_stan_412_dp.png) | KantinCerdasv0.9.0 | FR-Q02 | 4 |
-| Q03 | [Beranda teks 150%](design/baseline/screens/Q03_beranda_teks_150.png) | KantinCerdasv0.9.0 | FR-Q03 | 4 |
-| Q04 | [Rekomendasi teks panjang](design/baseline/screens/Q04_rekomendasi_teks_panjang.png) | KantinCerdasv0.9.0 | FR-Q04 | 5 |
-| Q05 | [Keranjang delapan porsi](design/baseline/screens/Q05_keranjang_delapan_porsi.png) | KantinCerdasv0.9.0 | FR-Q05 | 5 |
-| Q06 | [Cart dengan keyboard](design/baseline/screens/Q06_cart_dengan_keyboard.png) | KantinCerdasv0.9.0 | FR-Q06 | 5 |
-| S01 | [Loading Beranda](design/baseline/screens/S01_loading_beranda.png) | KantinCerdasv0.8.0 | FR-S01 | 5 |
-| S02 | [Hasil pencarian kosong](design/baseline/screens/S02_hasil_pencarian_kosong.png) | KantinCerdasv0.8.0 | FR-S02 | 3 |
-| S03 | [Offline dengan data](design/baseline/screens/S03_offline_dengan_data.png) | KantinCerdasv0.8.0 | FR-S03 | 6 |
-| S04 | [Offline tanpa data](design/baseline/screens/S04_offline_tanpa_data.png) | KantinCerdasv0.8.0 | FR-S04 | 3 |
-| S05 | [Gagal memuat Pesanan](design/baseline/screens/S05_gagal_memuat_pesanan.png) | KantinCerdasv0.8.0 | FR-S05 | 3 |
-| S06 | [Detail stan tutup](design/baseline/screens/S06_detail_stan_tutup.png) | KantinCerdasv0.8.0 | FR-S06 | 5 |
-| S07 | [Detail menu habis](design/baseline/screens/S07_detail_menu_habis.png) | KantinCerdasv0.8.0 | FR-S07 | 3 |
-| S08 | [Pembaruan status gagal](design/baseline/screens/S08_pembaruan_status_gagal.png) | KantinCerdasv0.8.0 | FR-S08 | 4 |
-| S09 | [Loading daftar pesanan](design/baseline/screens/S09_loading_daftar_pesanan.png) | KantinCerdasv0.8.0 | FR-S09 | 3 |
-| S10 | [Gagal memuat katalog](design/baseline/screens/S10_gagal_memuat_katalog.png) | KantinCerdasv0.8.0 | FR-S10 | 3 |
-| S11 | [Stan belum memiliki menu](design/baseline/screens/S11_stan_belum_memiliki_menu.png) | KantinCerdasv0.8.0 | FR-S11 | 3 |
-| S12 | [Pesanan mahasiswa kosong](design/baseline/screens/S12_pesanan_mahasiswa_kosong.png) | KantinCerdasv0.8.0 | FR-S12 | 3 |
-| S13 | [Antrean pengelola kosong](design/baseline/screens/S13_antrean_pengelola_kosong.png) | KantinCerdasv0.8.0 | FR-S13 | 3 |
-| S14 | [Filter menu kosong](design/baseline/screens/S14_filter_menu_kosong.png) | KantinCerdasv0.8.0 | FR-S14 | 3 |
-| S15 | [Foto makanan gagal](design/baseline/screens/S15_foto_makanan_gagal.png) | KantinCerdasv0.8.0 | FR-S15 | 3 |
-| S16 | [Gagal ubah status](design/baseline/screens/S16_gagal_ubah_status.png) | KantinCerdasv0.8.0 | FR-S16 | 4 |
-| S17 | [Pengelola offline](design/baseline/screens/S17_pengelola_offline.png) | KantinCerdasv0.8.0 | FR-S17 | 5 |
-| U01 | [Penjelasan notifikasi](design/baseline/screens/U01_penjelasan_notifikasi.png) | KantinCerdasv0.7.0 | FR-U01 | 5 |
-| U02 | [Izin notifikasi ditolak](design/baseline/screens/U02_izin_notifikasi_ditolak.png) | KantinCerdasv0.7.0 | FR-U02 | 4 |
-| U03 | [Notifikasi aktif](design/baseline/screens/U03_notifikasi_aktif.png) | KantinCerdasv0.7.0 | FR-U03 | 4 |
-| U04 | [Bantuan](design/baseline/screens/U04_bantuan.png) | KantinCerdasv0.7.0 | FR-U04 | 7 |
-| U05 | [Tentang KantinCerdas](design/baseline/screens/U05_tentang_kantincerdas.png) | KantinCerdasv0.7.0 | FR-U05 | 5 |
-| U06 | [Data akun pengelola](design/baseline/screens/U06_data_akun_pengelola.png) | KantinCerdasv0.7.0 | FR-U06 | 5 |
-| U07 | [Konfirmasi keluar](design/baseline/screens/U07_konfirmasi_keluar.png) | KantinCerdasv0.7.0 | FR-U07 | 4 |
-| U08 | [Simpan pengaturan gagal](design/baseline/screens/U08_simpan_pengaturan_gagal.png) | KantinCerdasv0.7.0 | FR-U08 | 4 |
-| U09 | [Preferensi tersimpan](design/baseline/screens/U09_preferensi_tersimpan.png) | KantinCerdasv0.7.0 | FR-U09 | 3 |
+| F00 | [Fondasi visual dan komponen](../design/baseline/screens/F00_fondasi_visual_dan_komponen.png) | KantinCerdasv0.1.0 | FR-F00 | 44 |
+| M01 | [Beranda, kunjungan kembali](../design/baseline/screens/M01_beranda_kunjungan_kembali.png) | KantinCerdasv0.2.0 | FR-M01 | 17 |
+| M02 | [Pengenalan asisten](../design/baseline/screens/M02_pengenalan_asisten.png) | KantinCerdasv0.3.0 | FR-M02 | 4 |
+| M03 | [Beranda dengan cart](../design/baseline/screens/M03_beranda_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M03 | 6 |
+| M04 | [Hasil pencarian](../design/baseline/screens/M04_hasil_pencarian.png) | KantinCerdasv0.2.0 | FR-M04 | 9 |
+| M05 | [Filter pencarian](../design/baseline/screens/M05_filter_pencarian.png) | KantinCerdasv0.2.0 | FR-M05 | 6 |
+| M06 | [Detail stan buka](../design/baseline/screens/M06_detail_stan_buka.png) | KantinCerdasv0.2.0 | FR-M06 | 11 |
+| M07 | [Detail stan dengan cart](../design/baseline/screens/M07_detail_stan_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M07 | 6 |
+| M08 | [Detail menu](../design/baseline/screens/M08_detail_menu.png) | KantinCerdasv0.2.0 | FR-M08 | 8 |
+| M09 | [Menu berhasil ditambahkan](../design/baseline/screens/M09_menu_berhasil_ditambahkan.png) | KantinCerdasv0.4.0 | FR-M09 | 5 |
+| M10 | [Asisten pilih menu](../design/baseline/screens/M10_asisten_pilih_menu.png) | KantinCerdasv0.3.0 | FR-M10 | 8 |
+| M11 | [Asisten dengan keyboard](../design/baseline/screens/M11_asisten_dengan_keyboard.png) | KantinCerdasv0.3.0 | FR-M11 | 4 |
+| M12 | [Asisten meminta klarifikasi](../design/baseline/screens/M12_asisten_meminta_klarifikasi.png) | KantinCerdasv0.3.0 | FR-M12 | 5 |
+| M13 | [Hasil rekomendasi](../design/baseline/screens/M13_hasil_rekomendasi.png) | KantinCerdasv0.3.0 | FR-M13 | 7 |
+| M14 | [Rekomendasi dengan cart](../design/baseline/screens/M14_rekomendasi_dengan_cart.png) | KantinCerdasv0.4.0 | FR-M14 | 5 |
+| M15 | [Asisten gagal](../design/baseline/screens/M15_asisten_gagal.png) | KantinCerdasv0.3.0 | FR-M15 | 4 |
+| M16 | [Rekomendasi kosong](../design/baseline/screens/M16_rekomendasi_kosong.png) | KantinCerdasv0.3.0 | FR-M16 | 4 |
+| M17 | [Keranjang dua porsi](../design/baseline/screens/M17_keranjang_dua_porsi.png) | KantinCerdasv0.4.0 | FR-M17 | 14 |
+| M18 | [Edit catatan item](../design/baseline/screens/M18_edit_catatan_item.png) | KantinCerdasv0.4.0 | FR-M18 | 6 |
+| M19 | [Hapus item dengan undo](../design/baseline/screens/M19_hapus_item_dengan_undo.png) | KantinCerdasv0.4.0 | FR-M19 | 5 |
+| M20 | [Konfirmasi kosongkan cart](../design/baseline/screens/M20_konfirmasi_kosongkan_cart.png) | KantinCerdasv0.4.0 | FR-M20 | 4 |
+| M21 | [Ganti stan](../design/baseline/screens/M21_ganti_stan.png) | KantinCerdasv0.4.0 | FR-M21 | 5 |
+| M22 | [Keranjang kosong](../design/baseline/screens/M22_keranjang_kosong.png) | KantinCerdasv0.4.0 | FR-M22 | 4 |
+| M23 | [Ketersediaan berubah](../design/baseline/screens/M23_ketersediaan_berubah.png) | KantinCerdasv0.4.0 | FR-M23 | 6 |
+| M24 | [Konfirmasi pesanan](../design/baseline/screens/M24_konfirmasi_pesanan.png) | KantinCerdasv0.5.0 | FR-M24 | 7 |
+| M25 | [Membuat pesanan](../design/baseline/screens/M25_membuat_pesanan.png) | KantinCerdasv0.5.0 | FR-M25 | 5 |
+| M26 | [Pesanan belum terkirim](../design/baseline/screens/M26_pesanan_belum_terkirim.png) | KantinCerdasv0.5.0 | FR-M26 | 4 |
+| M27 | [Hasil pengiriman belum diketahui](../design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png) | KantinCerdasv0.5.0 | FR-M27 | 6 |
+| M28 | [Pesanan berhasil](../design/baseline/screens/M28_pesanan_berhasil.png) | KantinCerdasv0.5.0 | FR-M28 | 7 |
+| M29 | [Pesanan aktif](../design/baseline/screens/M29_pesanan_aktif.png) | KantinCerdasv0.5.0 | FR-M29 | 6 |
+| M30 | [Riwayat mahasiswa](../design/baseline/screens/M30_riwayat_mahasiswa.png) | KantinCerdasv0.5.0 | FR-M30 | 5 |
+| M31 | [Menunggu konfirmasi](../design/baseline/screens/M31_menunggu_konfirmasi.png) | KantinCerdasv0.5.0 | FR-M31 | 6 |
+| M32 | [Pesanan diproses](../design/baseline/screens/M32_pesanan_diproses.png) | KantinCerdasv0.5.0 | FR-M32 | 6 |
+| M33 | [Siap diambil](../design/baseline/screens/M33_siap_diambil.png) | KantinCerdasv0.5.0 | FR-M33 | 6 |
+| M34 | [Pesanan selesai](../design/baseline/screens/M34_pesanan_selesai.png) | KantinCerdasv0.5.0 | FR-M34 | 6 |
+| M35 | [Pesanan ditolak](../design/baseline/screens/M35_pesanan_ditolak.png) | KantinCerdasv0.5.0 | FR-M35 | 6 |
+| M36 | [Profil mahasiswa](../design/baseline/screens/M36_profil_mahasiswa.png) | KantinCerdasv0.7.0 | FR-M36 | 7 |
+| M37 | [Preferensi makanan](../design/baseline/screens/M37_preferensi_makanan.png) | KantinCerdasv0.7.0 | FR-M37 | 6 |
+| P01 | [Dashboard pengelola](../design/baseline/screens/P01_dashboard_pengelola.png) | KantinCerdasv0.6.0 | FR-P01 | 16 |
+| P02 | [Dialog menutup stan](../design/baseline/screens/P02_dialog_menutup_stan.png) | KantinCerdasv0.6.0 | FR-P02 | 5 |
+| P03 | [Dashboard stan tutup](../design/baseline/screens/P03_dashboard_stan_tutup.png) | KantinCerdasv0.6.0 | FR-P03 | 5 |
+| P04 | [Pesanan baru](../design/baseline/screens/P04_pesanan_baru.png) | KantinCerdasv0.6.0 | FR-P04 | 6 |
+| P05 | [Pesanan diproses](../design/baseline/screens/P05_pesanan_diproses.png) | KantinCerdasv0.6.0 | FR-P05 | 6 |
+| P06 | [Pesanan siap](../design/baseline/screens/P06_pesanan_siap.png) | KantinCerdasv0.6.0 | FR-P06 | 6 |
+| P07 | [Riwayat pengelola](../design/baseline/screens/P07_riwayat_pengelola.png) | KantinCerdasv0.6.0 | FR-P07 | 6 |
+| P08 | [Detail pesanan baru](../design/baseline/screens/P08_detail_pesanan_baru.png) | KantinCerdasv0.6.0 | FR-P08 | 8 |
+| P09 | [Detail pesanan diproses](../design/baseline/screens/P09_detail_pesanan_diproses.png) | KantinCerdasv0.6.0 | FR-P09 | 5 |
+| P10 | [Detail siap diambil](../design/baseline/screens/P10_detail_siap_diambil.png) | KantinCerdasv0.6.0 | FR-P10 | 4 |
+| P11 | [Konfirmasi penyerahan](../design/baseline/screens/P11_konfirmasi_penyerahan.png) | KantinCerdasv0.6.0 | FR-P11 | 5 |
+| P12 | [Detail pesanan selesai](../design/baseline/screens/P12_detail_pesanan_selesai.png) | KantinCerdasv0.6.0 | FR-P12 | 4 |
+| P13 | [Konfirmasi penolakan](../design/baseline/screens/P13_konfirmasi_penolakan.png) | KantinCerdasv0.6.0 | FR-P13 | 7 |
+| P14 | [Detail pesanan ditolak](../design/baseline/screens/P14_detail_pesanan_ditolak.png) | KantinCerdasv0.6.0 | FR-P14 | 4 |
+| P15 | [Kelola menu](../design/baseline/screens/P15_kelola_menu.png) | KantinCerdasv0.7.0 | FR-P15 | 8 |
+| P16 | [Gagal ubah ketersediaan](../design/baseline/screens/P16_gagal_ubah_ketersediaan.png) | KantinCerdasv0.7.0 | FR-P16 | 4 |
+| P17 | [Pengaturan stan](../design/baseline/screens/P17_pengaturan_stan.png) | KantinCerdasv0.7.0 | FR-P17 | 9 |
+| P18 | [Profil pengelola](../design/baseline/screens/P18_profil_pengelola.png) | KantinCerdasv0.7.0 | FR-P18 | 7 |
+| Q01 | [Beranda cart — 360 dp](../design/baseline/screens/Q01_beranda_cart_360_dp.png) | KantinCerdasv0.9.0 | FR-Q01 | 4 |
+| Q02 | [Detail stan — 412 dp](../design/baseline/screens/Q02_detail_stan_412_dp.png) | KantinCerdasv0.9.0 | FR-Q02 | 4 |
+| Q03 | [Beranda teks 150%](../design/baseline/screens/Q03_beranda_teks_150.png) | KantinCerdasv0.9.0 | FR-Q03 | 4 |
+| Q04 | [Rekomendasi teks panjang](../design/baseline/screens/Q04_rekomendasi_teks_panjang.png) | KantinCerdasv0.9.0 | FR-Q04 | 5 |
+| Q05 | [Keranjang delapan porsi](../design/baseline/screens/Q05_keranjang_delapan_porsi.png) | KantinCerdasv0.9.0 | FR-Q05 | 5 |
+| Q06 | [Cart dengan keyboard](../design/baseline/screens/Q06_cart_dengan_keyboard.png) | KantinCerdasv0.9.0 | FR-Q06 | 5 |
+| S01 | [Loading Beranda](../design/baseline/screens/S01_loading_beranda.png) | KantinCerdasv0.8.0 | FR-S01 | 5 |
+| S02 | [Hasil pencarian kosong](../design/baseline/screens/S02_hasil_pencarian_kosong.png) | KantinCerdasv0.8.0 | FR-S02 | 3 |
+| S03 | [Offline dengan data](../design/baseline/screens/S03_offline_dengan_data.png) | KantinCerdasv0.8.0 | FR-S03 | 6 |
+| S04 | [Offline tanpa data](../design/baseline/screens/S04_offline_tanpa_data.png) | KantinCerdasv0.8.0 | FR-S04 | 3 |
+| S05 | [Gagal memuat Pesanan](../design/baseline/screens/S05_gagal_memuat_pesanan.png) | KantinCerdasv0.8.0 | FR-S05 | 3 |
+| S06 | [Detail stan tutup](../design/baseline/screens/S06_detail_stan_tutup.png) | KantinCerdasv0.8.0 | FR-S06 | 5 |
+| S07 | [Detail menu habis](../design/baseline/screens/S07_detail_menu_habis.png) | KantinCerdasv0.8.0 | FR-S07 | 3 |
+| S08 | [Pembaruan status gagal](../design/baseline/screens/S08_pembaruan_status_gagal.png) | KantinCerdasv0.8.0 | FR-S08 | 4 |
+| S09 | [Loading daftar pesanan](../design/baseline/screens/S09_loading_daftar_pesanan.png) | KantinCerdasv0.8.0 | FR-S09 | 3 |
+| S10 | [Gagal memuat katalog](../design/baseline/screens/S10_gagal_memuat_katalog.png) | KantinCerdasv0.8.0 | FR-S10 | 3 |
+| S11 | [Stan belum memiliki menu](../design/baseline/screens/S11_stan_belum_memiliki_menu.png) | KantinCerdasv0.8.0 | FR-S11 | 3 |
+| S12 | [Pesanan mahasiswa kosong](../design/baseline/screens/S12_pesanan_mahasiswa_kosong.png) | KantinCerdasv0.8.0 | FR-S12 | 3 |
+| S13 | [Antrean pengelola kosong](../design/baseline/screens/S13_antrean_pengelola_kosong.png) | KantinCerdasv0.8.0 | FR-S13 | 3 |
+| S14 | [Filter menu kosong](../design/baseline/screens/S14_filter_menu_kosong.png) | KantinCerdasv0.8.0 | FR-S14 | 3 |
+| S15 | [Foto makanan gagal](../design/baseline/screens/S15_foto_makanan_gagal.png) | KantinCerdasv0.8.0 | FR-S15 | 3 |
+| S16 | [Gagal ubah status](../design/baseline/screens/S16_gagal_ubah_status.png) | KantinCerdasv0.8.0 | FR-S16 | 4 |
+| S17 | [Pengelola offline](../design/baseline/screens/S17_pengelola_offline.png) | KantinCerdasv0.8.0 | FR-S17 | 5 |
+| U01 | [Penjelasan notifikasi](../design/baseline/screens/U01_penjelasan_notifikasi.png) | KantinCerdasv0.7.0 | FR-U01 | 5 |
+| U02 | [Izin notifikasi ditolak](../design/baseline/screens/U02_izin_notifikasi_ditolak.png) | KantinCerdasv0.7.0 | FR-U02 | 4 |
+| U03 | [Notifikasi aktif](../design/baseline/screens/U03_notifikasi_aktif.png) | KantinCerdasv0.7.0 | FR-U03 | 4 |
+| U04 | [Bantuan](../design/baseline/screens/U04_bantuan.png) | KantinCerdasv0.7.0 | FR-U04 | 7 |
+| U05 | [Tentang KantinCerdas](../design/baseline/screens/U05_tentang_kantincerdas.png) | KantinCerdasv0.7.0 | FR-U05 | 5 |
+| U06 | [Data akun pengelola](../design/baseline/screens/U06_data_akun_pengelola.png) | KantinCerdasv0.7.0 | FR-U06 | 5 |
+| U07 | [Konfirmasi keluar](../design/baseline/screens/U07_konfirmasi_keluar.png) | KantinCerdasv0.7.0 | FR-U07 | 4 |
+| U08 | [Simpan pengaturan gagal](../design/baseline/screens/U08_simpan_pengaturan_gagal.png) | KantinCerdasv0.7.0 | FR-U08 | 4 |
+| U09 | [Preferensi tersimpan](../design/baseline/screens/U09_preferensi_tersimpan.png) | KantinCerdasv0.7.0 | FR-U09 | 3 |
 
 ### 12.2 Kebutuhan rinci per referensi
 
 #### FR-F00 — Fondasi visual dan komponen
 
-**Acuan:** [F00](design/baseline/screens/F00_fondasi_visual_dan_komponen.png) · **Target:** KantinCerdasv0.1.0 · **Fixture:** `screen_F00`
+**Acuan:** [F00](../design/baseline/screens/F00_fondasi_visual_dan_komponen.png) · **Target:** KantinCerdasv0.1.0 · **Fixture:** `screen_F00`
 
 **Kondisi awal/pemicu:** Referensi bersama seluruh layar; bukan halaman pengguna.
 
@@ -593,7 +593,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M01 — Beranda, kunjungan kembali
 
-**Acuan:** [M01](design/baseline/screens/M01_beranda_kunjungan_kembali.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M01`
+**Acuan:** [M01](../design/baseline/screens/M01_beranda_kunjungan_kembali.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M01`
 
 **Kondisi awal/pemicu:** Aplikasi dibuka sebagai mahasiswa; katalog dummy tersedia, cart kosong.
 
@@ -623,7 +623,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M02 — Pengenalan asisten
 
-**Acuan:** [M02](design/baseline/screens/M02_pengenalan_asisten.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M02`
+**Acuan:** [M02](../design/baseline/screens/M02_pengenalan_asisten.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M02`
 
 **Kondisi awal/pemicu:** Mahasiswa pertama kali melihat asisten dalam sesi demo.
 
@@ -640,7 +640,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M03 — Beranda dengan cart
 
-**Acuan:** [M03](design/baseline/screens/M03_beranda_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M03`
+**Acuan:** [M03](../design/baseline/screens/M03_beranda_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M03`
 
 **Kondisi awal/pemicu:** M01 dengan dua porsi dari Dapur Bu Rina di cart.
 
@@ -659,7 +659,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M04 — Hasil pencarian
 
-**Acuan:** [M04](design/baseline/screens/M04_hasil_pencarian.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M04`
+**Acuan:** [M04](../design/baseline/screens/M04_hasil_pencarian.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M04`
 
 **Kondisi awal/pemicu:** Pencarian dibuka dari beranda; fixture kata ayam.
 
@@ -681,7 +681,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M05 — Filter pencarian
 
-**Acuan:** [M05](design/baseline/screens/M05_filter_pencarian.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M05`
+**Acuan:** [M05](../design/baseline/screens/M05_filter_pencarian.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M05`
 
 **Kondisi awal/pemicu:** Sheet filter dibuka di atas M04.
 
@@ -700,7 +700,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M06 — Detail stan buka
 
-**Acuan:** [M06](design/baseline/screens/M06_detail_stan_buka.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M06`
+**Acuan:** [M06](../design/baseline/screens/M06_detail_stan_buka.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M06`
 
 **Kondisi awal/pemicu:** Mahasiswa memilih stan yang buka.
 
@@ -724,7 +724,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M07 — Detail stan dengan cart
 
-**Acuan:** [M07](design/baseline/screens/M07_detail_stan_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M07`
+**Acuan:** [M07](../design/baseline/screens/M07_detail_stan_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M07`
 
 **Kondisi awal/pemicu:** M06 dengan keranjang Bu Rina yang terisi.
 
@@ -743,7 +743,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M08 — Detail menu
 
-**Acuan:** [M08](design/baseline/screens/M08_detail_menu.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M08`
+**Acuan:** [M08](../design/baseline/screens/M08_detail_menu.png) · **Target:** KantinCerdasv0.2.0 · **Fixture:** `screen_M08`
 
 **Kondisi awal/pemicu:** Mahasiswa membuka menu tersedia.
 
@@ -764,7 +764,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M09 — Menu berhasil ditambahkan
 
-**Acuan:** [M09](design/baseline/screens/M09_menu_berhasil_ditambahkan.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M09`
+**Acuan:** [M09](../design/baseline/screens/M09_menu_berhasil_ditambahkan.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M09`
 
 **Kondisi awal/pemicu:** Draft M08 berhasil dimasukkan; fixture sebelumnya sudah memiliki satu telur.
 
@@ -782,7 +782,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M10 — Asisten pilih menu
 
-**Acuan:** [M10](design/baseline/screens/M10_asisten_pilih_menu.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M10`
+**Acuan:** [M10](../design/baseline/screens/M10_asisten_pilih_menu.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M10`
 
 **Kondisi awal/pemicu:** FAB asisten dipilih; mode online simulasi aktif.
 
@@ -803,7 +803,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M11 — Asisten dengan keyboard
 
-**Acuan:** [M11](design/baseline/screens/M11_asisten_dengan_keyboard.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M11`
+**Acuan:** [M11](../design/baseline/screens/M11_asisten_dengan_keyboard.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M11`
 
 **Kondisi awal/pemicu:** Field kebutuhan tambahan memperoleh fokus.
 
@@ -820,7 +820,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M12 — Asisten meminta klarifikasi
 
-**Acuan:** [M12](design/baseline/screens/M12_asisten_meminta_klarifikasi.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M12`
+**Acuan:** [M12](../design/baseline/screens/M12_asisten_meminta_klarifikasi.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M12`
 
 **Kondisi awal/pemicu:** Skenario ambigu: Yang murah dan cepat.
 
@@ -838,7 +838,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M13 — Hasil rekomendasi
 
-**Acuan:** [M13](design/baseline/screens/M13_hasil_rekomendasi.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M13`
+**Acuan:** [M13](../design/baseline/screens/M13_hasil_rekomendasi.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M13`
 
 **Kondisi awal/pemicu:** Asisten dummy berhasil menemukan kandidat.
 
@@ -858,7 +858,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M14 — Rekomendasi dengan cart
 
-**Acuan:** [M14](design/baseline/screens/M14_rekomendasi_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M14`
+**Acuan:** [M14](../design/baseline/screens/M14_rekomendasi_dengan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M14`
 
 **Kondisi awal/pemicu:** Rekomendasi dibuka saat cart Bu Rina terisi.
 
@@ -876,7 +876,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M15 — Asisten gagal
 
-**Acuan:** [M15](design/baseline/screens/M15_asisten_gagal.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M15`
+**Acuan:** [M15](../design/baseline/screens/M15_asisten_gagal.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M15`
 
 **Kondisi awal/pemicu:** Repository asisten mengembalikan kegagalan yang diketahui.
 
@@ -893,7 +893,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M16 — Rekomendasi kosong
 
-**Acuan:** [M16](design/baseline/screens/M16_rekomendasi_kosong.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M16`
+**Acuan:** [M16](../design/baseline/screens/M16_rekomendasi_kosong.png) · **Target:** KantinCerdasv0.3.0 · **Fixture:** `screen_M16`
 
 **Kondisi awal/pemicu:** Asisten berhasil tetapi kandidat berjumlah nol.
 
@@ -910,7 +910,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M17 — Keranjang dua porsi
 
-**Acuan:** [M17](design/baseline/screens/M17_keranjang_dua_porsi.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M17`
+**Acuan:** [M17](../design/baseline/screens/M17_keranjang_dua_porsi.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M17`
 
 **Kondisi awal/pemicu:** Cart berisi satu ayam Rp18.000 dan satu telur Rp12.000.
 
@@ -937,7 +937,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M18 — Edit catatan item
 
-**Acuan:** [M18](design/baseline/screens/M18_edit_catatan_item.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M18`
+**Acuan:** [M18](../design/baseline/screens/M18_edit_catatan_item.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M18`
 
 **Kondisi awal/pemicu:** Ubah catatan dipilih pada satu item keranjang.
 
@@ -956,7 +956,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M19 — Hapus item dengan undo
 
-**Acuan:** [M19](design/baseline/screens/M19_hapus_item_dengan_undo.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M19`
+**Acuan:** [M19](../design/baseline/screens/M19_hapus_item_dengan_undo.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M19`
 
 **Kondisi awal/pemicu:** Satu telur dihapus dari cart dua porsi.
 
@@ -974,7 +974,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M20 — Konfirmasi kosongkan cart
 
-**Acuan:** [M20](design/baseline/screens/M20_konfirmasi_kosongkan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M20`
+**Acuan:** [M20](../design/baseline/screens/M20_konfirmasi_kosongkan_cart.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M20`
 
 **Kondisi awal/pemicu:** Kosongkan dipilih pada cart terisi.
 
@@ -991,7 +991,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M21 — Ganti stan
 
-**Acuan:** [M21](design/baseline/screens/M21_ganti_stan.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M21`
+**Acuan:** [M21](../design/baseline/screens/M21_ganti_stan.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M21`
 
 **Kondisi awal/pemicu:** Pengguna menambah Mi Gomak sementara cart berasal dari Bu Rina.
 
@@ -1009,7 +1009,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M22 — Keranjang kosong
 
-**Acuan:** [M22](design/baseline/screens/M22_keranjang_kosong.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M22`
+**Acuan:** [M22](../design/baseline/screens/M22_keranjang_kosong.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M22`
 
 **Kondisi awal/pemicu:** Cart tidak memiliki line.
 
@@ -1026,7 +1026,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M23 — Ketersediaan berubah
 
-**Acuan:** [M23](design/baseline/screens/M23_ketersediaan_berubah.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M23`
+**Acuan:** [M23](../design/baseline/screens/M23_ketersediaan_berubah.png) · **Target:** KantinCerdasv0.4.0 · **Fixture:** `screen_M23`
 
 **Kondisi awal/pemicu:** Validasi ulang menemukan telur berubah menjadi Habis.
 
@@ -1045,7 +1045,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M24 — Konfirmasi pesanan
 
-**Acuan:** [M24](design/baseline/screens/M24_konfirmasi_pesanan.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M24`
+**Acuan:** [M24](../design/baseline/screens/M24_konfirmasi_pesanan.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M24`
 
 **Kondisi awal/pemicu:** Cart valid diteruskan ke konfirmasi.
 
@@ -1065,7 +1065,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M25 — Membuat pesanan
 
-**Acuan:** [M25](design/baseline/screens/M25_membuat_pesanan.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M25`
+**Acuan:** [M25](../design/baseline/screens/M25_membuat_pesanan.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M25`
 
 **Kondisi awal/pemicu:** Operasi create order dummy sedang berjalan.
 
@@ -1083,7 +1083,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M26 — Pesanan belum terkirim
 
-**Acuan:** [M26](design/baseline/screens/M26_pesanan_belum_terkirim.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M26`
+**Acuan:** [M26](../design/baseline/screens/M26_pesanan_belum_terkirim.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M26`
 
 **Kondisi awal/pemicu:** Fake repository memastikan pesanan belum dibuat.
 
@@ -1100,7 +1100,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M27 — Hasil pengiriman belum diketahui
 
-**Acuan:** [M27](design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M27`
+**Acuan:** [M27](../design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M27`
 
 **Kondisi awal/pemicu:** Respons hilang setelah create order mungkin telah diterima.
 
@@ -1119,7 +1119,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M28 — Pesanan berhasil
 
-**Acuan:** [M28](design/baseline/screens/M28_pesanan_berhasil.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M28`
+**Acuan:** [M28](../design/baseline/screens/M28_pesanan_berhasil.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M28`
 
 **Kondisi awal/pemicu:** Pesanan berhasil tersimpan dalam repository dummy.
 
@@ -1139,7 +1139,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M29 — Pesanan aktif
 
-**Acuan:** [M29](design/baseline/screens/M29_pesanan_aktif.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M29`
+**Acuan:** [M29](../design/baseline/screens/M29_pesanan_aktif.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M29`
 
 **Kondisi awal/pemicu:** Tab Pesanan mahasiswa dibuka.
 
@@ -1158,7 +1158,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M30 — Riwayat mahasiswa
 
-**Acuan:** [M30](design/baseline/screens/M30_riwayat_mahasiswa.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M30`
+**Acuan:** [M30](../design/baseline/screens/M30_riwayat_mahasiswa.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M30`
 
 **Kondisi awal/pemicu:** Tab Riwayat mahasiswa dipilih.
 
@@ -1176,7 +1176,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M31 — Menunggu konfirmasi
 
-**Acuan:** [M31](design/baseline/screens/M31_menunggu_konfirmasi.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M31`
+**Acuan:** [M31](../design/baseline/screens/M31_menunggu_konfirmasi.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M31`
 
 **Kondisi awal/pemicu:** Detail order berstatus Menunggu konfirmasi dipilih.
 
@@ -1195,7 +1195,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M32 — Pesanan diproses
 
-**Acuan:** [M32](design/baseline/screens/M32_pesanan_diproses.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M32`
+**Acuan:** [M32](../design/baseline/screens/M32_pesanan_diproses.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M32`
 
 **Kondisi awal/pemicu:** Detail order berstatus Diproses dipilih.
 
@@ -1214,7 +1214,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M33 — Siap diambil
 
-**Acuan:** [M33](design/baseline/screens/M33_siap_diambil.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M33`
+**Acuan:** [M33](../design/baseline/screens/M33_siap_diambil.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M33`
 
 **Kondisi awal/pemicu:** Detail order berstatus Siap diambil dipilih.
 
@@ -1233,7 +1233,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M34 — Pesanan selesai
 
-**Acuan:** [M34](design/baseline/screens/M34_pesanan_selesai.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M34`
+**Acuan:** [M34](../design/baseline/screens/M34_pesanan_selesai.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M34`
 
 **Kondisi awal/pemicu:** Detail order berstatus Selesai dipilih.
 
@@ -1252,7 +1252,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M35 — Pesanan ditolak
 
-**Acuan:** [M35](design/baseline/screens/M35_pesanan_ditolak.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M35`
+**Acuan:** [M35](../design/baseline/screens/M35_pesanan_ditolak.png) · **Target:** KantinCerdasv0.5.0 · **Fixture:** `screen_M35`
 
 **Kondisi awal/pemicu:** Detail order berstatus Ditolak dipilih.
 
@@ -1271,7 +1271,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M36 — Profil mahasiswa
 
-**Acuan:** [M36](design/baseline/screens/M36_profil_mahasiswa.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_M36`
+**Acuan:** [M36](../design/baseline/screens/M36_profil_mahasiswa.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_M36`
 
 **Kondisi awal/pemicu:** Mahasiswa membuka Profil.
 
@@ -1291,7 +1291,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-M37 — Preferensi makanan
 
-**Acuan:** [M37](design/baseline/screens/M37_preferensi_makanan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_M37`
+**Acuan:** [M37](../design/baseline/screens/M37_preferensi_makanan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_M37`
 
 **Kondisi awal/pemicu:** Preferensi makanan dibuka dari Profil.
 
@@ -1310,7 +1310,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P01 — Dashboard pengelola
 
-**Acuan:** [P01](design/baseline/screens/P01_dashboard_pengelola.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P01`
+**Acuan:** [P01](../design/baseline/screens/P01_dashboard_pengelola.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P01`
 
 **Kondisi awal/pemicu:** Aplikasi dijalankan sebagai pengelola Bu Rina.
 
@@ -1339,7 +1339,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P02 — Dialog menutup stan
 
-**Acuan:** [P02](design/baseline/screens/P02_dialog_menutup_stan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P02`
+**Acuan:** [P02](../design/baseline/screens/P02_dialog_menutup_stan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P02`
 
 **Kondisi awal/pemicu:** Switch buka dimatikan dari dashboard.
 
@@ -1357,7 +1357,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P03 — Dashboard stan tutup
 
-**Acuan:** [P03](design/baseline/screens/P03_dashboard_stan_tutup.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P03`
+**Acuan:** [P03](../design/baseline/screens/P03_dashboard_stan_tutup.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P03`
 
 **Kondisi awal/pemicu:** Stan telah ditutup secara manual.
 
@@ -1375,7 +1375,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P04 — Pesanan baru
 
-**Acuan:** [P04](design/baseline/screens/P04_pesanan_baru.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P04`
+**Acuan:** [P04](../design/baseline/screens/P04_pesanan_baru.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P04`
 
 **Kondisi awal/pemicu:** Tab Baru pengelola dipilih.
 
@@ -1394,7 +1394,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P05 — Pesanan diproses
 
-**Acuan:** [P05](design/baseline/screens/P05_pesanan_diproses.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P05`
+**Acuan:** [P05](../design/baseline/screens/P05_pesanan_diproses.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P05`
 
 **Kondisi awal/pemicu:** Tab Diproses pengelola dipilih.
 
@@ -1413,7 +1413,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P06 — Pesanan siap
 
-**Acuan:** [P06](design/baseline/screens/P06_pesanan_siap.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P06`
+**Acuan:** [P06](../design/baseline/screens/P06_pesanan_siap.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P06`
 
 **Kondisi awal/pemicu:** Tab Siap pengelola dipilih.
 
@@ -1432,7 +1432,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P07 — Riwayat pengelola
 
-**Acuan:** [P07](design/baseline/screens/P07_riwayat_pengelola.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P07`
+**Acuan:** [P07](../design/baseline/screens/P07_riwayat_pengelola.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P07`
 
 **Kondisi awal/pemicu:** Pengelola memilih Riwayat.
 
@@ -1451,7 +1451,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P08 — Detail pesanan baru
 
-**Acuan:** [P08](design/baseline/screens/P08_detail_pesanan_baru.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P08`
+**Acuan:** [P08](../design/baseline/screens/P08_detail_pesanan_baru.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P08`
 
 **Kondisi awal/pemicu:** Order baru KC-027 dibuka pengelola stan terkait.
 
@@ -1472,7 +1472,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P09 — Detail pesanan diproses
 
-**Acuan:** [P09](design/baseline/screens/P09_detail_pesanan_diproses.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P09`
+**Acuan:** [P09](../design/baseline/screens/P09_detail_pesanan_diproses.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P09`
 
 **Kondisi awal/pemicu:** Order telah diterima pengelola.
 
@@ -1490,7 +1490,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P10 — Detail siap diambil
 
-**Acuan:** [P10](design/baseline/screens/P10_detail_siap_diambil.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P10`
+**Acuan:** [P10](../design/baseline/screens/P10_detail_siap_diambil.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P10`
 
 **Kondisi awal/pemicu:** Order siap diambil.
 
@@ -1507,7 +1507,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P11 — Konfirmasi penyerahan
 
-**Acuan:** [P11](design/baseline/screens/P11_konfirmasi_penyerahan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P11`
+**Acuan:** [P11](../design/baseline/screens/P11_konfirmasi_penyerahan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P11`
 
 **Kondisi awal/pemicu:** CTA penyelesaian ditekan pada order ready.
 
@@ -1525,7 +1525,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P12 — Detail pesanan selesai
 
-**Acuan:** [P12](design/baseline/screens/P12_detail_pesanan_selesai.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P12`
+**Acuan:** [P12](../design/baseline/screens/P12_detail_pesanan_selesai.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P12`
 
 **Kondisi awal/pemicu:** Penyelesaian pesanan berhasil.
 
@@ -1542,7 +1542,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P13 — Konfirmasi penolakan
 
-**Acuan:** [P13](design/baseline/screens/P13_konfirmasi_penolakan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P13`
+**Acuan:** [P13](../design/baseline/screens/P13_konfirmasi_penolakan.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P13`
 
 **Kondisi awal/pemicu:** Tolak dipilih untuk order waiting.
 
@@ -1562,7 +1562,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P14 — Detail pesanan ditolak
 
-**Acuan:** [P14](design/baseline/screens/P14_detail_pesanan_ditolak.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P14`
+**Acuan:** [P14](../design/baseline/screens/P14_detail_pesanan_ditolak.png) · **Target:** KantinCerdasv0.6.0 · **Fixture:** `screen_P14`
 
 **Kondisi awal/pemicu:** Penolakan order telah tersimpan.
 
@@ -1579,7 +1579,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P15 — Kelola menu
 
-**Acuan:** [P15](design/baseline/screens/P15_kelola_menu.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P15`
+**Acuan:** [P15](../design/baseline/screens/P15_kelola_menu.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P15`
 
 **Kondisi awal/pemicu:** Pengelola membuka Menu.
 
@@ -1600,7 +1600,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P16 — Gagal ubah ketersediaan
 
-**Acuan:** [P16](design/baseline/screens/P16_gagal_ubah_ketersediaan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P16`
+**Acuan:** [P16](../design/baseline/screens/P16_gagal_ubah_ketersediaan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P16`
 
 **Kondisi awal/pemicu:** Perubahan Sayur Asem dari Habis ke Tersedia gagal.
 
@@ -1617,7 +1617,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P17 — Pengaturan stan
 
-**Acuan:** [P17](design/baseline/screens/P17_pengaturan_stan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P17`
+**Acuan:** [P17](../design/baseline/screens/P17_pengaturan_stan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P17`
 
 **Kondisi awal/pemicu:** Pengelola membuka Pengaturan stan.
 
@@ -1639,7 +1639,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-P18 — Profil pengelola
 
-**Acuan:** [P18](design/baseline/screens/P18_profil_pengelola.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P18`
+**Acuan:** [P18](../design/baseline/screens/P18_profil_pengelola.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_P18`
 
 **Kondisi awal/pemicu:** Pengelola membuka Profil.
 
@@ -1659,7 +1659,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q01 — Beranda cart — 360 dp
 
-**Acuan:** [Q01](design/baseline/screens/Q01_beranda_cart_360_dp.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q01`
+**Acuan:** [Q01](../design/baseline/screens/Q01_beranda_cart_360_dp.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q01`
 
 **Kondisi awal/pemicu:** M03 pada viewport 360 × 800 dp.
 
@@ -1676,7 +1676,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q02 — Detail stan — 412 dp
 
-**Acuan:** [Q02](design/baseline/screens/Q02_detail_stan_412_dp.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q02`
+**Acuan:** [Q02](../design/baseline/screens/Q02_detail_stan_412_dp.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q02`
 
 **Kondisi awal/pemicu:** M07 pada viewport 412 × 915 dp.
 
@@ -1693,7 +1693,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q03 — Beranda teks 150%
 
-**Acuan:** [Q03](design/baseline/screens/Q03_beranda_teks_150.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q03`
+**Acuan:** [Q03](../design/baseline/screens/Q03_beranda_teks_150.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q03`
 
 **Kondisi awal/pemicu:** Target beranda pada text scale 150%; PNG sumber justru identik S01.
 
@@ -1710,7 +1710,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q04 — Rekomendasi teks panjang
 
-**Acuan:** [Q04](design/baseline/screens/Q04_rekomendasi_teks_panjang.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q04`
+**Acuan:** [Q04](../design/baseline/screens/Q04_rekomendasi_teks_panjang.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q04`
 
 **Kondisi awal/pemicu:** M14 dengan nama menu panjang di 360 × 800 dp dan teks besar.
 
@@ -1728,7 +1728,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q05 — Keranjang delapan porsi
 
-**Acuan:** [Q05](design/baseline/screens/Q05_keranjang_delapan_porsi.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q05`
+**Acuan:** [Q05](../design/baseline/screens/Q05_keranjang_delapan_porsi.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q05`
 
 **Kondisi awal/pemicu:** Cart berisi delapan porsi, empat jenis menu.
 
@@ -1746,7 +1746,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-Q06 — Cart dengan keyboard
 
-**Acuan:** [Q06](design/baseline/screens/Q06_cart_dengan_keyboard.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q06`
+**Acuan:** [Q06](../design/baseline/screens/Q06_cart_dengan_keyboard.png) · **Target:** KantinCerdasv0.9.0 · **Fixture:** `screen_Q06`
 
 **Kondisi awal/pemicu:** Input catatan cart aktif pada viewport 360 × 800 dp.
 
@@ -1764,7 +1764,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S01 — Loading Beranda
 
-**Acuan:** [S01](design/baseline/screens/S01_loading_beranda.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S01`
+**Acuan:** [S01](../design/baseline/screens/S01_loading_beranda.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S01`
 
 **Kondisi awal/pemicu:** Beranda mulai memuat tanpa data.
 
@@ -1782,7 +1782,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S02 — Hasil pencarian kosong
 
-**Acuan:** [S02](design/baseline/screens/S02_hasil_pencarian_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S02`
+**Acuan:** [S02](../design/baseline/screens/S02_hasil_pencarian_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S02`
 
 **Kondisi awal/pemicu:** Query sushi tidak menemukan menu.
 
@@ -1798,7 +1798,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S03 — Offline dengan data
 
-**Acuan:** [S03](design/baseline/screens/S03_offline_dengan_data.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S03`
+**Acuan:** [S03](../design/baseline/screens/S03_offline_dengan_data.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S03`
 
 **Kondisi awal/pemicu:** Offline simulasi dengan cache katalog.
 
@@ -1817,7 +1817,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S04 — Offline tanpa data
 
-**Acuan:** [S04](design/baseline/screens/S04_offline_tanpa_data.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S04`
+**Acuan:** [S04](../design/baseline/screens/S04_offline_tanpa_data.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S04`
 
 **Kondisi awal/pemicu:** Offline simulasi tanpa cache.
 
@@ -1833,7 +1833,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S05 — Gagal memuat Pesanan
 
-**Acuan:** [S05](design/baseline/screens/S05_gagal_memuat_pesanan.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S05`
+**Acuan:** [S05](../design/baseline/screens/S05_gagal_memuat_pesanan.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S05`
 
 **Kondisi awal/pemicu:** Daftar pesanan pengelola gagal dimuat.
 
@@ -1849,7 +1849,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S06 — Detail stan tutup
 
-**Acuan:** [S06](design/baseline/screens/S06_detail_stan_tutup.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S06`
+**Acuan:** [S06](../design/baseline/screens/S06_detail_stan_tutup.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S06`
 
 **Kondisi awal/pemicu:** Mahasiswa membuka stan tutup.
 
@@ -1867,7 +1867,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S07 — Detail menu habis
 
-**Acuan:** [S07](design/baseline/screens/S07_detail_menu_habis.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S07`
+**Acuan:** [S07](../design/baseline/screens/S07_detail_menu_habis.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S07`
 
 **Kondisi awal/pemicu:** Detail menu dengan availability habis.
 
@@ -1883,7 +1883,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S08 — Pembaruan status gagal
 
-**Acuan:** [S08](design/baseline/screens/S08_pembaruan_status_gagal.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S08`
+**Acuan:** [S08](../design/baseline/screens/S08_pembaruan_status_gagal.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S08`
 
 **Kondisi awal/pemicu:** Refresh status mahasiswa gagal setelah data pernah dimuat.
 
@@ -1900,7 +1900,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S09 — Loading daftar pesanan
 
-**Acuan:** [S09](design/baseline/screens/S09_loading_daftar_pesanan.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S09`
+**Acuan:** [S09](../design/baseline/screens/S09_loading_daftar_pesanan.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S09`
 
 **Kondisi awal/pemicu:** Daftar order mahasiswa mulai dimuat.
 
@@ -1916,7 +1916,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S10 — Gagal memuat katalog
 
-**Acuan:** [S10](design/baseline/screens/S10_gagal_memuat_katalog.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S10`
+**Acuan:** [S10](../design/baseline/screens/S10_gagal_memuat_katalog.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S10`
 
 **Kondisi awal/pemicu:** Katalog gagal dimuat tanpa data sebelumnya.
 
@@ -1932,7 +1932,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S11 — Stan belum memiliki menu
 
-**Acuan:** [S11](design/baseline/screens/S11_stan_belum_memiliki_menu.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S11`
+**Acuan:** [S11](../design/baseline/screens/S11_stan_belum_memiliki_menu.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S11`
 
 **Kondisi awal/pemicu:** Stan buka tetapi tidak memiliki menu.
 
@@ -1948,7 +1948,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S12 — Pesanan mahasiswa kosong
 
-**Acuan:** [S12](design/baseline/screens/S12_pesanan_mahasiswa_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S12`
+**Acuan:** [S12](../design/baseline/screens/S12_pesanan_mahasiswa_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S12`
 
 **Kondisi awal/pemicu:** Daftar pesanan mahasiswa sukses dengan nol order aktif.
 
@@ -1964,7 +1964,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S13 — Antrean pengelola kosong
 
-**Acuan:** [S13](design/baseline/screens/S13_antrean_pengelola_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S13`
+**Acuan:** [S13](../design/baseline/screens/S13_antrean_pengelola_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S13`
 
 **Kondisi awal/pemicu:** Antrean baru pengelola sukses dengan nol order.
 
@@ -1980,7 +1980,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S14 — Filter menu kosong
 
-**Acuan:** [S14](design/baseline/screens/S14_filter_menu_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S14`
+**Acuan:** [S14](../design/baseline/screens/S14_filter_menu_kosong.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S14`
 
 **Kondisi awal/pemicu:** Filter menu pengelola menghasilkan nol item.
 
@@ -1996,7 +1996,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S15 — Foto makanan gagal
 
-**Acuan:** [S15](design/baseline/screens/S15_foto_makanan_gagal.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S15`
+**Acuan:** [S15](../design/baseline/screens/S15_foto_makanan_gagal.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S15`
 
 **Kondisi awal/pemicu:** Satu aset foto menu gagal dibaca.
 
@@ -2012,7 +2012,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S16 — Gagal ubah status
 
-**Acuan:** [S16](design/baseline/screens/S16_gagal_ubah_status.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S16`
+**Acuan:** [S16](../design/baseline/screens/S16_gagal_ubah_status.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S16`
 
 **Kondisi awal/pemicu:** Transisi processing ke ready gagal.
 
@@ -2029,7 +2029,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-S17 — Pengelola offline
 
-**Acuan:** [S17](design/baseline/screens/S17_pengelola_offline.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S17`
+**Acuan:** [S17](../design/baseline/screens/S17_pengelola_offline.png) · **Target:** KantinCerdasv0.8.0 · **Fixture:** `screen_S17`
 
 **Kondisi awal/pemicu:** Pengelola offline dengan cache order.
 
@@ -2047,7 +2047,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U01 — Penjelasan notifikasi
 
-**Acuan:** [U01](design/baseline/screens/U01_penjelasan_notifikasi.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U01`
+**Acuan:** [U01](../design/baseline/screens/U01_penjelasan_notifikasi.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U01`
 
 **Kondisi awal/pemicu:** Sesudah order berhasil atau konteks notifikasi dibuka.
 
@@ -2065,7 +2065,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U02 — Izin notifikasi ditolak
 
-**Acuan:** [U02](design/baseline/screens/U02_izin_notifikasi_ditolak.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U02`
+**Acuan:** [U02](../design/baseline/screens/U02_izin_notifikasi_ditolak.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U02`
 
 **Kondisi awal/pemicu:** Izin notifikasi simulasi denied.
 
@@ -2082,7 +2082,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U03 — Notifikasi aktif
 
-**Acuan:** [U03](design/baseline/screens/U03_notifikasi_aktif.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U03`
+**Acuan:** [U03](../design/baseline/screens/U03_notifikasi_aktif.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U03`
 
 **Kondisi awal/pemicu:** Izin dummy granted.
 
@@ -2099,7 +2099,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U04 — Bantuan
 
-**Acuan:** [U04](design/baseline/screens/U04_bantuan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U04`
+**Acuan:** [U04](../design/baseline/screens/U04_bantuan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U04`
 
 **Kondisi awal/pemicu:** Bantuan dibuka melalui profil.
 
@@ -2119,7 +2119,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U05 — Tentang KantinCerdas
 
-**Acuan:** [U05](design/baseline/screens/U05_tentang_kantincerdas.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U05`
+**Acuan:** [U05](../design/baseline/screens/U05_tentang_kantincerdas.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U05`
 
 **Kondisi awal/pemicu:** Tentang dibuka melalui profil.
 
@@ -2137,7 +2137,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U06 — Data akun pengelola
 
-**Acuan:** [U06](design/baseline/screens/U06_data_akun_pengelola.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U06`
+**Acuan:** [U06](../design/baseline/screens/U06_data_akun_pengelola.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U06`
 
 **Kondisi awal/pemicu:** Data akun dibuka pengelola.
 
@@ -2155,7 +2155,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U07 — Konfirmasi keluar
 
-**Acuan:** [U07](design/baseline/screens/U07_konfirmasi_keluar.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U07`
+**Acuan:** [U07](../design/baseline/screens/U07_konfirmasi_keluar.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U07`
 
 **Kondisi awal/pemicu:** Keluar dipilih pada profil.
 
@@ -2172,7 +2172,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U08 — Simpan pengaturan gagal
 
-**Acuan:** [U08](design/baseline/screens/U08_simpan_pengaturan_gagal.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U08`
+**Acuan:** [U08](../design/baseline/screens/U08_simpan_pengaturan_gagal.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U08`
 
 **Kondisi awal/pemicu:** Simpan pengaturan stan gagal pada fake repository.
 
@@ -2189,7 +2189,7 @@ Seluruh kebutuhan pada tabel berikut wajib untuk target demo lengkap, kecuali ba
 
 #### FR-U09 — Preferensi tersimpan
 
-**Acuan:** [U09](design/baseline/screens/U09_preferensi_tersimpan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U09`
+**Acuan:** [U09](../design/baseline/screens/U09_preferensi_tersimpan.png) · **Target:** KantinCerdasv0.7.0 · **Fixture:** `screen_U09`
 
 **Kondisi awal/pemicu:** Simpan preferensi berhasil.
 
