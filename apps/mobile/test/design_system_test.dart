@@ -105,67 +105,70 @@ void main() {
       tester,
     ) async {
       final semantics = tester.ensureSemantics();
-      addTearDown(semantics.dispose);
-      final controller = TextEditingController(text: 'Nasi');
-      addTearDown(controller.dispose);
-      await tester.pumpWidget(
-        host(
-          ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              for (final variant in KcButtonVariant.values)
-                KcButton(
-                  label: variant.name,
-                  variant: variant,
-                  onPressed: () {},
+      try {
+        final controller = TextEditingController(text: 'Nasi');
+        addTearDown(controller.dispose);
+        await tester.pumpWidget(
+          host(
+            ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                for (final variant in KcButtonVariant.values)
+                  KcButton(
+                    label: variant.name,
+                    variant: variant,
+                    onPressed: () {},
+                  ),
+                KcSearchField(controller: controller, onChanged: (_) {}),
+                KcFilterBar(
+                  options: const ['Nasi', 'Mi'],
+                  selected: const {'Nasi'},
+                  onSelected: (_, _) {},
                 ),
-              KcSearchField(controller: controller, onChanged: (_) {}),
-              KcFilterBar(
-                options: const ['Nasi', 'Mi'],
-                selected: const {'Nasi'},
-                onSelected: (_, _) {},
-              ),
-            ],
-          ),
-          dark: dark,
-        ),
-      );
-      await tester.pumpAndSettle();
-      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
-      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
-      await expectLater(tester, meetsGuideline(textContrastGuideline));
-      final colors = dark
-          ? KantinCerdasColors.darkScheme
-          : KantinCerdasColors.lightScheme;
-      for (final variant in KcButtonVariant.values) {
-        final filled = variant == KcButtonVariant.primary;
-        final destructive = variant == KcButtonVariant.destructive;
-        final foreground = destructive
-            ? colors.onError
-            : filled
-            ? colors.onPrimary
-            : colors.primary;
-        final background = destructive
-            ? colors.error
-            : filled
-            ? colors.primary
-            : colors.surface;
-        final control = tester.widget<ButtonStyleButton>(
-          find.descendant(
-            of: find.widgetWithText(KcButton, variant.name),
-            matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+              ],
+            ),
+            dark: dark,
           ),
         );
-        for (final state in [WidgetState.pressed, WidgetState.focused]) {
-          final overlay = control.style!.overlayColor!.resolve({state})!;
-          final blended = Color.alphaBlend(overlay, background);
-          final a = foreground.computeLuminance();
-          final b = blended.computeLuminance();
-          final ratio = a > b
-              ? (a + 0.05) / (b + 0.05)
-              : (b + 0.05) / (a + 0.05);
-          expect(ratio, greaterThanOrEqualTo(4.5));
+        await tester.pumpAndSettle();
+        await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+        await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+        await expectLater(tester, meetsGuideline(textContrastGuideline));
+        final colors = dark
+            ? KantinCerdasColors.darkScheme
+            : KantinCerdasColors.lightScheme;
+        for (final variant in KcButtonVariant.values) {
+          final filled = variant == KcButtonVariant.primary;
+          final destructive = variant == KcButtonVariant.destructive;
+          final foreground = destructive
+              ? colors.onError
+              : filled
+              ? colors.onPrimary
+              : colors.primary;
+          final background = destructive
+              ? colors.error
+              : filled
+              ? colors.primary
+              : colors.surface;
+          final control = tester.widget<ButtonStyleButton>(
+            find.descendant(
+              of: find.widgetWithText(KcButton, variant.name),
+              matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+            ),
+          );
+          for (final state in [WidgetState.pressed, WidgetState.focused]) {
+            final overlay = control.style!.overlayColor!.resolve({state})!;
+            final blended = Color.alphaBlend(overlay, background);
+            final a = foreground.computeLuminance();
+            final b = blended.computeLuminance();
+            final ratio = a > b
+                ? (a + 0.05) / (b + 0.05)
+                : (b + 0.05) / (a + 0.05);
+            expect(ratio, greaterThanOrEqualTo(4.5));
+          }
         }
+      } finally {
+        semantics.dispose();
       }
     });
   }

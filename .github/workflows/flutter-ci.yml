@@ -59,5 +59,13 @@ jobs:
       - name: Run tests
         run: flutter test
 
+      - name: Upload design system preview
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: design-system-preview
+          path: apps/mobile/build/design-system-preview/*.png
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Build debug APK
         run: flutter build apk --debug
