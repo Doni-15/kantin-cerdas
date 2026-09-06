@@ -239,8 +239,10 @@ Implementasi lanjutan **UI-201–UI-207** disiapkan pada branch
 `feat/design-system-section-a`: token status/elevation/motion, tipografi,
 komponen tombol, input/pencarian/filter, dialog/sheet/snackbar, dan state
 konten. [Catatan implementasi dan cakupan pengujian](../design/DESIGN_SYSTEM_IMPLEMENTATION.md)
-menjelaskan penggunaan dan batas verifikasinya. Checkbox bagian A menunggu
-hasil CI dan merge implementasi ini ke `main`, bukan menandakan belum ada kode.
+menjelaskan penggunaan dan batas verifikasinya. Implementasi tersedia pada
+[PR #9](https://github.com/Doni-15/kantin-cerdas/pull/9), beserta CI dan artifact
+screenshot pratinjau. Checkbox bagian A menunggu merge ke `main` setelah CI
+lulus, bukan menandakan belum ada kode.
 
 App shell, navigasi, model domain, dan fake repository tetap menjadi
 pekerjaan berikutnya. Milestone `v0.2.0-alpha.1` belum selesai.
