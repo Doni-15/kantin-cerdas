@@ -7,6 +7,22 @@ abstract final class KantinCerdasColors {
   static const darkTerracotta = Color(0xFF9B341B);
   static const goldAccent = Color(0xFFF4B740);
 
+  // Pasangan status selalu dipakai bersama agar kontrasnya terjaga.
+  static const available = Color(0xFF2E7D32);
+  static const availableContainer = Color(0xFFE7F5E8);
+  static const waiting = Color(0xFF9A6700);
+  // Teks kecil pada waitingContainer; warna ikon waiting tetap baseline.
+  static const waitingText = Color(0xFF906000);
+  static const waitingContainer = Color(0xFFFFF1C2);
+  static const processing = Color(0xFFA54B00);
+  static const processingContainer = Color(0xFFFFE7CC);
+  static const ready = Color(0xFF167A56);
+  static const readyContainer = Color(0xFFDDF5EA);
+  static const completed = Color(0xFF475569);
+  static const completedContainer = Color(0xFFEEF2F6);
+  static const rejected = Color(0xFFB3261E);
+  static const rejectedContainer = Color(0xFFFCE8E6);
+
   // Light
   static const lightBackground = Color(0xFFFAFAF8);
   static const lightSurface = Color(0xFFFFFFFF);

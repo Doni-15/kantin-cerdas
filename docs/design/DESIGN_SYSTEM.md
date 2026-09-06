@@ -94,6 +94,10 @@ Referensi tersebut digunakan sebagai inspirasi pola, bukan untuk disalin secara 
 | Selesai | `#475569` | `#EEF2F6` | Selesai |
 | Ditolak / error | `#B3261E` | `#FCE8E6` | Ditolak, Gagal |
 
+Catatan implementasi aksesibilitas: `#9A6700` tetap warna ikon Menunggu.
+Untuk teks kecil pada `#FFF1C2`, gunakan token `waitingText` `#906000`;
+pasangan awal sekitar 4.31:1 belum mencapai target teks normal 4.5:1.
+
 Warna tidak boleh menjadi satu-satunya penanda. Selalu sertakan teks status dan ikon yang sesuai.
 
 ### 3.3 Contoh `ColorScheme` Flutter
@@ -511,3 +515,7 @@ Setiap pull request UI harus:
 - menjelaskan state loading, empty, error, dan disabled yang terdampak;
 - lulus format, analyzer, test relevan, dan build target yang disepakati;
 - tidak mengubah tag lama; release perbaikan memakai versi baru setelah commit terverifikasi.
+
+
+Implementasi komponen dan cakupan pemeriksaan bagian A dijelaskan pada
+[catatan implementasi Flutter](DESIGN_SYSTEM_IMPLEMENTATION.md).

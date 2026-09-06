@@ -15,12 +15,15 @@ fondasi `v0.1`. Target berikut belum tersedia pada rilis
 
 ## Progres fondasi — 6 September 2026
 
-Pengembangan `v0.2.0-alpha.1` sudah dimulai. Pada branch
-`fix/theme-foundation-20260906-002855`, token dipusatkan di
-`lib/shared/design_system/`, tema dilengkapi, layar fondasi diberi scroll,
-dan ekspektasi ikon smoke test disesuaikan.
+Fondasi token/theme, scroll konten dengan AppBar tetap (landscape 48 dp),
+dan smoke test sudah di-merge melalui PR #8. CI pada commit merge `9985675`
+lulus; analyze, test, build, dan peluncuran emulator juga terbukti pada log lokal.
 
-Analyze, satu widget test, build APK debug, serta pemasangan dan peluncuran
-di emulator lulus menurut log lokal. Saat dicatat, perubahan belum di-merge
-ke `main`; milestone belum selesai. Rincian validasi dan pekerjaan berikutnya
-mengikuti [UI checklist](../product/UI_CHECKLIST.md).
+Bagian A design system dilanjutkan pada `feat/design-system-section-a`:
+komponen tombol, field/filter, dialog/sheet/snackbar, state konten, serta
+pemeriksaan aksesibilitas. Status penyelesaian mengikuti
+[UI checklist](../product/UI_CHECKLIST.md) dan
+[catatan implementasi](../design/DESIGN_SYSTEM_IMPLEMENTATION.md).
+
+App shell, navigasi, dan fake repository belum tersedia. Milestone tetap
+berjalan dan belum menjadi rilis `v0.2.0-alpha.1`.

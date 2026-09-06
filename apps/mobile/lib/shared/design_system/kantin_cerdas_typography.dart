@@ -4,7 +4,10 @@ abstract final class KantinCerdasTypography {
   static const fontFamily = 'PlusJakartaSans';
 
   static TextTheme applyTo(TextTheme base) {
-    final textTheme = base.apply(fontFamily: fontFamily);
+    final textTheme = base.apply(
+      fontFamily: fontFamily,
+      fontFamilyFallback: const ['Inter'],
+    );
 
     return textTheme.copyWith(
       displayLarge: textTheme.displayLarge?.copyWith(

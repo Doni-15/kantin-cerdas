@@ -6,6 +6,14 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 ## [Unreleased]
 
+### Added
+
+- Komponen design system: tombol empat varian, input/pencarian/filter,
+  dialog, bottom sheet, snackbar, serta loading/skeleton, empty, error/retry,
+  offline, disabled, dan success.
+- Token warna status, elevation dan motion, entry point pratinjau komponen,
+  serta pemeriksaan aksesibilitas dan interaksi pada widget test.
+
 ### Changed
 
 - Melengkapi pemetaan warna teks sekunder, surface/container, indikator navigasi aktif, serta gaya komponen pada tema terang dan gelap.

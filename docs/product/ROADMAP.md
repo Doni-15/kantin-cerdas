@@ -243,11 +243,11 @@ versi berikutnya.
 ## `v0.2.0-alpha.1` — App Shell, Design System, dan Arsitektur Data
 
 > **Progres 6 September 2026: 🟨 Sedang dikerjakan.** Fondasi token/theme,
-> scroll layar fondasi, dan penyesuaian smoke test telah dikerjakan pada branch
-> `fix/theme-foundation-20260906-002855`. Analyze, satu widget test, build APK
-> debug, dan peluncuran emulator lulus menurut log pengembang. Bukti visual
-> landscape/teks besar dan merge masih perlu dilengkapi. Rincian progres dan
-> pekerjaan berikutnya tercatat di [UI checklist](UI_CHECKLIST.md).
+> AppBar tetap yang ringkas pada landscape, dan smoke test sudah masuk `main`
+> melalui PR #8; CI commit merge lulus. Bagian A design system sedang
+> dilengkapi pada `feat/design-system-section-a` dengan komponen bersama dan
+> pengujian aksesibilitas. App shell dan fake data belum tersedia.
+> Rincian status mengikuti [UI checklist](UI_CHECKLIST.md).
 
 **Jenis versi:** MINOR prarilis alpha  
 **Estimasi:** Hari 2–3  

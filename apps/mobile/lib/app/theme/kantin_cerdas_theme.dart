@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_colors.dart';
+import 'package:kantincerdas/shared/design_system/kantin_cerdas_elevation.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_radius.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_size.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_spacing.dart';
@@ -63,7 +64,7 @@ abstract final class KantinCerdasTheme {
         backgroundColor: backgroundColor,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
-        elevation: 0,
+        elevation: KantinCerdasElevation.flat,
         centerTitle: false,
       ),
       filledButtonTheme: FilledButtonThemeData(
@@ -136,7 +137,7 @@ abstract final class KantinCerdasTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
-        elevation: 0,
+        elevation: KantinCerdasElevation.flat,
         indicatorColor: colorScheme.secondaryContainer,
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
           return textTheme.labelLarge?.copyWith(
@@ -149,11 +150,30 @@ abstract final class KantinCerdasTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
         surfaceTintColor: Colors.transparent,
+        elevation: KantinCerdasElevation.modal,
+        modalElevation: KantinCerdasElevation.modal,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(KantinCerdasRadius.extraLarge),
           ),
         ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: KantinCerdasElevation.modal,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(KantinCerdasRadius.large),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: colorScheme.inverseSurface,
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onInverseSurface,
+        ),
+        actionTextColor: colorScheme.inversePrimary,
+        elevation: KantinCerdasElevation.floating,
+        behavior: SnackBarBehavior.fixed,
       ),
     );
   }

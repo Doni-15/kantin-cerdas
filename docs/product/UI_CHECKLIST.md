@@ -177,7 +177,7 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 
 - [x] **UI-101** — Membuat repository GitHub KantinCerdas.
 - [x] **UI-102** — Membuat proyek Flutter dengan application ID yang disepakati.
-- [ ] **UI-103** — Memastikan proyek dapat dijalankan pada emulator/perangkat Android.
+- [x] **UI-103** — Memastikan proyek dapat dijalankan pada emulator/perangkat Android.
 - [x] **UI-104** — Menambahkan `.gitignore` untuk Flutter, Android, IDE, build, dan `.env`.
 - [x] **UI-105** — Menambahkan `.env.example` tanpa nilai rahasia.
 - [x] **UI-106** — Menambahkan `README.md` berisi cara clone, setup, run, test, dan build.
@@ -230,26 +230,20 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 
 #### Catatan progres fondasi — 6 September 2026
 
-Catatan validasi lokal pada branch `fix/theme-foundation-20260906-002855`.
-Saat dicatat, perubahan belum di-merge ke `main`; checkbox mengikuti aturan
-pencatatan di atas.
+Fondasi tema dan AppBar tetap sudah masuk `main` melalui [PR #8](https://github.com/Doni-15/kantin-cerdas/pull/8).
+CI pada commit merge `9985675` lulus. Log lokal membuktikan analyze,
+smoke test, build APK debug, serta pemasangan dan peluncuran di emulator;
+UI-103 dicentang berdasarkan bukti tersebut.
 
-- **UI-201–UI-203 (progres parsial):** token warna, tipografi, spacing, radius,
-  dan ukuran ditempatkan di `lib/shared/design_system/`. Pemetaan warna dan
-  gaya komponen pada tema dilengkapi; ini belum menuntaskan seluruh kriteria
-  komponen bersama dan aksesibilitas.
-- Layar fondasi diberi scroll untuk ruang vertikal yang sempit.
-- Smoke test yang dipulihkan disesuaikan dengan `Icons.restaurant_menu_rounded`.
-- **Validasi lokal lulus:** `flutter analyze`, satu widget test
-  (`All tests passed!`), build APK debug, serta pemasangan dan peluncuran
-  melalui `flutter run` pada emulator Android `sdk gphone16k x86 64`.
-  Peluncuran emulator menjadi bukti lokal untuk **UI-103**.
-- **Masih perlu diverifikasi:** landscape dengan teks besar, lebar
-  360/390/412 dp, aksesibilitas pada UI-207, CI PR, dan merge ke `main`.
+Implementasi lanjutan **UI-201–UI-207** disiapkan pada branch
+`feat/design-system-section-a`: token status/elevation/motion, tipografi,
+komponen tombol, input/pencarian/filter, dialog/sheet/snackbar, dan state
+konten. [Catatan implementasi dan cakupan pengujian](../design/DESIGN_SYSTEM_IMPLEMENTATION.md)
+menjelaskan penggunaan dan batas verifikasinya. Checkbox bagian A menunggu
+hasil CI dan merge implementasi ini ke `main`, bukan menandakan belum ada kode.
 
-Pekerjaan berikutnya: tinjau kelengkapan kriteria UI-201–UI-203,
-kemudian komponen tombol bersama (UI-204). App shell, navigasi, model domain,
-dan fake repository tetap mengikuti urutan milestone `v0.2.0-alpha.1`.
+App shell, navigasi, model domain, dan fake repository tetap menjadi
+pekerjaan berikutnya. Milestone `v0.2.0-alpha.1` belum selesai.
 
 #### A. Design system
 
