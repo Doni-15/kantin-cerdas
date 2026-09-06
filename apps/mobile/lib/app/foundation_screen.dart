@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kantincerdas/shared/design_system/kantin_cerdas_size.dart';
 import 'package:kantincerdas/shared/design_system/kantin_cerdas_spacing.dart';
 
 class FoundationScreen extends StatelessWidget {
@@ -7,9 +8,17 @@ class FoundationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isLandscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('KantinCerdas')),
+      appBar: AppBar(
+        title: const Text('KantinCerdas'),
+        toolbarHeight: isLandscape
+            ? KantinCerdasSize.minimumTouchTarget
+            : kToolbarHeight,
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

@@ -16,6 +16,7 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 ### Fixed
 
+- Menjaga AppBar layar fondasi tetap di atas ketika konten digulir pada portrait maupun landscape; toolbar landscape menggunakan tinggi 48 dp.
 - Menyelaraskan nama baseline pada template PR menjadi Kantin Kampus Praktis dan membetulkan penjelasan build number pada roadmap.
 - Menyesuaikan ekspektasi ikon smoke test menjadi `Icons.restaurant_menu_rounded`; satu widget test kembali lulus.
 - Menambahkan scroll pada layar fondasi agar konten dapat digulir saat ruang vertikal terbatas; validasi landscape dan teks besar masih perlu dilakukan.
