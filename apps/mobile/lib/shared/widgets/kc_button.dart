@@ -29,11 +29,9 @@ class KcButton extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final destructive = variant == KcButtonVariant.destructive;
     final filled = destructive || variant == KcButtonVariant.primary;
-    final foreground = destructive
-        ? colors.onError
-        : filled
-        ? colors.onPrimary
-        : colors.primary;
+    // Menggelapkan tombol terang (atau mencerahkan tombol pada tema gelap)
+    // menjaga kontras label ketika ditekan dan difokuskan.
+    final overlay = filled ? colors.onSurface : colors.surface;
     final style = ButtonStyle(
       animationDuration: KantinCerdasMotion.durationOf(context),
       minimumSize: const WidgetStatePropertyAll(
@@ -73,10 +71,10 @@ class KcButton extends StatelessWidget {
       overlayColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) return Colors.transparent;
         if (states.contains(WidgetState.focused)) {
-          return foreground.withValues(alpha: 0.16);
+          return overlay.withValues(alpha: 0.16);
         }
         if (states.contains(WidgetState.pressed)) {
-          return foreground.withValues(alpha: 0.12);
+          return overlay.withValues(alpha: 0.12);
         }
         return null;
       }),
@@ -92,7 +90,9 @@ class KcButton extends StatelessWidget {
                 child: ExcludeSemantics(
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    value: MediaQuery.disableAnimationsOf(context) ? 0.75 : null,
+                    value: MediaQuery.disableAnimationsOf(context)
+                        ? 0.75
+                        : null,
                     color: colors.onSurfaceVariant,
                   ),
                 ),

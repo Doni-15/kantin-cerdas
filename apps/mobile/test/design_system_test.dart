@@ -60,7 +60,11 @@ void main() {
       final a = foreground.computeLuminance();
       final b = background.computeLuminance();
       final ratio = a > b ? (a + 0.05) / (b + 0.05) : (b + 0.05) / (a + 0.05);
-      expect(ratio, greaterThanOrEqualTo(4.5), reason: '$foreground/$background');
+      expect(
+        ratio,
+        greaterThanOrEqualTo(4.5),
+        reason: '$foreground/$background',
+      );
     }
   });
 
@@ -110,7 +114,11 @@ void main() {
             padding: const EdgeInsets.all(16),
             children: [
               for (final variant in KcButtonVariant.values)
-                KcButton(label: variant.name, variant: variant, onPressed: () {}),
+                KcButton(
+                  label: variant.name,
+                  variant: variant,
+                  onPressed: () {},
+                ),
               KcSearchField(controller: controller, onChanged: (_) {}),
               KcFilterBar(
                 options: const ['Nasi', 'Mi'],
@@ -126,80 +134,123 @@ void main() {
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       await expectLater(tester, meetsGuideline(textContrastGuideline));
+      final colors = dark
+          ? KantinCerdasColors.darkScheme
+          : KantinCerdasColors.lightScheme;
+      for (final variant in KcButtonVariant.values) {
+        final filled = variant == KcButtonVariant.primary;
+        final destructive = variant == KcButtonVariant.destructive;
+        final foreground = destructive
+            ? colors.onError
+            : filled
+            ? colors.onPrimary
+            : colors.primary;
+        final background = destructive
+            ? colors.error
+            : filled
+            ? colors.primary
+            : colors.surface;
+        final control = tester.widget<ButtonStyleButton>(
+          find.descendant(
+            of: find.widgetWithText(KcButton, variant.name),
+            matching: find.byWidgetPredicate((w) => w is ButtonStyleButton),
+          ),
+        );
+        for (final state in [WidgetState.pressed, WidgetState.focused]) {
+          final overlay = control.style!.overlayColor!.resolve({state})!;
+          final blended = Color.alphaBlend(overlay, background);
+          final a = foreground.computeLuminance();
+          final b = blended.computeLuminance();
+          final ratio = a > b
+              ? (a + 0.05) / (b + 0.05)
+              : (b + 0.05) / (a + 0.05);
+          expect(ratio, greaterThanOrEqualTo(4.5));
+        }
+      }
     });
   }
 
-  testWidgets('pencarian dapat dihapus dan validasi input mempertahankan teks', (
-    tester,
-  ) async {
-    final controller = TextEditingController();
-    final input = TextEditingController();
-    addTearDown(controller.dispose);
-    addTearDown(input.dispose);
-    var query = '';
-    await tester.pumpWidget(
-      host(
-        Column(
-          children: [
-            KcSearchField(controller: controller, onChanged: (v) => query = v),
-            KcInput(
-              label: 'Catatan',
-              controller: input,
-              validator: (v) => v == '!' ? 'Isi catatan yang jelas.' : null,
-            ),
-          ],
-        ),
-      ),
-    );
-    await tester.enterText(find.byType(TextField).first, 'Nasi');
-    expect(query, 'Nasi');
-    await tester.pump();
-    await tester.tap(find.byTooltip('Hapus pencarian'));
-    await tester.pump();
-    expect(query, '');
-    expect(controller.text, '');
-    expect(find.byTooltip('Hapus pencarian'), findsNothing);
-    await tester.enterText(find.byType(TextFormField), '!');
-    await tester.pump();
-    expect(find.text('Isi catatan yang jelas.'), findsOneWidget);
-    expect(input.text, '!');
-  });
-
-  testWidgets('Tab mengikuti urutan kontrol, fokus terlihat, Enter mengaktifkan', (
-    tester,
-  ) async {
-    final first = FocusNode();
-    final second = FocusNode();
-    addTearDown(first.dispose);
-    addTearDown(second.dispose);
-    var calls = 0;
-    await tester.pumpWidget(
-      host(
-        FocusTraversalGroup(
-          child: Column(
+  testWidgets(
+    'pencarian dapat dihapus dan validasi input mempertahankan teks',
+    (tester) async {
+      final controller = TextEditingController();
+      final input = TextEditingController();
+      addTearDown(controller.dispose);
+      addTearDown(input.dispose);
+      var query = '';
+      await tester.pumpWidget(
+        host(
+          Column(
             children: [
-              KcButton(label: 'Pertama', focusNode: first, onPressed: () {}),
-              KcButton(
-                label: 'Kedua',
-                focusNode: second,
-                onPressed: () => calls++,
+              KcSearchField(
+                controller: controller,
+                onChanged: (v) => query = v,
+              ),
+              KcInput(
+                label: 'Catatan',
+                controller: input,
+                validator: (v) => v == '!' ? 'Isi catatan yang jelas.' : null,
               ),
             ],
           ),
         ),
-      ),
-    );
-    first.requestFocus();
-    await tester.pump();
-    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
-    await tester.pump();
-    expect(second.hasFocus, isTrue);
-    final button = tester.widget<FilledButton>(find.byType(FilledButton).last);
-    expect(button.style!.side!.resolve({WidgetState.focused})!.width, 2);
-    expect(button.style!.overlayColor!.resolve({WidgetState.pressed}), isNotNull);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
-    expect(calls, 1);
-  });
+      );
+      await tester.enterText(find.byType(TextField).first, 'Nasi');
+      expect(query, 'Nasi');
+      await tester.pump();
+      await tester.tap(find.byTooltip('Hapus pencarian'));
+      await tester.pump();
+      expect(query, '');
+      expect(controller.text, '');
+      expect(find.byTooltip('Hapus pencarian'), findsNothing);
+      await tester.enterText(find.byType(TextFormField), '!');
+      await tester.pump();
+      expect(find.text('Isi catatan yang jelas.'), findsOneWidget);
+      expect(input.text, '!');
+    },
+  );
+
+  testWidgets(
+    'Tab mengikuti urutan kontrol, fokus terlihat, Enter mengaktifkan',
+    (tester) async {
+      final first = FocusNode();
+      final second = FocusNode();
+      addTearDown(first.dispose);
+      addTearDown(second.dispose);
+      var calls = 0;
+      await tester.pumpWidget(
+        host(
+          FocusTraversalGroup(
+            child: Column(
+              children: [
+                KcButton(label: 'Pertama', focusNode: first, onPressed: () {}),
+                KcButton(
+                  label: 'Kedua',
+                  focusNode: second,
+                  onPressed: () => calls++,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+      first.requestFocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.pump();
+      expect(second.hasFocus, isTrue);
+      final button = tester.widget<FilledButton>(
+        find.byType(FilledButton).last,
+      );
+      expect(button.style!.side!.resolve({WidgetState.focused})!.width, 2);
+      expect(
+        button.style!.overlayColor!.resolve({WidgetState.pressed}),
+        isNotNull,
+      );
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      expect(calls, 1);
+    },
+  );
 
   for (final size in [
     const Size(360, 800),
@@ -240,7 +291,8 @@ void main() {
                   KcStateView(
                     state: state,
                     title: 'Status pilihan makanan',
-                    message: 'Kamu tetap bisa mencari dan memilih secara manual.',
+                    message:
+                        'Kamu tetap bisa mencari dan memilih secara manual.',
                     actionLabel: 'Coba lagi',
                     onAction: () {},
                   ),

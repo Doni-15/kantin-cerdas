@@ -18,16 +18,14 @@ class KcFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final duration = KantinCerdasMotion.durationOf(context);
+    final animation = KantinCerdasMotion.styleOf(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           for (final option in options)
             Padding(
-              padding: const EdgeInsets.only(
-                right: KantinCerdasSpacing.space2,
-              ),
+              padding: const EdgeInsets.only(right: KantinCerdasSpacing.space2),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
                   minWidth: KantinCerdasSize.minimumTouchTarget,
@@ -50,10 +48,10 @@ class KcFilterBar extends StatelessWidget {
                         : colors.onSurface,
                   ),
                   chipAnimationStyle: ChipAnimationStyle(
-                    enableAnimation: AnimationStyle(duration: duration),
-                    selectAnimation: AnimationStyle(duration: duration),
-                    avatarDrawerAnimation: AnimationStyle(duration: duration),
-                    deleteDrawerAnimation: AnimationStyle(duration: duration),
+                    enableAnimation: animation,
+                    selectAnimation: animation,
+                    avatarDrawerAnimation: animation,
+                    deleteDrawerAnimation: animation,
                   ),
                 ),
               ),

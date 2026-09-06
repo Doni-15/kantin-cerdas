@@ -27,9 +27,7 @@ class _DesignSystemPreviewState extends State<DesignSystemPreview> {
       theme: KantinCerdasTheme.light,
       darkTheme: KantinCerdasTheme.dark,
       themeMode: _dark ? ThemeMode.dark : ThemeMode.light,
-      home: _PreviewScreen(
-        onToggleTheme: () => setState(() => _dark = !_dark),
-      ),
+      home: _PreviewScreen(onToggleTheme: () => setState(() => _dark = !_dark)),
     );
   }
 }
@@ -63,7 +61,10 @@ class _PreviewScreenState extends State<_PreviewScreen> {
         children: [
           Semantics(
             header: true,
-            child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
           ),
           for (final child in children) ...[
             const SizedBox(height: KantinCerdasSpacing.space3),
@@ -81,7 +82,8 @@ class _PreviewScreenState extends State<_PreviewScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Komponen UI'),
-        toolbarHeight: MediaQuery.orientationOf(context) == Orientation.landscape
+        toolbarHeight:
+            MediaQuery.orientationOf(context) == Orientation.landscape
             ? 48
             : kToolbarHeight,
         scrolledUnderElevation: 0,
@@ -180,10 +182,14 @@ class _PreviewScreenState extends State<_PreviewScreen> {
                       KcViewState.empty => 'Coba ubah filter.',
                       KcViewState.error => 'Periksa koneksi lalu coba lagi.',
                       KcViewState.offline => 'Menampilkan data yang tersimpan.',
-                      KcViewState.disabled => 'Kamu masih bisa melihat menunya.',
-                      KcViewState.success => 'Kamu bisa melanjutkan memilih menu.',
+                      KcViewState.disabled =>
+                        'Kamu masih bisa melihat menunya.',
+                      KcViewState.success =>
+                        'Kamu bisa melanjutkan memilih menu.',
                     },
-                    actionLabel: state == KcViewState.error ? 'Coba lagi' : null,
+                    actionLabel: state == KcViewState.error
+                        ? 'Coba lagi'
+                        : null,
                     onAction: state == KcViewState.error ? notify : null,
                   ),
               ]),

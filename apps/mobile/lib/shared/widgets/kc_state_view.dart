@@ -64,12 +64,16 @@ class KcStateView extends StatelessWidget {
                 const SizedBox(height: KantinCerdasSpacing.space2),
                 Text(
                   title,
-                  style: theme.textTheme.titleLarge?.copyWith(color: foreground),
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: foreground,
+                  ),
                 ),
                 const SizedBox(height: KantinCerdasSpacing.space2),
                 Text(
                   message,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: foreground),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: foreground,
+                  ),
                 ),
                 if (onAction != null) ...[
                   const SizedBox(height: KantinCerdasSpacing.space3),
