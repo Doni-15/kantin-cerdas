@@ -8,9 +8,17 @@ Format changelog mengikuti Keep a Changelog dan penomoran versi mengikuti Semant
 
 ### Changed
 
+- Melengkapi pemetaan warna teks sekunder, surface/container, indikator navigasi aktif, serta gaya komponen pada tema terang dan gelap.
+- Memusatkan token warna, tipografi, spacing, radius, dan ukuran di `lib/shared/design_system/` beserta penyesuaian import.
 - Menyelaraskan design system, roadmap, checklist UI, panduan kontribusi, dan copy layar fondasi dengan Full Mockup UI/UX v2 “Kantin Kampus Praktis”.
 - Mengunci floating assistant sebagai bantuan kontekstual pada Beranda dan Detail Stan, dengan coachmark satu kali, modal bottom sheet, fallback manual, serta dukungan reduced motion.
 - Menggantikan empat PNG mockup awal dengan satu paket PDF Full Mockup UI/UX v2 sebagai acuan visual resmi tim.
+
+### Fixed
+
+- Menyelaraskan nama baseline pada template PR menjadi Kantin Kampus Praktis dan membetulkan penjelasan build number pada roadmap.
+- Menyesuaikan ekspektasi ikon smoke test menjadi `Icons.restaurant_menu_rounded`; satu widget test kembali lulus.
+- Menambahkan scroll pada layar fondasi agar konten dapat digulir saat ruang vertikal terbatas; validasi landscape dan teks besar masih perlu dilakukan.
 
 ## [0.1.0-alpha.2] - 2026-09-04
 

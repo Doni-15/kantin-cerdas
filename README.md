@@ -4,7 +4,7 @@
 
 KantinCerdas adalah aplikasi Android berbasis Flutter untuk layanan pre-order **Pesan & Ambil** di kantin kampus. Mahasiswa dapat memilih menu sebelum tiba, sedangkan pengelola stan dapat memproses pesanan dan memperbarui ketersediaan menu.
 
-Repository ini berada pada tahap fondasi `v0.1.0-alpha.2`. Aplikasi memiliki layar status khusus KantinCerdas, struktur source yang terpisah, dokumentasi produk dan rilis, serta otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
+Fondasi `v0.1.0-alpha.2` sedang dikembangkan menuju `v0.2.0-alpha.1`; token desain dan tema mulai diterapkan. Aplikasi memiliki layar status khusus KantinCerdas, struktur source yang terpisah, dokumentasi produk dan rilis, serta otomatisasi kualitas. UI alur produk, data dummy, AI, notifikasi, dan backend belum diimplementasikan.
 
 ## Tujuan Proyek
 
@@ -22,7 +22,7 @@ KantinCerdas dirancang untuk:
 | --- | --- | --- |
 | Proyek Flutter Android | Tersedia | Fondasi khusus KantinCerdas dapat dianalisis, diuji, dan dibangun |
 | Identitas aplikasi | Tersedia | Nama Android `KantinCerdas` dan application ID `io.github.doni15.kantincerdas` |
-| Design system | Terdokumentasi | Token visual, komponen, dan arah desain “Kantin Kampus Praktis” |
+| Design system | Dalam pengerjaan | Token di `lib/shared/design_system/` dan tema mulai diterapkan; komponen bersama serta validasi visual belum lengkap |
 | Mockup | Full Mockup UI/UX v2 | Satu PDF acuan berisi 11 layar mahasiswa, 6 layar pengelola, dan state penting |
 | Mini-SRS, roadmap, dan checklist UI | Tersedia | Kebutuhan, tahapan pengembangan, dan release gate telah dipetakan |
 | Otomatisasi GitHub | Aktif | Flutter CI, Issue Forms, Pull Request template, dan Dependabot |
@@ -93,7 +93,9 @@ kantin-cerdas/
 │       │   │   └── kantin_cerdas_app.dart
 │       │   ├── core/README.md
 │       │   ├── features/README.md
-│       │   ├── shared/README.md
+│       │   ├── shared/
+│       │   │   ├── design_system/
+│       │   │   └── README.md
 │       │   └── main.dart
 │       ├── test/
 │       └── pubspec.yaml

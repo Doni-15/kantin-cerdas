@@ -8,6 +8,6 @@ void main() {
 
     expect(find.text('KantinCerdas'), findsOneWidget);
     expect(find.text('Fondasi aplikasi siap'), findsOneWidget);
-    expect(find.byIcon(Icons.restaurant_menu), findsOneWidget);
+    expect(find.byIcon(Icons.restaurant_menu_rounded), findsOneWidget);
   });
 }
