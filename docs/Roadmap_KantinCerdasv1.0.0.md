@@ -204,13 +204,13 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** SRS.md dapat dibaca dan tautan relatifnya benar.
   - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: #2 · PR: #2
 
-- [ ] **KC-ENG-07** · `docs` · Menempatkan ROADMAP di root repository
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-07** · `docs` · Menempatkan ROADMAP folder docs repository
   - **Selesai jika:** Task ID tetap utuh saat dimigrasikan ke Issues.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #3 · PR: #3
 
-- [ ] **KC-ENG-08** · `docs` · Menempatkan README di root repository
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-08** · `docs` · Menempatkan README root repository
   - **Selesai jika:** Status proyek disesuaikan dengan implementasi aktual.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
 
 - [ ] **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
   - **Selesai jika:** 107 file sumber sesuai hash manifest.
