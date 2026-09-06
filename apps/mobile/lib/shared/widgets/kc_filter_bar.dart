@@ -35,7 +35,9 @@ class KcFilterBar extends StatelessWidget {
                 child: FilterChip(
                   label: Text(option),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(KantinCerdasRadius.pill),
+                    borderRadius: BorderRadius.circular(
+                      KantinCerdasRadius.pill,
+                    ),
                   ),
                   selected: selected.contains(option),
                   onSelected: onSelected == null
