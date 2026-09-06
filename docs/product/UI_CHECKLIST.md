@@ -2,7 +2,7 @@
 
 **Dokumen:** Checklist implementasi dan version control fase UI  
 **Versi dokumen:** 2.0  
-**Pembaruan:** 4 September 2026  
+**Pembaruan:** 6 September 2026  
 **Cakupan:** `v0.1.0-alpha.1` sampai `v0.7.0-beta.1`, termasuk maintenance
 `v0.1.0-alpha.2`
 **Platform:** Android dengan Flutter  
@@ -157,7 +157,7 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 |---|---|---:|---|---|
 | `v0.1.0-alpha.1` | Fondasi Flutter, Git, quality gate, dan acuan desain | Hari 1 | 🟨 | 🟩 |
 | `v0.1.0-alpha.2` | Perapian fondasi kolaborasi dan dokumentasi rilis | Maintenance | 🟩 | 🟩 |
-| `v0.2.0-alpha.1` | Implementasi “Kantin Kampus Praktis”, app shell, dan fake data | Hari 2–3 | ⬜ | ⬜ |
+| `v0.2.0-alpha.1` | Implementasi “Kantin Kampus Praktis”, app shell, dan fake data | Hari 2–3 | 🟨 | ⬜ |
 | `v0.3.0-alpha.1` | Katalog, pencarian, dan filter | Hari 4–5 | ⬜ | ⬜ |
 | `v0.4.0-alpha.1` | UI Asisten Pilih Menu | Hari 6–7 | ⬜ | ⬜ |
 | `v0.5.0-alpha.1` | Keranjang dan pemesanan dummy | Hari 8 | ⬜ | ⬜ |
@@ -227,6 +227,29 @@ State acuan wajib: **loading, hasil kosong, offline dengan data tersimpan, error
 
 **Target:** semua halaman utama bisa dinavigasi dan memiliki fondasi UI/data yang siap diganti ke backend.  
 **Versi `pubspec.yaml`:** `0.2.0-alpha.1+3`
+
+#### Catatan progres fondasi — 6 September 2026
+
+Catatan validasi lokal pada branch `fix/theme-foundation-20260906-002855`.
+Saat dicatat, perubahan belum di-merge ke `main`; checkbox mengikuti aturan
+pencatatan di atas.
+
+- **UI-201–UI-203 (progres parsial):** token warna, tipografi, spacing, radius,
+  dan ukuran ditempatkan di `lib/shared/design_system/`. Pemetaan warna dan
+  gaya komponen pada tema dilengkapi; ini belum menuntaskan seluruh kriteria
+  komponen bersama dan aksesibilitas.
+- Layar fondasi diberi scroll untuk ruang vertikal yang sempit.
+- Smoke test yang dipulihkan disesuaikan dengan `Icons.restaurant_menu_rounded`.
+- **Validasi lokal lulus:** `flutter analyze`, satu widget test
+  (`All tests passed!`), build APK debug, serta pemasangan dan peluncuran
+  melalui `flutter run` pada emulator Android `sdk gphone16k x86 64`.
+  Peluncuran emulator menjadi bukti lokal untuk **UI-103**.
+- **Masih perlu diverifikasi:** landscape dengan teks besar, lebar
+  360/390/412 dp, aksesibilitas pada UI-207, CI PR, dan merge ke `main`.
+
+Pekerjaan berikutnya: tinjau kelengkapan kriteria UI-201–UI-203,
+kemudian komponen tombol bersama (UI-204). App shell, navigasi, model domain,
+dan fake repository tetap mengikuti urutan milestone `v0.2.0-alpha.1`.
 
 #### A. Design system
 

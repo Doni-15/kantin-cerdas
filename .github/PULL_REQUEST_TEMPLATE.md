@@ -28,7 +28,7 @@ Sertakan screenshot sebelum dan sesudah untuk perubahan UI.
 ## Checklist
 
 - [ ] Perubahan sesuai scope issue.
-- [ ] UI mengikuti design system Kantin Hangat.
+- [ ] UI mengikuti design system Kantin Kampus Praktis.
 - [ ] Tampilan diperiksa pada lebar 360, 390, dan 412 dp jika relevan.
 - [ ] Format Dart sudah diperiksa.
 - [ ] `flutter analyze` lulus.

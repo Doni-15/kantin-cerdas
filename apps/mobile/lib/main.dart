@@ -1,6 +1,3 @@
-import 'package:flutter/widgets.dart';
-import 'package:kantincerdas/app/kantin_cerdas_app.dart';
+import 'package:kantincerdas/app/bootstrap.dart';
 
-void main() {
-  runApp(const KantinCerdasApp());
-}
+void main() => bootstrap();
