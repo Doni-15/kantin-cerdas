@@ -210,11 +210,11 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-08** · `docs` · Menempatkan README root repository
   - **Selesai jika:** Status proyek disesuaikan dengan implementasi aktual.
-  - PIC: — · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
 
 - [ ] **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
   - **Selesai jika:** 107 file sumber sesuai hash manifest.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
 
 - [ ] **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
   - **Selesai jika:** main_student.dart membuka shell mahasiswa dengan fake session.
