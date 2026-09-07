@@ -210,19 +210,19 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-08** · `docs` · Menempatkan README root repository
   - **Selesai jika:** Status proyek disesuaikan dengan implementasi aktual.
-  - PIC: — · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
 
-- [ ] **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
   - **Selesai jika:** 107 file sumber sesuai hash manifest.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
 
-- [ ] **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
   - **Selesai jika:** main_student.dart membuka shell mahasiswa dengan fake session.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![IN_REVIEW](https://img.shields.io/badge/IN_REVIEW-7E22CE?style=flat-square)  · Issue: — · PR: —
 
-- [ ] **KC-ENG-11** · `chore` · Membuat entry point pengelola
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-11** · `chore` · Membuat entry point pengelola
   - **Selesai jika:** main_manager.dart membuka shell pengelola dengan fake session.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![IN_REVIEW](https://img.shields.io/badge/IN_REVIEW-7E22CE?style=flat-square)  · Issue: — · PR: —
 
 - [ ] **KC-ENG-12** · `refactor` · Menyiapkan composition root
   - **Selesai jika:** Repository diinjeksi melalui constructor.

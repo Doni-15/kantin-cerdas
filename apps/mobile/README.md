@@ -1,17 +1,37 @@
-# kantin_cerdas
+# KantinCerdas — Flutter Android
 
-A new Flutter project.
+Jalankan perintah berikut dari `apps/mobile/`.
 
-## Getting Started
+| Entry point | Sesi | Navigasi |
+| --- | --- | --- |
+| `lib/main_student.dart` | Doni, mahasiswa | Beranda, Pesanan, Profil |
+| `lib/main_manager.dart` | Bu Rina, pengelola Dapur Bu Rina | Dashboard, Pesanan, Menu, Profil |
+| `lib/main.dart` | Mahasiswa secara default | Sama dengan entry point mahasiswa |
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run -t lib/main_student.dart
+flutter run -t lib/main_manager.dart
+```
 
-A few resources to get you started if this is your first Flutter project:
+Jalankan satu perintah `flutter run` pada satu waktu.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Pemeriksaan
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
+```
+
+Saat ini aplikasi hanya menyediakan shell dan navigasi dasar.
+Sesi contoh bukan autentikasi backend. Daftar menu, transaksi, dan
+pengelolaan pesanan belum diimplementasikan.
+
+`DemoSession` masih berupa data immutable. Session repository,
+pergantian sesi dinamis, dan route registry mengikuti task berikutnya.
+
+Font runtime disalin dari baseline. Jangan mengedit sumber dalam
+`design/baseline/`.
+
+Alur kontribusi: branch tugas → `KantinCerdasv0.1.0` → `main`.

@@ -177,6 +177,8 @@ Query dan catatan diperlakukan sebagai teks, tidak sebagai HTML/perintah. Trim d
 
 Pemisahan UI/ViewModel dan data/repository diadaptasi dari [panduan arsitektur Flutter](https://docs.flutter.dev/app-architecture/guide). Pilihan ChangeNotifier dan constructor injection di atas adalah keputusan proyek yang diusulkan, bukan satu-satunya pola Flutter yang benar.
 
+**Implementasi KC-ENG-10/11:** `apps/mobile/lib/main_student.dart` dan `main_manager.dart` membuka shell melalui `lib/app/demo_app.dart`. `main.dart` mengarah ke mahasiswa. Sesi contoh memakai Doni dan Bu Rina; pengelola memiliki scope `dapur-bu-rina`. Navigasi dasar sudah tersedia, sedangkan konten layar lengkap, repository sesi, dan route registry tetap mengikuti task lanjutan.
+
 ### 5.2 Struktur direktori target
 
 | Lokasi | Tanggung jawab |
