@@ -5,16 +5,16 @@ enum DemoRole { student, manager }
 /// Sesi contoh lokal; bukan autentikasi backend.
 class DemoSession {
   const DemoSession.student()
-      : role = DemoRole.student,
-        name = 'Doni',
-        email = 'doni@example.com',
-        stallId = null;
+    : role = DemoRole.student,
+      name = 'Doni',
+      email = 'doni@example.com',
+      stallId = null;
 
   const DemoSession.manager()
-      : role = DemoRole.manager,
-        name = 'Bu Rina',
-        email = 'rina@example.com',
-        stallId = 'dapur-bu-rina';
+    : role = DemoRole.manager,
+      name = 'Bu Rina',
+      email = 'rina@example.com',
+      stallId = 'dapur-bu-rina';
 
   final DemoRole role;
   final String name;
@@ -55,8 +55,6 @@ class DemoApp extends StatelessWidget {
           backgroundColor: Colors.white,
           selectedItemColor: Color(0xFF9B341B),
           unselectedItemColor: Color(0xFF6D5A50),
-          selectedFontSize: 10,
-          unselectedFontSize: 10,
           selectedLabelStyle: TextStyle(fontWeight: FontWeight.w700),
           type: BottomNavigationBarType.fixed,
         ),
@@ -135,14 +133,13 @@ class _RoleShellState extends State<RoleShell> {
         child: SizedBox(
           height: 72,
           child: BottomNavigationBar(
+            selectedFontSize: 10,
+            unselectedFontSize: 10,
             currentIndex: selectedIndex,
             onTap: (index) => setState(() => selectedIndex = index),
             items: [
               for (var i = 0; i < labels.length; i++)
-                BottomNavigationBarItem(
-                  icon: Icon(icons[i]),
-                  label: labels[i],
-                ),
+                BottomNavigationBarItem(icon: Icon(icons[i]), label: labels[i]),
             ],
           ),
         ),
