@@ -43,23 +43,6 @@ Kondisi loading, kosong, gagal, offline, teks panjang, dan keyboard aktif juga t
 
 Flutter dan Dart digunakan untuk Android portrait. UI memakai komponen bersama, ViewModel, dan interface repository; data berasal dari fixture lokal dan in-memory store. Pilihan awal state menggunakan ChangeNotifier/ValueNotifier dari SDK dengan constructor injection. Versi Flutter konkret dipilih, diverifikasi, dan dipin saat bootstrap; jangan memakai versi berbeda-beda antaranggota.
 
-## Flutter SDK
-
-Proyek menggunakan versi SDK berikut:
-
-- Flutter: **3.44.9**
-- Channel: **stable**
-- Dart bawaan Flutter: **3.12.2**
-- Target platform: **Android**
-
-Versi Flutter yang disepakati dicatat dalam `.flutter-version`.
-Pengembang dan CI harus menggunakan versi tersebut.
-
-Periksa SDK sebelum menjalankan proyek:
-
-```bash
-flutter --version
-
 | Lokasi | Kegunaan |
 | --- | --- |
 | `apps/mobile/lib/app/` | Bootstrap, dependency wiring, route, sesi |
