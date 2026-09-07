@@ -1,34 +1,16 @@
 import 'package:flutter/material.dart';
 
-enum DemoRole { student, manager }
-
-/// Sesi contoh lokal; bukan autentikasi backend.
-class DemoSession {
-  const DemoSession.student()
-    : role = DemoRole.student,
-      name = 'Doni',
-      email = 'doni@example.com',
-      stallId = null;
-
-  const DemoSession.manager()
-    : role = DemoRole.manager,
-      name = 'Bu Rina',
-      email = 'rina@example.com',
-      stallId = 'dapur-bu-rina';
-
-  final DemoRole role;
-  final String name;
-  final String email;
-  final String? stallId;
-}
+import '../core/data/session_repository.dart';
+import '../core/models/demo_session.dart';
 
 class DemoApp extends StatelessWidget {
-  const DemoApp({super.key, required this.session});
+  const DemoApp({super.key, required this.sessionRepository});
 
-  final DemoSession session;
+  final SessionRepository sessionRepository;
 
   @override
   Widget build(BuildContext context) {
+    final session = sessionRepository.current();
     const background = Color(0xFFFAFAF8);
     return MaterialApp(
       title: 'KantinCerdas',
