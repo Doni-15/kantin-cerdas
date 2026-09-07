@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
-import 'app/demo_app.dart';
 
-void main() => runApp(const DemoApp(session: DemoSession.student()));
+import 'app/bootstrap.dart';
+import 'core/models/demo_session.dart';
+
+void main() => runApp(createDemoApp(DemoRole.student));
