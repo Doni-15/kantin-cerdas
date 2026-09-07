@@ -54,6 +54,24 @@ Flutter dan Dart digunakan untuk Android portrait. UI memakai komponen bersama, 
 
 Direktori Flutter di tabel merupakan struktur target. Untuk susunan awal repository, letakkan `README.md` di root serta `SRS_KantinCerdasv1.0.0.md` dan `Roadmap_KantinCerdasv1.0.0.md` di `docs/`, lalu salin isi folder `Desaign System/` dari ZIP desain asli ke `design/baseline/`. Setelah itu `design/baseline/` memuat `index.html`, `app.js`, `styles.css`, `README.md` sumber, `assets/`, dan `screens/`.
 
+## Flutter SDK
+
+Proyek menggunakan versi SDK berikut:
+
+- Flutter: **3.44.9**
+- Channel: **stable**
+- Dart bawaan Flutter: **3.12.2**
+- Target platform: **Android**
+
+Versi Flutter yang disepakati dicatat dalam `.flutter-version`.
+Pengembang dan CI harus menggunakan versi tersebut.
+
+Periksa SDK sebelum menjalankan proyek:
+
+```bash
+flutter --version
+```
+
 ## Menjalankan proyek
 
 ### Melihat desain sekarang

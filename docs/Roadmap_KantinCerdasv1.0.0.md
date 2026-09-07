@@ -184,9 +184,9 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** pubspec.yaml dan struktur Android tersedia; nama aplikasi KantinCerdas.
   - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: #1 · PR: #1
 
-- [ ] **KC-ENG-02** · `chore` · Memilih dan mencatat Flutter SDK
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-02** · `chore` · Memilih dan mencatat Flutter SDK
   - **Selesai jika:** Versi konkret berhasil menjalankan proyek awal; pin dicatat dalam repository.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: #5 · PR: #5
 
 - [ ] **KC-ENG-03** · `chore` · Menyimpan pubspec.lock aplikasi
   - **Selesai jika:** Resolusi dependency aplikasi tercatat dan tidak diabaikan Git.
