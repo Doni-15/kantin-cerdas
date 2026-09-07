@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <meta name="theme-color" content="#FAFAF8">
+  <title>KantinCerdas — Paket Redesign UI/UX</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="gallery" class="gallery-shell" hidden>
+    <aside class="gallery-sidebar">
+      <div class="gallery-brand"><span>KC</span><div><strong>KantinCerdas</strong><small>88 layar redesign</small></div></div>
+      <label class="gallery-search"><span>⌕</span><input id="screen-search" placeholder="Cari ID atau layar" aria-label="Cari layar"></label>
+      <div id="screen-groups" class="screen-groups"></div>
+    </aside>
+    <main class="gallery-main">
+      <header class="gallery-header">
+        <div><span id="gallery-id" class="gallery-kicker">M01</span><h1 id="gallery-title">Beranda</h1></div>
+        <div class="gallery-actions"><button id="prev-screen" class="gallery-icon" aria-label="Layar sebelumnya">←</button><button id="next-screen" class="gallery-icon" aria-label="Layar berikutnya">→</button><a id="download-screen" class="gallery-download" download>Unduh gambar</a></div>
+      </header>
+      <section class="preview-stage"><div id="preview-frame" class="preview-frame"></div></section>
+      <footer class="gallery-footer"><span>Baseline Android • 390 × 844 dp</span><span id="gallery-count">1 dari 88</span></footer>
+    </main>
+  </div>
+  <main id="capture-root"></main>
+  <script src="app.js"></script>
+</body>
+</html>
