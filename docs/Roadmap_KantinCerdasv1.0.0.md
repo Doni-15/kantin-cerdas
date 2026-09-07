@@ -6,7 +6,7 @@
 
 Roadmap ini memecah 88 referensi menjadi **644 task yang dapat ditugaskan sendiri-sendiri**: 525 task referensi desain dan 119 task engineering/data/logika/QA/rilis. Satu anggota dapat mengambil tugas tombol pencarian tanpa mengambil seluruh halaman Beranda. Tidak ada nama anggota, nomor Issue, atau status selesai yang dikarang.
 
-Gunakan [SRS.md](SRS.md) untuk aturan bisnis dan acceptance lengkap. Gunakan [README.md](README.md) untuk orientasi repository. Bagian per-screen pada SRS memakai nomor subrequirement yang sama dengan nomor task layar, sehingga `KC-M01-02` dapat ditelusuri ke `FR-M01.02`.
+Gunakan [SRS_KantinCerdasv1.0.0.md](SRS_KantinCerdasv1.0.0.md) untuk aturan bisnis dan acceptance lengkap. Gunakan [README.md](../README.md) untuk orientasi repository. Bagian per-screen pada SRS memakai nomor subrequirement yang sama dengan nomor task layar, sehingga `KC-M01-02` dapat ditelusuri ke `FR-M01.02`.
 
 ## Cara memakai roadmap bersama teman
 
@@ -374,7 +374,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### F00 — Fondasi visual dan komponen
 
-**Versi:** KantinCerdasv0.1.0 · **Requirement:** FR-F00 · **[Referensi PNG](design/baseline/screens/F00_fondasi_visual_dan_komponen.png)**
+**Versi:** KantinCerdasv0.1.0 · **Requirement:** FR-F00 · **[Referensi PNG](../design/baseline/screens/F00_fondasi_visual_dan_komponen.png)**
 
 **Dependensi bagian:** Scaffold ENG; nilai sumber CSS dan F00; D-03 pada metrik konflik.
 
@@ -565,7 +565,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M01 — Beranda, kunjungan kembali
 
-**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M01 · **[Referensi PNG](design/baseline/screens/M01_beranda_kunjungan_kembali.png)**
+**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M01 · **[Referensi PNG](../design/baseline/screens/M01_beranda_kunjungan_kembali.png)**
 
 **Dependensi bagian:** KC-ENG-10; KC-ENG-14; model/fixture DATA; komponen F00.
 
@@ -641,7 +641,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M04 — Hasil pencarian
 
-**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M04 · **[Referensi PNG](design/baseline/screens/M04_hasil_pencarian.png)**
+**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M04 · **[Referensi PNG](../design/baseline/screens/M04_hasil_pencarian.png)**
 
 **Dependensi bagian:** M01; CatalogRepository dan CatalogFilter DATA.
 
@@ -685,7 +685,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M05 — Filter pencarian
 
-**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M05 · **[Referensi PNG](design/baseline/screens/M05_filter_pencarian.png)**
+**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M05 · **[Referensi PNG](../design/baseline/screens/M05_filter_pencarian.png)**
 
 **Dependensi bagian:** M04; komponen sheet/chip/radio F00.
 
@@ -717,7 +717,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M06 — Detail stan buka
 
-**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M06 · **[Referensi PNG](design/baseline/screens/M06_detail_stan_buka.png)**
+**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M06 · **[Referensi PNG](../design/baseline/screens/M06_detail_stan_buka.png)**
 
 **Dependensi bagian:** M01/M04; fixture stan/menu DATA.
 
@@ -769,7 +769,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M08 — Detail menu
 
-**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M08 · **[Referensi PNG](design/baseline/screens/M08_detail_menu.png)**
+**Versi:** KantinCerdasv0.2.0 · **Requirement:** FR-M08 · **[Referensi PNG](../design/baseline/screens/M08_detail_menu.png)**
 
 **Dependensi bagian:** M06/M04; model MenuItem dan input F00.
 
@@ -816,7 +816,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M02 — Pengenalan asisten
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M02 · **[Referensi PNG](design/baseline/screens/M02_pengenalan_asisten.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M02 · **[Referensi PNG](../design/baseline/screens/M02_pengenalan_asisten.png)**
 
 **Dependensi bagian:** M01 dan F00 coachmark/FAB.
 
@@ -840,7 +840,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M10 — Asisten pilih menu
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M10 · **[Referensi PNG](design/baseline/screens/M10_asisten_pilih_menu.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M10 · **[Referensi PNG](../design/baseline/screens/M10_asisten_pilih_menu.png)**
 
 **Dependensi bagian:** M01; RecommendationRepository; komponen sheet F00.
 
@@ -880,7 +880,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M11 — Asisten dengan keyboard
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M11 · **[Referensi PNG](design/baseline/screens/M11_asisten_dengan_keyboard.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M11 · **[Referensi PNG](../design/baseline/screens/M11_asisten_dengan_keyboard.png)**
 
 **Dependensi bagian:** M10; dukungan input/fokus Flutter.
 
@@ -904,7 +904,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M12 — Asisten meminta klarifikasi
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M12 · **[Referensi PNG](design/baseline/screens/M12_asisten_meminta_klarifikasi.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M12 · **[Referensi PNG](../design/baseline/screens/M12_asisten_meminta_klarifikasi.png)**
 
 **Dependensi bagian:** M10; hasil clarificationNeeded.
 
@@ -932,7 +932,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M13 — Hasil rekomendasi
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M13 · **[Referensi PNG](design/baseline/screens/M13_hasil_rekomendasi.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M13 · **[Referensi PNG](../design/baseline/screens/M13_hasil_rekomendasi.png)**
 
 **Dependensi bagian:** M10; hasil matches.
 
@@ -968,7 +968,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M15 — Asisten gagal
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M15 · **[Referensi PNG](design/baseline/screens/M15_asisten_gagal.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M15 · **[Referensi PNG](../design/baseline/screens/M15_asisten_gagal.png)**
 
 **Dependensi bagian:** M10; hasil failure.
 
@@ -992,7 +992,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M16 — Rekomendasi kosong
 
-**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M16 · **[Referensi PNG](design/baseline/screens/M16_rekomendasi_kosong.png)**
+**Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M16 · **[Referensi PNG](../design/baseline/screens/M16_rekomendasi_kosong.png)**
 
 **Dependensi bagian:** M13; hasil empty.
 
@@ -1071,7 +1071,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M03 — Beranda dengan cart
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M03 · **[Referensi PNG](design/baseline/screens/M03_beranda_dengan_cart.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M03 · **[Referensi PNG](../design/baseline/screens/M03_beranda_dengan_cart.png)**
 
 **Dependensi bagian:** M01 dan LOGIC; cart fixture dua porsi.
 
@@ -1103,7 +1103,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M07 — Detail stan dengan cart
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M07 · **[Referensi PNG](design/baseline/screens/M07_detail_stan_dengan_cart.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M07 · **[Referensi PNG](../design/baseline/screens/M07_detail_stan_dengan_cart.png)**
 
 **Dependensi bagian:** M06 dan LOGIC.
 
@@ -1135,7 +1135,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M09 — Menu berhasil ditambahkan
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M09 · **[Referensi PNG](design/baseline/screens/M09_menu_berhasil_ditambahkan.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M09 · **[Referensi PNG](../design/baseline/screens/M09_menu_berhasil_ditambahkan.png)**
 
 **Dependensi bagian:** M08 dan LOGIC.
 
@@ -1163,7 +1163,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M14 — Rekomendasi dengan cart
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M14 · **[Referensi PNG](design/baseline/screens/M14_rekomendasi_dengan_cart.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M14 · **[Referensi PNG](../design/baseline/screens/M14_rekomendasi_dengan_cart.png)**
 
 **Dependensi bagian:** M13 dan LOGIC.
 
@@ -1191,7 +1191,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M17 — Keranjang dua porsi
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M17 · **[Referensi PNG](design/baseline/screens/M17_keranjang_dua_porsi.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M17 · **[Referensi PNG](../design/baseline/screens/M17_keranjang_dua_porsi.png)**
 
 **Dependensi bagian:** LOGIC; CartRepository; F00 row/quantity/footer.
 
@@ -1255,7 +1255,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M18 — Edit catatan item
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M18 · **[Referensi PNG](design/baseline/screens/M18_edit_catatan_item.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M18 · **[Referensi PNG](../design/baseline/screens/M18_edit_catatan_item.png)**
 
 **Dependensi bagian:** M17; snapshot draft line.
 
@@ -1287,7 +1287,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M19 — Hapus item dengan undo
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M19 · **[Referensi PNG](design/baseline/screens/M19_hapus_item_dengan_undo.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M19 · **[Referensi PNG](../design/baseline/screens/M19_hapus_item_dengan_undo.png)**
 
 **Dependensi bagian:** M17; snapshot undo LOGIC.
 
@@ -1315,7 +1315,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M20 — Konfirmasi kosongkan cart
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M20 · **[Referensi PNG](design/baseline/screens/M20_konfirmasi_kosongkan_cart.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M20 · **[Referensi PNG](../design/baseline/screens/M20_konfirmasi_kosongkan_cart.png)**
 
 **Dependensi bagian:** M17; F00 dialog.
 
@@ -1339,7 +1339,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M21 — Ganti stan
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M21 · **[Referensi PNG](design/baseline/screens/M21_ganti_stan.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M21 · **[Referensi PNG](../design/baseline/screens/M21_ganti_stan.png)**
 
 **Dependensi bagian:** LOGIC; callback tambah M14/M01/M06.
 
@@ -1367,7 +1367,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M22 — Keranjang kosong
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M22 · **[Referensi PNG](design/baseline/screens/M22_keranjang_kosong.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M22 · **[Referensi PNG](../design/baseline/screens/M22_keranjang_kosong.png)**
 
 **Dependensi bagian:** M17 dan state cart kosong.
 
@@ -1391,7 +1391,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M23 — Ketersediaan berubah
 
-**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M23 · **[Referensi PNG](design/baseline/screens/M23_ketersediaan_berubah.png)**
+**Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M23 · **[Referensi PNG](../design/baseline/screens/M23_ketersediaan_berubah.png)**
 
 **Dependensi bagian:** M17; CartValidator LOGIC.
 
@@ -1474,7 +1474,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M24 — Konfirmasi pesanan
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M24 · **[Referensi PNG](design/baseline/screens/M24_konfirmasi_pesanan.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M24 · **[Referensi PNG](../design/baseline/screens/M24_konfirmasi_pesanan.png)**
 
 **Dependensi bagian:** M17/M23; SUBMIT coordinator.
 
@@ -1510,7 +1510,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M25 — Membuat pesanan
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M25 · **[Referensi PNG](design/baseline/screens/M25_membuat_pesanan.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M25 · **[Referensi PNG](../design/baseline/screens/M25_membuat_pesanan.png)**
 
 **Dependensi bagian:** M24; SUBMIT idempotency.
 
@@ -1538,7 +1538,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M26 — Pesanan belum terkirim
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M26 · **[Referensi PNG](design/baseline/screens/M26_pesanan_belum_terkirim.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M26 · **[Referensi PNG](../design/baseline/screens/M26_pesanan_belum_terkirim.png)**
 
 **Dependensi bagian:** M25; knownFailure.
 
@@ -1562,7 +1562,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M27 — Hasil pengiriman belum diketahui
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M27 · **[Referensi PNG](design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M27 · **[Referensi PNG](../design/baseline/screens/M27_hasil_pengiriman_belum_diketahui.png)**
 
 **Dependensi bagian:** M25; SUBMIT lookup.
 
@@ -1594,7 +1594,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M28 — Pesanan berhasil
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M28 · **[Referensi PNG](design/baseline/screens/M28_pesanan_berhasil.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M28 · **[Referensi PNG](../design/baseline/screens/M28_pesanan_berhasil.png)**
 
 **Dependensi bagian:** M25/M27; order sukses terkonfirmasi.
 
@@ -1630,7 +1630,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M29 — Pesanan aktif
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M29 · **[Referensi PNG](design/baseline/screens/M29_pesanan_aktif.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M29 · **[Referensi PNG](../design/baseline/screens/M29_pesanan_aktif.png)**
 
 **Dependensi bagian:** OrderRepository; M28.
 
@@ -1662,7 +1662,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M30 — Riwayat mahasiswa
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M30 · **[Referensi PNG](design/baseline/screens/M30_riwayat_mahasiswa.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M30 · **[Referensi PNG](../design/baseline/screens/M30_riwayat_mahasiswa.png)**
 
 **Dependensi bagian:** M29 dan fixture riwayat.
 
@@ -1690,7 +1690,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M31 — Menunggu konfirmasi
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M31 · **[Referensi PNG](design/baseline/screens/M31_menunggu_konfirmasi.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M31 · **[Referensi PNG](../design/baseline/screens/M31_menunggu_konfirmasi.png)**
 
 **Dependensi bagian:** M29; model Order/Event dan timeline F00.
 
@@ -1722,7 +1722,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M32 — Pesanan diproses
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M32 · **[Referensi PNG](design/baseline/screens/M32_pesanan_diproses.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M32 · **[Referensi PNG](../design/baseline/screens/M32_pesanan_diproses.png)**
 
 **Dependensi bagian:** M31; fixture processing.
 
@@ -1754,7 +1754,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M33 — Siap diambil
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M33 · **[Referensi PNG](design/baseline/screens/M33_siap_diambil.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M33 · **[Referensi PNG](../design/baseline/screens/M33_siap_diambil.png)**
 
 **Dependensi bagian:** M31; fixture ready.
 
@@ -1786,7 +1786,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M34 — Pesanan selesai
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M34 · **[Referensi PNG](design/baseline/screens/M34_pesanan_selesai.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M34 · **[Referensi PNG](../design/baseline/screens/M34_pesanan_selesai.png)**
 
 **Dependensi bagian:** M31; fixture completed.
 
@@ -1818,7 +1818,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M35 — Pesanan ditolak
 
-**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M35 · **[Referensi PNG](design/baseline/screens/M35_pesanan_ditolak.png)**
+**Versi:** KantinCerdasv0.5.0 · **Requirement:** FR-M35 · **[Referensi PNG](../design/baseline/screens/M35_pesanan_ditolak.png)**
 
 **Dependensi bagian:** M31; fixture rejected; D-06.
 
@@ -1909,7 +1909,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P01 — Dashboard pengelola
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P01 · **[Referensi PNG](design/baseline/screens/P01_dashboard_pengelola.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P01 · **[Referensi PNG](../design/baseline/screens/P01_dashboard_pengelola.png)**
 
 **Dependensi bagian:** KC-ENG-11; STATE agregasi; fixture antrean DATA.
 
@@ -1981,7 +1981,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P02 — Dialog menutup stan
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P02 · **[Referensi PNG](design/baseline/screens/P02_dialog_menutup_stan.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P02 · **[Referensi PNG](../design/baseline/screens/P02_dialog_menutup_stan.png)**
 
 **Dependensi bagian:** P01; StallRepository.
 
@@ -2009,7 +2009,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P03 — Dashboard stan tutup
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P03 · **[Referensi PNG](design/baseline/screens/P03_dashboard_stan_tutup.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P03 · **[Referensi PNG](../design/baseline/screens/P03_dashboard_stan_tutup.png)**
 
 **Dependensi bagian:** P02; shared state stan.
 
@@ -2037,7 +2037,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P04 — Pesanan baru
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P04 · **[Referensi PNG](design/baseline/screens/P04_pesanan_baru.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P04 · **[Referensi PNG](../design/baseline/screens/P04_pesanan_baru.png)**
 
 **Dependensi bagian:** P01; STATE scope/sorting.
 
@@ -2069,7 +2069,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P05 — Pesanan diproses
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P05 · **[Referensi PNG](design/baseline/screens/P05_pesanan_diproses.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P05 · **[Referensi PNG](../design/baseline/screens/P05_pesanan_diproses.png)**
 
 **Dependensi bagian:** P04; state processing.
 
@@ -2101,7 +2101,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P06 — Pesanan siap
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P06 · **[Referensi PNG](design/baseline/screens/P06_pesanan_siap.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P06 · **[Referensi PNG](../design/baseline/screens/P06_pesanan_siap.png)**
 
 **Dependensi bagian:** P04; state ready.
 
@@ -2133,7 +2133,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P07 — Riwayat pengelola
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P07 · **[Referensi PNG](design/baseline/screens/P07_riwayat_pengelola.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P07 · **[Referensi PNG](../design/baseline/screens/P07_riwayat_pengelola.png)**
 
 **Dependensi bagian:** P04; fixture riwayat.
 
@@ -2165,7 +2165,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P08 — Detail pesanan baru
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P08 · **[Referensi PNG](design/baseline/screens/P08_detail_pesanan_baru.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P08 · **[Referensi PNG](../design/baseline/screens/P08_detail_pesanan_baru.png)**
 
 **Dependensi bagian:** P04; STATE transition guard; D-04 untuk kontrol edit.
 
@@ -2205,7 +2205,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P09 — Detail pesanan diproses
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P09 · **[Referensi PNG](design/baseline/screens/P09_detail_pesanan_diproses.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P09 · **[Referensi PNG](../design/baseline/screens/P09_detail_pesanan_diproses.png)**
 
 **Dependensi bagian:** P08; STATE transisi processing.
 
@@ -2233,7 +2233,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P10 — Detail siap diambil
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P10 · **[Referensi PNG](design/baseline/screens/P10_detail_siap_diambil.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P10 · **[Referensi PNG](../design/baseline/screens/P10_detail_siap_diambil.png)**
 
 **Dependensi bagian:** P09; STATE transisi ready.
 
@@ -2257,7 +2257,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P11 — Konfirmasi penyerahan
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P11 · **[Referensi PNG](design/baseline/screens/P11_konfirmasi_penyerahan.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P11 · **[Referensi PNG](../design/baseline/screens/P11_konfirmasi_penyerahan.png)**
 
 **Dependensi bagian:** P10; STATE complete atomik.
 
@@ -2285,7 +2285,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P12 — Detail pesanan selesai
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P12 · **[Referensi PNG](design/baseline/screens/P12_detail_pesanan_selesai.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P12 · **[Referensi PNG](../design/baseline/screens/P12_detail_pesanan_selesai.png)**
 
 **Dependensi bagian:** P11; D-04 untuk treatment kontrol historis.
 
@@ -2309,7 +2309,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P13 — Konfirmasi penolakan
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P13 · **[Referensi PNG](design/baseline/screens/P13_konfirmasi_penolakan.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P13 · **[Referensi PNG](../design/baseline/screens/P13_konfirmasi_penolakan.png)**
 
 **Dependensi bagian:** P08; enum rejectionReason.
 
@@ -2345,7 +2345,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P14 — Detail pesanan ditolak
 
-**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P14 · **[Referensi PNG](design/baseline/screens/P14_detail_pesanan_ditolak.png)**
+**Versi:** KantinCerdasv0.6.0 · **Requirement:** FR-P14 · **[Referensi PNG](../design/baseline/screens/P14_detail_pesanan_ditolak.png)**
 
 **Dependensi bagian:** P13; D-04.
 
@@ -2376,7 +2376,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M36 — Profil mahasiswa
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-M36 · **[Referensi PNG](design/baseline/screens/M36_profil_mahasiswa.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-M36 · **[Referensi PNG](../design/baseline/screens/M36_profil_mahasiswa.png)**
 
 **Dependensi bagian:** Shell mahasiswa; UserProfile DATA.
 
@@ -2412,7 +2412,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### M37 — Preferensi makanan
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-M37 · **[Referensi PNG](design/baseline/screens/M37_preferensi_makanan.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-M37 · **[Referensi PNG](../design/baseline/screens/M37_preferensi_makanan.png)**
 
 **Dependensi bagian:** M36; PreferencesRepository.
 
@@ -2444,7 +2444,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P15 — Kelola menu
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P15 · **[Referensi PNG](design/baseline/screens/P15_kelola_menu.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P15 · **[Referensi PNG](../design/baseline/screens/P15_kelola_menu.png)**
 
 **Dependensi bagian:** P01; StallRepository availability; komponen menu F00.
 
@@ -2484,7 +2484,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P16 — Gagal ubah ketersediaan
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P16 · **[Referensi PNG](design/baseline/screens/P16_gagal_ubah_ketersediaan.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P16 · **[Referensi PNG](../design/baseline/screens/P16_gagal_ubah_ketersediaan.png)**
 
 **Dependensi bagian:** P15; knownFailure availability.
 
@@ -2508,7 +2508,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P17 — Pengaturan stan
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P17 · **[Referensi PNG](design/baseline/screens/P17_pengaturan_stan.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P17 · **[Referensi PNG](../design/baseline/screens/P17_pengaturan_stan.png)**
 
 **Dependensi bagian:** P18; StallRepository; P02 untuk konfirmasi tutup.
 
@@ -2552,7 +2552,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### P18 — Profil pengelola
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P18 · **[Referensi PNG](design/baseline/screens/P18_profil_pengelola.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-P18 · **[Referensi PNG](../design/baseline/screens/P18_profil_pengelola.png)**
 
 **Dependensi bagian:** Shell pengelola; UserProfile DATA.
 
@@ -2588,7 +2588,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U01 — Penjelasan notifikasi
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U01 · **[Referensi PNG](design/baseline/screens/U01_penjelasan_notifikasi.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U01 · **[Referensi PNG](../design/baseline/screens/U01_penjelasan_notifikasi.png)**
 
 **Dependensi bagian:** M28; gateway izin dummy DATA.
 
@@ -2616,7 +2616,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U02 — Izin notifikasi ditolak
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U02 · **[Referensi PNG](design/baseline/screens/U02_izin_notifikasi_ditolak.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U02 · **[Referensi PNG](../design/baseline/screens/U02_izin_notifikasi_ditolak.png)**
 
 **Dependensi bagian:** U01; state denied.
 
@@ -2640,7 +2640,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U03 — Notifikasi aktif
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U03 · **[Referensi PNG](design/baseline/screens/U03_notifikasi_aktif.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U03 · **[Referensi PNG](../design/baseline/screens/U03_notifikasi_aktif.png)**
 
 **Dependensi bagian:** U01; state granted; PreferencesRepository.
 
@@ -2664,7 +2664,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U04 — Bantuan
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U04 · **[Referensi PNG](design/baseline/screens/U04_bantuan.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U04 · **[Referensi PNG](../design/baseline/screens/U04_bantuan.png)**
 
 **Dependensi bagian:** M36/P18; D-07 untuk interaksi isi bantuan.
 
@@ -2700,7 +2700,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U05 — Tentang KantinCerdas
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U05 · **[Referensi PNG](design/baseline/screens/U05_tentang_kantincerdas.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U05 · **[Referensi PNG](../design/baseline/screens/U05_tentang_kantincerdas.png)**
 
 **Dependensi bagian:** M36/P18.
 
@@ -2728,7 +2728,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U06 — Data akun pengelola
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U06 · **[Referensi PNG](design/baseline/screens/U06_data_akun_pengelola.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U06 · **[Referensi PNG](../design/baseline/screens/U06_data_akun_pengelola.png)**
 
 **Dependensi bagian:** P18; UserProfile.
 
@@ -2756,7 +2756,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U07 — Konfirmasi keluar
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U07 · **[Referensi PNG](design/baseline/screens/U07_konfirmasi_keluar.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U07 · **[Referensi PNG](../design/baseline/screens/U07_konfirmasi_keluar.png)**
 
 **Dependensi bagian:** M36/P18; SessionRepository; D-08 untuk tujuan akhir.
 
@@ -2780,7 +2780,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U08 — Simpan pengaturan gagal
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U08 · **[Referensi PNG](design/baseline/screens/U08_simpan_pengaturan_gagal.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U08 · **[Referensi PNG](../design/baseline/screens/U08_simpan_pengaturan_gagal.png)**
 
 **Dependensi bagian:** P17; knownFailure settings.
 
@@ -2804,7 +2804,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### U09 — Preferensi tersimpan
 
-**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U09 · **[Referensi PNG](design/baseline/screens/U09_preferensi_tersimpan.png)**
+**Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-U09 · **[Referensi PNG](../design/baseline/screens/U09_preferensi_tersimpan.png)**
 
 **Dependensi bagian:** M37; sukses save.
 
@@ -2867,7 +2867,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S01 — Loading Beranda
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S01 · **[Referensi PNG](design/baseline/screens/S01_loading_beranda.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S01 · **[Referensi PNG](../design/baseline/screens/S01_loading_beranda.png)**
 
 **Dependensi bagian:** M01; controller skenario DATA; RECOVERY.
 
@@ -2895,7 +2895,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S02 — Hasil pencarian kosong
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S02 · **[Referensi PNG](design/baseline/screens/S02_hasil_pencarian_kosong.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S02 · **[Referensi PNG](../design/baseline/screens/S02_hasil_pencarian_kosong.png)**
 
 **Dependensi bagian:** M04; controller skenario DATA; RECOVERY.
 
@@ -2915,7 +2915,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S03 — Offline dengan data
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S03 · **[Referensi PNG](design/baseline/screens/S03_offline_dengan_data.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S03 · **[Referensi PNG](../design/baseline/screens/S03_offline_dengan_data.png)**
 
 **Dependensi bagian:** M03; controller skenario DATA; RECOVERY.
 
@@ -2947,7 +2947,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S04 — Offline tanpa data
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S04 · **[Referensi PNG](design/baseline/screens/S04_offline_tanpa_data.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S04 · **[Referensi PNG](../design/baseline/screens/S04_offline_tanpa_data.png)**
 
 **Dependensi bagian:** M01; controller skenario DATA; RECOVERY.
 
@@ -2967,7 +2967,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S05 — Gagal memuat Pesanan
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S05 · **[Referensi PNG](design/baseline/screens/S05_gagal_memuat_pesanan.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S05 · **[Referensi PNG](../design/baseline/screens/S05_gagal_memuat_pesanan.png)**
 
 **Dependensi bagian:** P04; controller skenario DATA; RECOVERY.
 
@@ -2987,7 +2987,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S06 — Detail stan tutup
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S06 · **[Referensi PNG](design/baseline/screens/S06_detail_stan_tutup.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S06 · **[Referensi PNG](../design/baseline/screens/S06_detail_stan_tutup.png)**
 
 **Dependensi bagian:** M06; controller skenario DATA; RECOVERY.
 
@@ -3015,7 +3015,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S07 — Detail menu habis
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S07 · **[Referensi PNG](design/baseline/screens/S07_detail_menu_habis.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S07 · **[Referensi PNG](../design/baseline/screens/S07_detail_menu_habis.png)**
 
 **Dependensi bagian:** M08; controller skenario DATA; RECOVERY.
 
@@ -3035,7 +3035,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S08 — Pembaruan status gagal
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S08 · **[Referensi PNG](design/baseline/screens/S08_pembaruan_status_gagal.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S08 · **[Referensi PNG](../design/baseline/screens/S08_pembaruan_status_gagal.png)**
 
 **Dependensi bagian:** M32; controller skenario DATA; RECOVERY.
 
@@ -3059,7 +3059,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S09 — Loading daftar pesanan
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S09 · **[Referensi PNG](design/baseline/screens/S09_loading_daftar_pesanan.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S09 · **[Referensi PNG](../design/baseline/screens/S09_loading_daftar_pesanan.png)**
 
 **Dependensi bagian:** M29; controller skenario DATA; RECOVERY.
 
@@ -3079,7 +3079,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S10 — Gagal memuat katalog
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S10 · **[Referensi PNG](design/baseline/screens/S10_gagal_memuat_katalog.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S10 · **[Referensi PNG](../design/baseline/screens/S10_gagal_memuat_katalog.png)**
 
 **Dependensi bagian:** M01; controller skenario DATA; RECOVERY.
 
@@ -3099,7 +3099,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S11 — Stan belum memiliki menu
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S11 · **[Referensi PNG](design/baseline/screens/S11_stan_belum_memiliki_menu.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S11 · **[Referensi PNG](../design/baseline/screens/S11_stan_belum_memiliki_menu.png)**
 
 **Dependensi bagian:** M06; controller skenario DATA; RECOVERY.
 
@@ -3119,7 +3119,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S12 — Pesanan mahasiswa kosong
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S12 · **[Referensi PNG](design/baseline/screens/S12_pesanan_mahasiswa_kosong.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S12 · **[Referensi PNG](../design/baseline/screens/S12_pesanan_mahasiswa_kosong.png)**
 
 **Dependensi bagian:** M29; controller skenario DATA; RECOVERY.
 
@@ -3139,7 +3139,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S13 — Antrean pengelola kosong
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S13 · **[Referensi PNG](design/baseline/screens/S13_antrean_pengelola_kosong.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S13 · **[Referensi PNG](../design/baseline/screens/S13_antrean_pengelola_kosong.png)**
 
 **Dependensi bagian:** P04; controller skenario DATA; RECOVERY.
 
@@ -3159,7 +3159,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S14 — Filter menu kosong
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S14 · **[Referensi PNG](design/baseline/screens/S14_filter_menu_kosong.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S14 · **[Referensi PNG](../design/baseline/screens/S14_filter_menu_kosong.png)**
 
 **Dependensi bagian:** P15; controller skenario DATA; RECOVERY.
 
@@ -3179,7 +3179,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S15 — Foto makanan gagal
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S15 · **[Referensi PNG](design/baseline/screens/S15_foto_makanan_gagal.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S15 · **[Referensi PNG](../design/baseline/screens/S15_foto_makanan_gagal.png)**
 
 **Dependensi bagian:** M04; controller skenario DATA; RECOVERY.
 
@@ -3199,7 +3199,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S16 — Gagal ubah status
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S16 · **[Referensi PNG](design/baseline/screens/S16_gagal_ubah_status.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S16 · **[Referensi PNG](../design/baseline/screens/S16_gagal_ubah_status.png)**
 
 **Dependensi bagian:** P09; controller skenario DATA; RECOVERY.
 
@@ -3223,7 +3223,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### S17 — Pengelola offline
 
-**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S17 · **[Referensi PNG](design/baseline/screens/S17_pengelola_offline.png)**
+**Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S17 · **[Referensi PNG](../design/baseline/screens/S17_pengelola_offline.png)**
 
 **Dependensi bagian:** P04; controller skenario DATA; RECOVERY.
 
@@ -3258,7 +3258,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q01 — Beranda cart — 360 dp
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q01 · **[Referensi PNG](design/baseline/screens/Q01_beranda_cart_360_dp.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q01 · **[Referensi PNG](../design/baseline/screens/Q01_beranda_cart_360_dp.png)**
 
 **Dependensi bagian:** M03; golden environment QA.
 
@@ -3282,7 +3282,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q02 — Detail stan — 412 dp
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q02 · **[Referensi PNG](design/baseline/screens/Q02_detail_stan_412_dp.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q02 · **[Referensi PNG](../design/baseline/screens/Q02_detail_stan_412_dp.png)**
 
 **Dependensi bagian:** M07; golden environment QA.
 
@@ -3306,7 +3306,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q03 — Beranda teks 150%
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q03 · **[Referensi PNG](design/baseline/screens/Q03_beranda_teks_150.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q03 · **[Referensi PNG](../design/baseline/screens/Q03_beranda_teks_150.png)**
 
 **Dependensi bagian:** M03/S01; D-01/D-03.
 
@@ -3330,7 +3330,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q04 — Rekomendasi teks panjang
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q04 · **[Referensi PNG](design/baseline/screens/Q04_rekomendasi_teks_panjang.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q04 · **[Referensi PNG](../design/baseline/screens/Q04_rekomendasi_teks_panjang.png)**
 
 **Dependensi bagian:** M14; D-03 dan golden environment.
 
@@ -3358,7 +3358,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q05 — Keranjang delapan porsi
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q05 · **[Referensi PNG](design/baseline/screens/Q05_keranjang_delapan_porsi.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q05 · **[Referensi PNG](../design/baseline/screens/Q05_keranjang_delapan_porsi.png)**
 
 **Dependensi bagian:** M17; fixture delapan porsi.
 
@@ -3386,7 +3386,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 ### Q06 — Cart dengan keyboard
 
-**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q06 · **[Referensi PNG](design/baseline/screens/Q06_cart_dengan_keyboard.png)**
+**Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q06 · **[Referensi PNG](../design/baseline/screens/Q06_cart_dengan_keyboard.png)**
 
 **Dependensi bagian:** M17; D-02 dan keyboard test.
 

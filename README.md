@@ -12,8 +12,8 @@ Tahap pengembangan saat ini adalah **Flutter UI dengan data dummy**. Desain meng
 
 | Dokumen | Isi |
 | --- | --- |
-| [SRS.md](SRS.md) | Scope, aturan bisnis, kebutuhan setiap referensi, model data, arsitektur, pengujian, dan konflik desain |
-| [ROADMAP.md](ROADMAP.md) | 644 task kecil dengan ID, versi, kriteria selesai, PIC, Issue, dan PR |
+| [SRS_KantinCerdasv1.0.0.md](docs/SRS_KantinCerdasv1.0.0.md) | Scope, aturan bisnis, kebutuhan setiap referensi, model data, arsitektur, pengujian, dan konflik desain |
+| [Roadmap_KantinCerdasv1.0.0.md](docs/Roadmap_KantinCerdasv1.0.0.md) | 644 task kecil dengan ID, versi, kriteria selesai, PIC, Issue, dan PR |
 | [Galeri desain](design/baseline/index.html) | Galeri HTML dari paket sumber; buka secara lokal untuk menelusuri 88 referensi |
 | [Folder gambar desain](design/baseline/screens/) | F00, M01–M37, P01–P18, U01–U09, S01–S17, Q01–Q06 |
 
@@ -62,14 +62,32 @@ flutter --version
 
 | Lokasi | Kegunaan |
 | --- | --- |
-| `lib/app/` | Bootstrap, dependency wiring, route, sesi |
-| `lib/core/` | Model, repository, formatter, dan design system |
-| `lib/features/` | Katalog, asisten, cart, order, pengelola, profil |
-| `assets/` | Foto, font, dan fixture runtime |
-| `test/`, `integration_test/` | Pemeriksaan perilaku dan alur kritis |
+| `apps/mobile/lib/app/` | Bootstrap, dependency wiring, route, sesi |
+| `apps/mobile/lib/core/` | Model, repository, formatter, dan design system |
+| `apps/mobile/lib/features/` | Katalog, asisten, cart, order, pengelola, profil |
+| `apps/mobile/assets/` | Foto, font, dan fixture runtime |
+| `apps/mobile/test/`, `apps/mobile/integration_test/` | Pemeriksaan perilaku dan alur kritis |
 | `design/baseline/` | Desain sumber terkunci; tidak diedit saat implementasi |
 
-Direktori Flutter di tabel merupakan struktur target. Untuk susunan awal repository, letakkan tiga file Markdown di root, lalu salin isi folder `Desaign System/` dari ZIP desain asli ke `design/baseline/`. Setelah itu `design/baseline/` memuat `index.html`, `app.js`, `styles.css`, `README.md` sumber, `assets/`, dan `screens/`.
+Direktori Flutter di tabel merupakan struktur target. Untuk susunan awal repository, letakkan `README.md` di root serta `SRS_KantinCerdasv1.0.0.md` dan `Roadmap_KantinCerdasv1.0.0.md` di `docs/`, lalu salin isi folder `Desaign System/` dari ZIP desain asli ke `design/baseline/`. Setelah itu `design/baseline/` memuat `index.html`, `app.js`, `styles.css`, `README.md` sumber, `assets/`, dan `screens/`.
+
+## Flutter SDK
+
+Proyek menggunakan versi SDK berikut:
+
+- Flutter: **3.44.9**
+- Channel: **stable**
+- Dart bawaan Flutter: **3.12.2**
+- Target platform: **Android**
+
+Versi Flutter yang disepakati dicatat dalam `.flutter-version`.
+Pengembang dan CI harus menggunakan versi tersebut.
+
+Periksa SDK sebelum menjalankan proyek:
+
+```bash
+flutter --version
+```
 
 ## Menjalankan proyek
 
@@ -79,7 +97,7 @@ Ekstrak ZIP dokumentasi dan ZIP desain asli, lalu susun folder seperti petunjuk 
 
 ### Setelah scaffold Flutter tersedia
 
-Prasyarat: Git, Flutter SDK yang dipin proyek, toolchain Android, dan emulator/perangkat Android. Pastikan `flutter doctor` tidak menunjukkan blocker pada target Android. Buka terminal pada direktori root repository yang berisi `pubspec.yaml`.
+Prasyarat: Git, Flutter SDK yang dipin proyek, toolchain Android, dan emulator/perangkat Android. Pastikan `flutter doctor` tidak menunjukkan blocker pada target Android. Buka terminal pada direktori `apps/mobile/` yang berisi `pubspec.yaml`.
 
 ```bash
 flutter doctor
@@ -134,7 +152,7 @@ SRS mencatat ketidaksesuaian sumber, termasuk Q03 yang identik dengan loading, c
 
 ## Berkontribusi bersama tim
 
-1. Ambil satu task kecil dari [ROADMAP.md](ROADMAP.md), isi PIC, dan buat Issue pada milestone yang sesuai.
+1. Ambil satu task kecil dari [Roadmap_KantinCerdasv1.0.0.md](docs/Roadmap_KantinCerdasv1.0.0.md), isi PIC, dan buat Issue pada milestone yang sesuai.
 2. Buat branch pendek, misalnya `feat/kc-m01-02-home-search`.
 3. Kerjakan task dengan komponen bersama dan batas scope yang jelas.
 4. Jalankan pemeriksaan yang relevan dan sertakan screenshot untuk perubahan tampilan.
