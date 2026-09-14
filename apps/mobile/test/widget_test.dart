@@ -1,30 +1,70 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:kantin_cerdas/main.dart';
+import 'package:kantin_cerdas/main.dart' as default_entry;
+import 'package:kantin_cerdas/main_manager.dart' as manager;
+import 'package:kantin_cerdas/main_student.dart' as student;
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Mahasiswa membuka sesi Doni dan tiga tab', (tester) async {
+    student.main();
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Halo, Doni'), findsOneWidget);
+    expect(find.text('Dashboard'), findsNothing);
+    final nav = tester.widget<BottomNavigationBar>(
+      find.byType(BottomNavigationBar),
+    );
+    expect(nav.items.length, 3);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.tap(find.text('Profil'));
+    await tester.pumpAndSettle();
+    expect(find.text('doni@example.com'), findsOneWidget);
+    expect(find.text('rina@example.com'), findsNothing);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Pengelola membuka sesi Bu Rina dan empat tab', (tester) async {
+    manager.main();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Selamat siang, Bu Rina'), findsOneWidget);
+    expect(find.text('Beranda'), findsNothing);
+    final nav = tester.widget<BottomNavigationBar>(
+      find.byType(BottomNavigationBar),
+    );
+    expect(nav.items.length, 4);
+
+    await tester.tap(find.text('Menu'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Daftar menu stan akan ditampilkan di sini.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Profil'));
+    await tester.pumpAndSettle();
+    expect(find.text('rina@example.com'), findsOneWidget);
+    expect(find.text('doni@example.com'), findsNothing);
+  });
+
+  testWidgets('Default entry membuka mahasiswa', (tester) async {
+    default_entry.main();
+    await tester.pumpAndSettle();
+    expect(find.text('Halo, Doni'), findsOneWidget);
+  });
+
+  testWidgets('Pergantian peran mereset tab', (tester) async {
+    manager.main();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Menu'));
+    await tester.pumpAndSettle();
+
+    student.main();
+    await tester.pumpAndSettle();
+    expect(find.text('Halo, Doni'), findsOneWidget);
+    final nav = tester.widget<BottomNavigationBar>(
+      find.byType(BottomNavigationBar),
+    );
+    expect(nav.currentIndex, 0);
+    expect(tester.takeException(), isNull);
   });
 }

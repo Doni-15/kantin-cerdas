@@ -6,7 +6,7 @@ KantinCerdas adalah aplikasi kantin kampus untuk membantu mahasiswa memilih menu
 
 Tahap pengembangan saat ini adalah **Flutter UI dengan data dummy**. Desain mengikuti 88 referensi yang dikunci sebagai **KC-DS-20260906**. Backend akan dikerjakan setelah scope integrasinya ditentukan.
 
-> **Status awal:** paket unduhan dokumentasi berisi tiga file Markdown. Baseline desain berasal dari `Desaign System.zip` yang terpisah. Scaffold Flutter, CI, APK, dan fitur interaktif belum dibuat. Perintah Flutter di bawah adalah panduan target setelah task bootstrap pada roadmap selesai. Semua milestone masih rencana.
+> **Status pengembangan:** scaffold Android, baseline desain, dan entry point kedua peran tersedia. Tampilan saat ini berupa shell; fitur bisnis lengkap mengikuti task layar pada roadmap.
 
 ## Dokumentasi
 
@@ -54,13 +54,31 @@ Flutter dan Dart digunakan untuk Android portrait. UI memakai komponen bersama, 
 
 Direktori Flutter di tabel merupakan struktur target. Untuk susunan awal repository, letakkan `README.md` di root serta `SRS_KantinCerdasv1.0.0.md` dan `Roadmap_KantinCerdasv1.0.0.md` di `docs/`, lalu salin isi folder `Desaign System/` dari ZIP desain asli ke `design/baseline/`. Setelah itu `design/baseline/` memuat `index.html`, `app.js`, `styles.css`, `README.md` sumber, `assets/`, dan `screens/`.
 
+## Flutter SDK
+
+Proyek menggunakan versi SDK berikut:
+
+- Flutter: **3.44.9**
+- Channel: **stable**
+- Dart bawaan Flutter: **3.12.2**
+- Target platform: **Android**
+
+Versi Flutter yang disepakati dicatat dalam `.flutter-version`.
+Pengembang dan CI harus menggunakan versi tersebut.
+
+Periksa SDK sebelum menjalankan proyek:
+
+```bash
+flutter --version
+```
+
 ## Menjalankan proyek
 
 ### Melihat desain sekarang
 
 Ekstrak ZIP dokumentasi dan ZIP desain asli, lalu susun folder seperti petunjuk di atas. Buka `design/baseline/index.html` menggunakan browser lokal. GitHub tidak menjalankan galeri HTML langsung dari tampilan file; unduh/clone terlebih dahulu. Galeri ini adalah referensi desain, bukan aplikasi Flutter. Tautan gambar pada SRS dan roadmap bekerja setelah folder desain ditempatkan di lokasi tersebut.
 
-### Setelah scaffold Flutter tersedia
+### Menjalankan shell peran
 
 Prasyarat: Git, Flutter SDK yang dipin proyek, toolchain Android, dan emulator/perangkat Android. Pastikan `flutter doctor` tidak menunjukkan blocker pada target Android. Buka terminal pada direktori `apps/mobile/` yang berisi `pubspec.yaml`.
 
@@ -82,7 +100,7 @@ Menjalankan demo pengelola:
 flutter run -t lib/main_manager.dart
 ```
 
-Entry point tersebut harus dibuat pada milestone `KantinCerdasv0.1.0`. Setelah siap, perbarui README dengan versi SDK yang diuji serta hasil menjalankan kedua perintah. Tidak diperlukan `.env`, API key, akun cloud, atau server untuk scope dummy.
+Kedua entry point membuka shell dengan sesi contoh lokal. `main.dart` membuka mahasiswa secara default. Belum ada login nyata, pemesanan, atau sinkronisasi data antaraplikasi.
 
 ### Pemeriksaan pengembangan
 

@@ -184,21 +184,21 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** pubspec.yaml dan struktur Android tersedia; nama aplikasi KantinCerdas.
   - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: #1 · PR: #1
 
-- [ ] **KC-ENG-02** · `chore` · Memilih dan mencatat Flutter SDK
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-02** · `chore` · Memilih dan mencatat Flutter SDK
   - **Selesai jika:** Versi konkret berhasil menjalankan proyek awal; pin dicatat dalam repository.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: #5 · PR: #5
 
-- [ ] **KC-ENG-03** · `chore` · Menyimpan pubspec.lock aplikasi
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-03** · `chore` · Menyimpan pubspec.lock aplikasi
   - **Selesai jika:** Resolusi dependency aplikasi tercatat dan tidak diabaikan Git.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: — · PR: —
 
-- [ ] **KC-ENG-04** · `chore` · Menyiapkan flutter_lints
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-04** · `chore` · Menyiapkan flutter_lints
   - **Selesai jika:** flutter analyze dapat dijalankan pada scaffold.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: — · PR: —
 
-- [ ] **KC-ENG-05** · `chore` · Menyiapkan gitignore Flutter
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-05** · `chore` · Menyiapkan gitignore Flutter
   - **Selesai jika:** Build output dan konfigurasi mesin tidak dilacak.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: — · PR: —
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-06** · `docs` · Menempatkan SRS di folder docs repository
   - **Selesai jika:** SRS.md dapat dibaca dan tautan relatifnya benar.
@@ -210,19 +210,19 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-08** · `docs` · Menempatkan README root repository
   - **Selesai jika:** Status proyek disesuaikan dengan implementasi aktual.
-  - PIC: — · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square)  · Issue: #4 · PR: #4
 
-- [ ] **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-09** · `chore` · Menyalin baseline desain immutable
   - **Selesai jika:** 107 file sumber sesuai hash manifest.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
 
-- [ ] **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
   - **Selesai jika:** main_student.dart membuka shell mahasiswa dengan fake session.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![IN_REVIEW](https://img.shields.io/badge/IN_REVIEW-7E22CE?style=flat-square)  · Issue: — · PR: —
 
-- [ ] **KC-ENG-11** · `chore` · Membuat entry point pengelola
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-11** · `chore` · Membuat entry point pengelola
   - **Selesai jika:** main_manager.dart membuka shell pengelola dengan fake session.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![IN_REVIEW](https://img.shields.io/badge/IN_REVIEW-7E22CE?style=flat-square)  · Issue: — · PR: —
 
 - [ ] **KC-ENG-12** · `refactor` · Menyiapkan composition root
   - **Selesai jika:** Repository diinjeksi melalui constructor.
