@@ -1,3 +1,7 @@
-import 'main_student.dart' as student;
+import 'package:flutter/material.dart';
 
-void main() => student.main();
+import 'package:kantin_cerdas/app/kantin_cerdas_app.dart';
+
+void main() {
+  runApp(const KantinCerdasApp());
+}

@@ -155,7 +155,7 @@ Kriteria selesai spesifik di task terpenuhi; state berasal dari sumber yang tepa
 | --- | --- | --- | ---: |
 | [KantinCerdasv0.1.0](#release-0-1-0) | Fondasi Flutter, data dummy, dan design system | F00 | 91 |
 | [KantinCerdasv0.2.0](#release-0-2-0) | Katalog mahasiswa | M01, M04–M06, M08 | 51 |
-| [KantinCerdasv0.3.0](#release-0-3-0) | Asisten dan rekomendasi dummy | M02, M10–M13, M15–M16 | 36 |
+| [KantinCerdasv0.3.0](#release-0-3-0) | Chat dan rekomendasi dummy | M02, M10–M13, M15–M16 | 36 |
 | [KantinCerdasv0.4.0](#release-0-4-0) | Keranjang dan integrasi lintas katalog | M03, M07, M09, M14, M17–M23 | 77 |
 | [KantinCerdasv0.5.0](#release-0-5-0) | Checkout dan pesanan mahasiswa | M24–M35 | 80 |
 | [KantinCerdasv0.6.0](#release-0-6-0) | Dashboard dan order pengelola | P01–P14 | 99 |
@@ -165,10 +165,9 @@ Kriteria selesai spesifik di task terpenuhi; state berasal dari sumber yang tepa
 | [KantinCerdasv1.0.0](#release-1-0-0) | Flutter UI Demo lengkap | Seluruh scope | 12 |
 
 
-## Checklist detail per versi
+## Alur implementasi
 
-Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok berlaku untuk **seluruh task di dalamnya**. Pengelompokan layar mengikuti nomor referensi asli, bukan usulan desain baru.
-
+Kerjakan roadmap dari atas ke bawah. **Task TODO pertama yang dependensinya sudah terpenuhi adalah pekerjaan berikutnya.** Jika sebuah task masih menunggu dependensi, lewati sementara dan lanjutkan ke task berikut yang sudah dapat dikerjakan. ID task, milestone, status, PIC, Issue, PR, dan kriteria selesai tetap menjadi sumber tracking.
 
 <a id="release-0-1-0"></a>
 
@@ -176,9 +175,11 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 **Target:** 91 task · **Gate milestone:** Komponen/model tersedia, kedua entry point membuka shell, perintah kualitas scaffold dapat dijalankan.
 
-### ENG — Bootstrap proyek dan kerja tim
+**Urutan kerja:** Bootstrap → Fondasi visual → Komponen UI → Shell & routing → Dummy data → Quality gate → Workflow pendukung.
 
-**Versi:** KantinCerdasv0.1.0 · **Dependensi bagian:** Tidak ada; mulai dari paket dokumen ini.
+### Tahap 01 — ENG · Bootstrap proyek
+
+Proyek harus dapat dibuka, dianalisis, dan dibangun sebelum pekerjaan UI dilanjutkan.
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-01** · `chore` · Membuat proyek Flutter Android
   - **Selesai jika:** pubspec.yaml dan struktur Android tersedia; nama aplikasi KantinCerdas.
@@ -216,6 +217,194 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** 107 file sumber sesuai hash manifest.
   - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
 
+### Tahap 02 — F00 · Fondasi visual
+
+Tetapkan token warna, status, font, typography, spacing, dan radius sebagai dasar seluruh UI.
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-01** · `feat` · Mendaftarkan token latar
+  - **Selesai jika:** Warna latar #FFFFFF tersedia dalam tema.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-02** · `feat` · Mendaftarkan token permukaan
+  - **Selesai jika:** Warna permukaan #F6F5F2 tersedia dalam tema.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-03** · `feat` · Mendaftarkan token aksi utama
+  - **Selesai jika:** Warna aksi utama #C74418 tersedia untuk CTA dan elemen aktif.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-04** · `feat` · Mendaftarkan token teks utama
+  - **Selesai jika:** Warna teks utama #252525 tersedia dengan nama semantik.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-05** · `feat` · Mendaftarkan token teks kedua
+  - **Selesai jika:** Warna teks sekunder #616161 tersedia dengan nama semantik.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-06** · `feat` · Mendaftarkan token pemisah
+  - **Selesai jika:** Warna pemisah #E6E3DF tersedia untuk divider dan border halus.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-07** · `feat` · Mendaftarkan token berhasil
+  - **Selesai jika:** Warna berhasil #247A45 tersedia untuk status positif/siap diambil.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-08** · `feat` · Mendaftarkan token kesalahan
+  - **Selesai jika:** Warna kesalahan #B3261E tersedia untuk status gagal dan aksi destruktif.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- [ ] **KC-F00-09** · `feat` · Mendaftarkan token status
+  - **Selesai jika:** Menunggu, Diproses, Siap diambil, Selesai, dan Ditolak memiliki treatment yang mengikuti F00 dan tetap menampilkan label teks.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-10** · `feat` · Mendaftarkan font Plus Jakarta Sans
+  - **Selesai jika:** Tiga berkas font lokal dikenali sebagai bobot 400, 500, dan 600.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-11** · `feat` · Mendaftarkan skala tipografi
+  - **Selesai jika:** Plus Jakarta Sans menyediakan judul layar 22–24, judul bagian 17, teks utama 14–16, informasi pendukung 12–13, dengan bobot 400/500/600.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-12** · `feat` · Mendaftarkan token jarak
+  - **Selesai jika:** Token jarak 8, 12, 16, dan 24 dp tersedia dan digunakan konsisten.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+- ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-13** · `feat` · Mendaftarkan token radius
+  - **Selesai jika:** Radius kontrol 10 dp dan 12 dp tersedia sesuai F00.
+  - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
+
+### Tahap 03 — F00 · Komponen UI bersama
+
+Bangun komponen reusable dari fondasi visual sebelum memasangnya pada screen.
+
+- [ ] **KC-F00-14** · `feat` · Membuat ikon bersama
+  - **Selesai jika:** Bentuk glyph mengikuti SVG app.js, tanpa mengganti keluarga ikon.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-15** · `feat` · Membuat tombol primary
+  - **Selesai jika:** Tampilan normal mengikuti F00 dan callback menerima aksi pemanggil.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-16** · `feat` · Membuat tombol secondary
+  - **Selesai jika:** Outline dan warna mengikuti F00.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-17** · `feat` · Membuat tombol ghost
+  - **Selesai jika:** Aksi sekunder tanpa latar mengikuti sumber.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-18** · `feat` · Membuat tombol destructive
+  - **Selesai jika:** Warna merah hanya dipakai untuk tindakan destruktif.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-19** · `feat` · Membuat state disabled tombol
+  - **Selesai jika:** Tap tidak memanggil callback ketika disabled.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-20** · `feat` · Membuat state loading tombol
+  - **Selesai jika:** Tap ganda dicegah dan label proses ditampilkan.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-21** · `feat` · Membuat tombol ikon
+  - **Selesai jika:** Nama aksesibel tersedia dan area sentuh minimum 48 dp.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-22** · `feat` · Membuat input catatan
+  - **Selesai jika:** Label tetap ada ketika field berisi teks dan fokus mengikuti sumber.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-23** · `feat` · Membuat chip pilihan
+  - **Selesai jika:** State selected menampilkan warna dan tanda centang bila ada di sumber.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-24** · `feat` · Membuat radio pilihan
+  - **Selesai jika:** Hanya satu nilai terpilih dalam satu kelompok.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-25** · `feat` · Membuat switch
+  - **Selesai jika:** Status aktif dan nonaktif memiliki semantics yang benar.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-26** · `feat` · Membuat badge status
+  - **Selesai jika:** Teks status selalu tampil sehingga arti tidak bergantung pada warna.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-27** · `feat` · Membuat row menu
+  - **Selesai jika:** Foto, nama, metadata, harga, badge, dan slot aksi mengikuti sumber.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-28** · `feat` · Membuat kontrol jumlah
+  - **Selesai jika:** Tombol minus dan plus menerima callback terpisah.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-29** · `feat` · Membuat row stan
+  - **Selesai jika:** Nama, lokasi, status, foto, dan arah navigasi mengikuti sumber.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-30** · `feat` · Membuat row pesanan
+  - **Selesai jika:** Kode, pemilik/stan, jumlah, nilai, dan status dapat dikonfigurasi.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-31** · `feat` · Membuat banner informasi
+  - **Selesai jika:** Ikon, judul, isi, dan slot aksi dapat digunakan ulang.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-32** · `feat` · Membuat banner kegagalan
+  - **Selesai jika:** Pesan dan aksi pemulihan mengikuti sumber tanpa menghapus konten lama.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-33** · `feat` · Membuat bottom sheet
+  - **Selesai jika:** Handle, header, tombol tutup, overlay, dan insets keyboard tersedia.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-34** · `feat` · Membuat dialog konfirmasi
+  - **Selesai jika:** Aksi batal dan konfirmasi dibedakan serta dapat diakses lewat Back.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-35** · `feat` · Membuat snackbar undo
+  - **Selesai jika:** Callback pemulihan diberikan pemanggil; durasi mengikuti BR-06.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-36** · `feat` · Membuat skeleton row
+  - **Selesai jika:** Placeholder mengikuti proporsi S01/S09.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-37** · `feat` · Membuat placeholder foto
+  - **Selesai jika:** Kegagalan foto tidak mengubah ukuran row.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-38** · `feat` · Membuat sticky cart
+  - **Selesai jika:** Jumlah porsi, total, nama stan, dan aksi keranjang menerima data state.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-39** · `feat` · Membuat kartu ajakan Chat
+  - **Selesai jika:** Kartu “Bingung mau makan apa?” mengikuti M02 dan membuka Chat tanpa tombol mengambang.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-40** · `feat` · Membuat pola percakapan Chat
+  - **Selesai jika:** Bubble pengguna, label Asisten Kantin, respons, dan composer dapat digunakan ulang pada M10–M16.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-41** · `feat` · Membuat footer CTA
+  - **Selesai jika:** Total dan tombol tidak tertutup safe area perangkat.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-42** · `feat` · Membuat timeline status
+  - **Selesai jika:** Tahap dan waktu berasal dari event pesanan.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-43** · `feat` · Membuat navigasi mahasiswa
+  - **Selesai jika:** Empat destinasi persis Beranda, Pesanan, Chat, Profil; Chat menjadi tujuan navigasi utama dan tidak memakai FAB.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+- [ ] **KC-F00-44** · `feat` · Membuat navigasi pengelola
+  - **Selesai jika:** Empat destinasi persis Dashboard, Pesanan, Menu, Profil.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+### Tahap 04 — ENG · Shell aplikasi dan routing
+
+Siapkan entry point demo, session, composition root, dan routing agar screen dapat dirangkai.
+
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-ENG-10** · `chore` · Membuat entry point mahasiswa
   - **Selesai jika:** main_student.dart membuka shell mahasiswa dengan fake session.
   - PIC: Doni · Status: ![IN_REVIEW](https://img.shields.io/badge/IN_REVIEW-7E22CE?style=flat-square)  · Issue: — · PR: —
@@ -236,41 +425,9 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Route dan parameter ID terpusat; unknown ID ditangani sesuai D-09.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-ENG-15** · `ci` · Menambahkan pemeriksaan format
-  - **Selesai jika:** CI gagal jika dart format menemukan perubahan format.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+### Tahap 05 — DATA · Model, fixture, dan repository dummy
 
-- [ ] **KC-ENG-16** · `ci` · Menambahkan pemeriksaan analyzer
-  - **Selesai jika:** CI menjalankan flutter analyze pada SDK yang dipin.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-17** · `ci` · Menambahkan job pengujian
-  - **Selesai jika:** CI menjalankan test yang tersedia tanpa membuat klaim coverage palsu.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-18** · `ci` · Menambahkan build Android demo
-  - **Selesai jika:** Job membangun debug APK untuk kedua entry point dari commit PR.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-19** · `chore` · Membuat template Issue tugas
-  - **Selesai jika:** Field task ID, milestone, PIC, acceptance, dependensi tersedia.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-20** · `chore` · Membuat template PR
-  - **Selesai jika:** Ada task ID, perubahan, verifikasi, dan screenshot untuk perubahan UI.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-21** · `chore` · Membuat milestone versi
-  - **Selesai jika:** Milestone 0.1.0 sampai 1.0.0 sesuai roadmap; belum berarti tag dibuat.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-ENG-22** · `chore` · Menyiapkan aturan review tim
-  - **Selesai jika:** PR ke main dengan satu reviewer rekan; kemampuan GitHub diperiksa saat repository tersedia.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-### DATA — Model, fixture, dan repository dummy
-
-**Versi:** KantinCerdasv0.1.0 · **Dependensi bagian:** KC-ENG-01, KC-ENG-12; dapat paralel secara pembagian anggota dengan F00.
+Siapkan data lokal yang akan dibaca screen tanpa backend nyata.
 
 - [ ] **KC-DATA-01** · `feat` · Membuat model UserProfile
   - **Selesai jika:** Role mahasiswa/pengelola dan stallId dimodelkan.
@@ -372,196 +529,53 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** HH.mm dan tanggal riwayat mengikuti injected clock.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### F00 — Fondasi visual dan komponen
+### Tahap 06 — ENG · Quality gate
 
-**Versi:** KantinCerdasv0.1.0 · **Requirement:** FR-F00 · **[Referensi PNG](../design/baseline/screens/F00_fondasi_visual_dan_komponen.png)**
+Pastikan format, analyzer, test, dan build demo dapat diperiksa secara konsisten.
 
-**Dependensi bagian:** Scaffold ENG; nilai sumber CSS dan F00; D-03 pada metrik konflik.
-
-**Kondisi:** Referensi bersama seluruh layar; bukan halaman pengguna. **Hasil bagian:** Komponen Flutter dapat dipakai ulang tanpa mengganti identitas visual.
-
-- [ ] **KC-F00-01** · `feat` · Mendaftarkan token background
-  - **Selesai jika:** Warna latar #FAFAF8 tersedia dalam tema.
+- [ ] **KC-ENG-15** · `ci` · Menambahkan pemeriksaan format
+  - **Selesai jika:** CI gagal jika dart format menemukan perubahan format.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-02** · `feat` · Mendaftarkan token surface
-  - **Selesai jika:** Warna permukaan #FFFFFF tersedia dalam tema.
+- [ ] **KC-ENG-16** · `ci` · Menambahkan pemeriksaan analyzer
+  - **Selesai jika:** CI menjalankan flutter analyze pada SDK yang dipin.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-03** · `feat` · Mendaftarkan token surface alternatif
-  - **Selesai jika:** Warna #F7F3F0 tersedia dalam tema.
+- [ ] **KC-ENG-17** · `ci` · Menambahkan job pengujian
+  - **Selesai jika:** CI menjalankan test yang tersedia tanpa membuat klaim coverage palsu.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-04** · `feat` · Mendaftarkan token brand
-  - **Selesai jika:** Warna #E85D2A dipakai untuk identitas dan FAB.
+- [ ] **KC-ENG-18** · `ci` · Menambahkan build Android demo
+  - **Selesai jika:** Job membangun debug APK untuk kedua entry point dari commit PR.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-05** · `feat` · Mendaftarkan token action
-  - **Selesai jika:** Warna #C74418 dipakai untuk aksi utama.
+### Tahap 07 — ENG · Workflow pendukung tim
+
+Lengkapi artefak pengelolaan Issue, PR, milestone, dan review. Aturan Git/PR tetap mengikuti bagian 'Cara memakai roadmap bersama teman'.
+
+- [ ] **KC-ENG-19** · `chore` · Membuat template Issue tugas
+  - **Selesai jika:** Field task ID, milestone, PIC, acceptance, dependensi tersedia.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-06** · `feat` · Mendaftarkan token active
-  - **Selesai jika:** Warna #9B341B dipakai untuk penanda aktif.
+- [ ] **KC-ENG-20** · `chore` · Membuat template PR
+  - **Selesai jika:** Ada task ID, perubahan, verifikasi, dan screenshot untuk perubahan UI.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-07** · `feat` · Mendaftarkan token teks
-  - **Selesai jika:** Teks utama #251B17 dan sekunder #6D5A50 dapat dirujuk dengan nama semantik.
+- [ ] **KC-ENG-21** · `chore` · Membuat milestone versi
+  - **Selesai jika:** Milestone 0.1.0 sampai 1.0.0 sesuai roadmap; belum berarti tag dibuat.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-F00-08** · `feat` · Mendaftarkan token outline
-  - **Selesai jika:** Garis pembatas menggunakan #DDD6D1.
+- [ ] **KC-ENG-22** · `chore` · Menyiapkan aturan review tim
+  - **Selesai jika:** PR ke main dengan satu reviewer rekan; kemampuan GitHub diperiksa saat repository tersedia.
   - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-09** · `feat` · Mendaftarkan token status
-  - **Selesai jika:** Pasangan warna teks/latar setiap status mengikuti tabel token SRS.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-10** · `feat` · Mendaftarkan font Plus Jakarta Sans
-  - **Selesai jika:** Lima berkas font lokal dikenali sebagai bobot 400, 500, 600, 700, 800.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-11** · `feat` · Mendaftarkan skala tipografi
-  - **Selesai jika:** Gaya F00 dan gaya spesifik layar dipisahkan sesuai catatan konflik D-03.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-03
-
-- [ ] **KC-F00-12** · `feat` · Mendaftarkan token jarak
-  - **Selesai jika:** Grid 8 dp, padding halaman 16 dp, serta pengecualian CSS tercatat.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-13** · `feat` · Mendaftarkan token radius
-  - **Selesai jika:** Radius input/tombol 12 dp dan radius atas sheet 24 dp tersedia.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-14** · `feat` · Membuat ikon bersama
-  - **Selesai jika:** Bentuk glyph mengikuti SVG app.js, tanpa mengganti keluarga ikon.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-15** · `feat` · Membuat tombol primary
-  - **Selesai jika:** Tampilan normal mengikuti F00 dan callback menerima aksi pemanggil.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-16** · `feat` · Membuat tombol secondary
-  - **Selesai jika:** Outline dan warna mengikuti F00.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-17** · `feat` · Membuat tombol ghost
-  - **Selesai jika:** Aksi sekunder tanpa latar mengikuti sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-18** · `feat` · Membuat tombol destructive
-  - **Selesai jika:** Warna merah hanya dipakai untuk tindakan destruktif.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-19** · `feat` · Membuat state disabled tombol
-  - **Selesai jika:** Tap tidak memanggil callback ketika disabled.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-20** · `feat` · Membuat state loading tombol
-  - **Selesai jika:** Tap ganda dicegah dan label proses ditampilkan.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-21** · `feat` · Membuat tombol ikon
-  - **Selesai jika:** Nama aksesibel tersedia; area sentuh mengikuti keputusan D-03.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-03
-
-- [ ] **KC-F00-22** · `feat` · Membuat input catatan
-  - **Selesai jika:** Label tetap ada ketika field berisi teks dan fokus mengikuti sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-23** · `feat` · Membuat chip pilihan
-  - **Selesai jika:** State selected menampilkan warna dan tanda centang bila ada di sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-24** · `feat` · Membuat radio pilihan
-  - **Selesai jika:** Hanya satu nilai terpilih dalam satu kelompok.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-25** · `feat` · Membuat switch
-  - **Selesai jika:** Status aktif dan nonaktif memiliki semantics yang benar.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-26** · `feat` · Membuat badge status
-  - **Selesai jika:** Teks status selalu tampil sehingga arti tidak bergantung pada warna.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-27** · `feat` · Membuat row menu
-  - **Selesai jika:** Foto, nama, metadata, harga, badge, dan slot aksi mengikuti sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-28** · `feat` · Membuat kontrol jumlah
-  - **Selesai jika:** Tombol minus dan plus menerima callback terpisah.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-29** · `feat` · Membuat row stan
-  - **Selesai jika:** Nama, lokasi, status, foto, dan arah navigasi mengikuti sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-30** · `feat` · Membuat row pesanan
-  - **Selesai jika:** Kode, pemilik/stan, jumlah, nilai, dan status dapat dikonfigurasi.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-31** · `feat` · Membuat banner informasi
-  - **Selesai jika:** Ikon, judul, isi, dan slot aksi dapat digunakan ulang.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-32** · `feat` · Membuat banner kegagalan
-  - **Selesai jika:** Pesan dan aksi pemulihan mengikuti sumber tanpa menghapus konten lama.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-33** · `feat` · Membuat bottom sheet
-  - **Selesai jika:** Handle, header, tombol tutup, overlay, dan insets keyboard tersedia.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-34** · `feat` · Membuat dialog konfirmasi
-  - **Selesai jika:** Aksi batal dan konfirmasi dibedakan serta dapat diakses lewat Back.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-35** · `feat` · Membuat snackbar undo
-  - **Selesai jika:** Callback pemulihan diberikan pemanggil; durasi mengikuti BR-06.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-36** · `feat` · Membuat skeleton row
-  - **Selesai jika:** Placeholder mengikuti proporsi S01/S09.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-37** · `feat` · Membuat placeholder foto
-  - **Selesai jika:** Kegagalan foto tidak mengubah ukuran row.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-38** · `feat` · Membuat sticky cart
-  - **Selesai jika:** Jumlah porsi, total, nama stan, dan aksi keranjang menerima data state.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-39** · `feat` · Membuat FAB asisten
-  - **Selesai jika:** Ukuran visual 56 dp dan glyph mengikuti sumber.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-40** · `feat` · Membuat coachmark asisten
-  - **Selesai jika:** Callout dan tombol tutup mengikuti M02.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-41** · `feat` · Membuat footer CTA
-  - **Selesai jika:** Total dan tombol tidak tertutup safe area perangkat.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-42** · `feat` · Membuat timeline status
-  - **Selesai jika:** Tahap dan waktu berasal dari event pesanan.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-43** · `feat` · Membuat navigasi mahasiswa
-  - **Selesai jika:** Tiga destinasi persis Beranda, Pesanan, Profil.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
-- [ ] **KC-F00-44** · `feat` · Membuat navigasi pengelola
-  - **Selesai jika:** Empat destinasi persis Dashboard, Pesanan, Menu, Profil.
-  - PIC: — · Status: TODO · Issue: — · PR: —
-
 
 <a id="release-0-2-0"></a>
 
 ## KantinCerdasv0.2.0 — Katalog mahasiswa
 
 **Target:** 51 task · **Gate milestone:** Pencarian/filter/detail dapat ditelusuri. Aksi cart penuh menunggu 0.4.0.
+
+**Urutan kerja:** M01 Beranda → M04 Pencarian → M05 Filter → M06 Detail stan → M08 Detail menu.
 
 ### M01 — Beranda, kunjungan kembali
 
@@ -635,8 +649,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Tap membuka M36 tanpa menghapus keranjang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M01-17** · `feat` · Menghubungkan FAB asisten
-  - **Selesai jika:** Tap membuka M10 dan mempertahankan konteks beranda.
+- [ ] **KC-M01-17** · `feat` · Menghubungkan tombol Chat
+  - **Selesai jika:** Tap destinasi Chat membuka M10 tanpa menghapus state Beranda atau keranjang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 ### M04 — Hasil pencarian
@@ -763,8 +777,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** M08 memakai ID menu terpilih.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M06-11** · `feat` · Menghubungkan FAB dari detail stan
-  - **Selesai jika:** Asisten tetap mengetahui cart dan konteks stan.
+- [ ] **KC-M06-11** · `feat` · Menghubungkan tombol Chat dari detail stan
+  - **Selesai jika:** Tap destinasi Chat membuka M10 dan mempertahankan konteks stan serta keranjang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 ### M08 — Detail menu
@@ -810,216 +824,219 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 <a id="release-0-3-0"></a>
 
-## KantinCerdasv0.3.0 — Asisten dan rekomendasi dummy
+## KantinCerdasv0.3.0 — Chat dan rekomendasi dummy
 
 **Target:** 36 task · **Gate milestone:** Input, klarifikasi, sukses, kosong, retry/manual search dapat didemokan.
 
-### M02 — Pengenalan asisten
+**Urutan kerja:** M02 Pengenalan Chat → M10 Layar awal → M11 Keyboard → M12 Klarifikasi → M13 Rekomendasi → M15 Gagal → M16 Kosong.
+
+### M02 — Pengenalan Chat
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M02 · **[Referensi PNG](../design/baseline/screens/M02_pengenalan_asisten.png)**
 
-**Dependensi bagian:** M01 dan F00 coachmark/FAB.
+**Dependensi bagian:** M01; kartu ajakan Chat dan navigasi mahasiswa F00.
 
-**Kondisi:** Mahasiswa pertama kali melihat asisten dalam sesi demo. **Hasil bagian:** Coachmark dapat ditutup tanpa menghalangi pemesanan.
+**Kondisi:** Mahasiswa berada di Beranda dan kartu pengenalan Chat tampil di alur konten. **Hasil bagian:** Pengguna dapat membuka Chat tanpa FAB/overlay dan tanpa mengganggu penelusuran menu.
 
-- [ ] **KC-M02-01** · `feat` · Menampilkan teks pengenalan asisten
-  - **Selesai jika:** Bingung pilih? dan Aku bantu cari menu. mengikuti referensi.
+- [ ] **KC-M02-01** · `feat` · Menampilkan kartu pengenalan Chat
+  - **Selesai jika:** “Bingung mau makan apa?” dan “Ceritakan seleramu di Chat.” mengikuti M02.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M02-02** · `feat` · Menambahkan tombol tutup coachmark
-  - **Selesai jika:** Tap menyembunyikan callout tanpa membuka asisten.
+- [ ] **KC-M02-02** · `feat` · Menampilkan affordance kartu Chat
+  - **Selesai jika:** Ikon Chat dan chevron mengikuti M02 serta memiliki area tap yang jelas.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M02-03** · `feat` · Menyimpan status coachmark sesi
-  - **Selesai jika:** Navigasi kembali tidak menampilkan callout yang telah ditutup; restart mereset sesuai A-02.
+- [ ] **KC-M02-03** · `feat` · Menghubungkan kartu pengenalan ke Chat
+  - **Selesai jika:** Tap kartu membuka M10 sebagai destinasi Chat.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M02-04** · `feat` · Menempatkan coachmark di dekat FAB
-  - **Selesai jika:** Tidak menutupi tombol navigasi atau sticky cart.
+- [ ] **KC-M02-04** · `feat` · Menempatkan kartu pengenalan dalam alur Beranda
+  - **Selesai jika:** Kartu berada setelah kategori dan sebelum “Menu cepat siap”, bukan sebagai overlay atau tombol mengambang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M10 — Asisten pilih menu
+### M10 — Chat: layar awal
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M10 · **[Referensi PNG](../design/baseline/screens/M10_asisten_pilih_menu.png)**
 
-**Dependensi bagian:** M01; RecommendationRepository; komponen sheet F00.
+**Dependensi bagian:** M01/M02; RecommendationRepository; pola percakapan dan navigasi F00.
 
-**Kondisi:** FAB asisten dipilih; mode online simulasi aktif. **Hasil bagian:** Asisten dummy menghasilkan rekomendasi deterministik.
+**Kondisi:** Destinasi Chat dipilih; belum ada percakapan aktif. **Hasil bagian:** Pengguna dapat memilih prompt cepat atau menulis kebutuhan sendiri.
 
-- [ ] **KC-M10-01** · `feat` · Menambahkan tombol tutup asisten
-  - **Selesai jika:** Sheet tutup dan konteks halaman asal tetap tersedia.
+- [ ] **KC-M10-01** · `feat` · Menampilkan header Chat kantin
+  - **Selesai jika:** Judul “Chat kantin”, subjudul “Asisten AI untuk memilih menu”, ikon Chat, dan ikon edit mengikuti M10.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-02** · `feat` · Menambahkan pilihan harga asisten
-  - **Selesai jika:** Rp15.000, Rp20.000, Tanpa batas dapat dipilih.
+- [ ] **KC-M10-02** · `feat` · Menampilkan pengantar kebutuhan Chat
+  - **Selesai jika:** “Lagi ingin makan apa?” dan penjelasan selera/bujet/waktu mengikuti M10.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-03** · `feat` · Menambahkan pilihan waktu asisten
-  - **Selesai jika:** 10 menit, 20 menit, Tanpa batas dapat dipilih.
+- [ ] **KC-M10-03** · `feat` · Menampilkan tiga prompt cepat Chat
+  - **Selesai jika:** Prompt Rp20.000, tidak pedas dan cepat siap, serta menu berkuah tampil sesuai sumber.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-04** · `feat` · Menambahkan pilihan selera asisten
-  - **Selesai jika:** Tidak pedas, Pakai nasi, Berkuah mengikuti sumber dan aturan A-06.
+- [ ] **KC-M10-04** · `feat` · Menghubungkan prompt cepat ke percakapan
+  - **Selesai jika:** Tap prompt membentuk kebutuhan pengguna dan meneruskan alur ke klarifikasi atau rekomendasi sesuai fixture.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-05** · `feat` · Menambahkan input kebutuhan tambahan
-  - **Selesai jika:** Teks bebas disimpan sebagai input dummy; tidak dikirim ke AI eksternal.
+- [ ] **KC-M10-05** · `feat` · Menambahkan composer pesan Chat
+  - **Selesai jika:** Placeholder “Tulis pesan...” dan tombol kirim mengikuti M10; kirim tidak aktif saat pesan kosong.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-06** · `feat` · Menghubungkan tombol Cari rekomendasi
-  - **Selesai jika:** Query lengkap membuka M13; fixture ambigu membuka M12.
+- [ ] **KC-M10-06** · `feat` · Menghubungkan pengiriman pesan Chat
+  - **Selesai jika:** Pesan nonkosong menjadi kebutuhan pengguna dan membuka M12 atau M13 sesuai hasil repository.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-07** · `feat` · Menghubungkan tombol Nanti saja
-  - **Selesai jika:** Menutup sheet tanpa membuat pesanan.
+- [ ] **KC-M10-07** · `feat` · Menampilkan disclaimer rekomendasi AI
+  - **Selesai jika:** “Rekomendasi AI · cek detail menu sebelum memesan” tampil di bawah composer.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M10-08** · `feat` · Mengisi pilihan awal dari preferensi
-  - **Selesai jika:** Nilai terakhir yang tersimpan dalam sesi mengisi draft asisten.
+- [ ] **KC-M10-08** · `feat` · Menandai destinasi Chat aktif
+  - **Selesai jika:** Bottom navigation menampilkan Beranda, Pesanan, Chat, Profil dan Chat berstatus aktif.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M11 — Asisten dengan keyboard
+### M11 — Chat: keyboard terbuka
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M11 · **[Referensi PNG](../design/baseline/screens/M11_asisten_dengan_keyboard.png)**
 
 **Dependensi bagian:** M10; dukungan input/fokus Flutter.
 
-**Kondisi:** Field kebutuhan tambahan memperoleh fokus. **Hasil bagian:** Input dan aksi utama tetap dapat dijangkau ketika keyboard terbuka.
+**Kondisi:** Composer Chat memperoleh fokus. **Hasil bagian:** Input dan tombol kirim tetap dapat dijangkau ketika keyboard perangkat terbuka.
 
-- [ ] **KC-M11-01** · `feat` · Memfokuskan input kebutuhan
-  - **Selesai jika:** Keyboard perangkat asli terbuka pada Flutter.
+- [ ] **KC-M11-01** · `feat` · Memfokuskan composer Chat
+  - **Selesai jika:** Keyboard perangkat asli terbuka pada Flutter ketika field memperoleh fokus.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M11-02** · `feat` · Menyesuaikan inset sheet asisten
-  - **Selesai jika:** Sheet mengikuti tinggi keyboard tanpa menyalin gambar keyboard HTML.
+- [ ] **KC-M11-02** · `feat` · Menyesuaikan inset Chat terhadap keyboard
+  - **Selesai jika:** Composer dan tombol kirim berada tepat di atas keyboard tanpa menyalin gambar keyboard ke aplikasi.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M11-03** · `feat` · Mempertahankan teks saat keyboard ditutup
-  - **Selesai jika:** Input Ingin makan sebelum kelas tidak hilang.
+- [ ] **KC-M11-03** · `feat` · Mempertahankan teks composer saat fokus berubah
+  - **Selesai jika:** Teks “Mau makan sebelum kelas, bujet 20 ribu” tidak hilang ketika keyboard dibuka/ditutup.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M11-04** · `feat` · Membuat isi sheet asisten dapat digulir
-  - **Selesai jika:** Aksi Cari rekomendasi dan Nanti saja dapat dijangkau; lihat D-02.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-02
+- [ ] **KC-M11-04** · `feat` · Menjaga konten Chat dapat dijangkau saat keyboard terbuka
+  - **Selesai jika:** Prompt, composer, dan aksi kirim dapat dijangkau tanpa overflow.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M12 — Asisten meminta klarifikasi
+### M12 — Chat: pertanyaan lanjutan
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M12 · **[Referensi PNG](../design/baseline/screens/M12_asisten_meminta_klarifikasi.png)**
 
 **Dependensi bagian:** M10; hasil clarificationNeeded.
 
-**Kondisi:** Skenario ambigu: Yang murah dan cepat. **Hasil bagian:** Klarifikasi melengkapi query tanpa menghapus kebutuhan sebelumnya.
+**Kondisi:** Kebutuhan pengguna belum cukup spesifik. **Hasil bagian:** Asisten meminta satu klarifikasi di dalam percakapan tanpa menghapus pesan sebelumnya.
 
-- [ ] **KC-M12-01** · `feat` · Menampilkan ringkasan kebutuhan ambigu
-  - **Selesai jika:** Teks Yang murah dan cepat mengikuti fixture.
+- [ ] **KC-M12-01** · `feat` · Menampilkan bubble kebutuhan pengguna
+  - **Selesai jika:** “Cari yang murah dan cepat, dong.” tampil sebagai pesan pengguna sesuai M12.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M12-02** · `feat` · Menampilkan pertanyaan batas harga
-  - **Selesai jika:** Pertanyaan sesuai referensi.
+- [ ] **KC-M12-02** · `feat` · Menampilkan pertanyaan lanjutan asisten
+  - **Selesai jika:** Label “Asisten Kantin” dan pertanyaan “Boleh. Bujet makanmu maksimal berapa?” mengikuti M12.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M12-03** · `feat` · Menambahkan pilihan harga klarifikasi
-  - **Selesai jika:** Satu batas harga dapat dipilih.
+- [ ] **KC-M12-03** · `feat` · Menambahkan pilihan bujet klarifikasi
+  - **Selesai jika:** Rp15.000, Rp20.000, dan Tanpa batas tampil sebagai pilihan yang dapat dipilih.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M12-04** · `feat` · Menghubungkan tombol Tampilkan rekomendasi
-  - **Selesai jika:** Harga baru digabungkan dengan kebutuhan lama dan membuka M13.
+- [ ] **KC-M12-04** · `feat` · Menghubungkan pilihan bujet ke rekomendasi
+  - **Selesai jika:** Bujet terpilih digabungkan dengan kebutuhan sebelumnya dan percakapan dilanjutkan ke M13.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M12-05** · `feat` · Menghubungkan tombol Ubah kebutuhan
-  - **Selesai jika:** Kembali ke M10 dengan draft terisi.
+- [ ] **KC-M12-05** · `feat` · Mempertahankan composer dan navigasi Chat
+  - **Selesai jika:** Composer tetap tersedia dan Chat tetap menjadi destinasi aktif setelah klarifikasi tampil.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M13 — Hasil rekomendasi
+### M13 — Chat: rekomendasi menu
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M13 · **[Referensi PNG](../design/baseline/screens/M13_hasil_rekomendasi.png)**
 
-**Dependensi bagian:** M10; hasil matches.
+**Dependensi bagian:** M10/M12; hasil matches.
 
-**Kondisi:** Asisten dummy berhasil menemukan kandidat. **Hasil bagian:** Hasil tetap dapat ditelusuri dan dipilih secara manual.
+**Kondisi:** Asisten berhasil menemukan kandidat. **Hasil bagian:** Rekomendasi tampil sebagai bagian percakapan dan tetap dapat ditambahkan ke keranjang secara manual.
 
-- [ ] **KC-M13-01** · `feat` · Menambahkan tombol kembali rekomendasi
-  - **Selesai jika:** Kembali ke halaman pemanggil.
+- [ ] **KC-M13-01** · `feat` · Menampilkan bubble ringkasan kebutuhan
+  - **Selesai jika:** “Cari makan siang maksimal Rp20.000, siap dalam 10 menit.” mengikuti fixture M13.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M13-02** · `feat` · Menampilkan ringkasan pilihan rekomendasi
-  - **Selesai jika:** Batas harga dan waktu berasal dari query aktif.
+- [ ] **KC-M13-02** · `feat` · Menampilkan pengantar rekomendasi asisten
+  - **Selesai jika:** “Ini 3 menu yang sesuai dengan bujet dan waktumu.” tampil sebagai respons Asisten Kantin.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M13-03** · `feat` · Menghubungkan ikon edit rekomendasi
-  - **Selesai jika:** Membuka M10 dengan pilihan aktif.
+- [ ] **KC-M13-03** · `feat` · Menampilkan daftar kandidat Chat
+  - **Selesai jika:** Setiap row menyediakan foto, nama, stan, estimasi, harga, dan tombol tambah.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M13-04** · `feat` · Menghubungkan tombol Ubah pilihan
-  - **Selesai jika:** Membuka draft yang sama seperti ikon edit.
+- [ ] **KC-M13-04** · `feat` · Mempertahankan composer setelah rekomendasi
+  - **Selesai jika:** Pengguna tetap dapat menulis pesan baru dan disclaimer AI tetap terlihat.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-M13-05** · `feat` · Menampilkan tiga kandidat fixture
-  - **Selesai jika:** Ayam sambal matah, telur dadar, Mi Gomak tampil dalam urutan fixture.
+  - **Selesai jika:** Nasi Ayam Sambal Matah, Nasi Telur Dadar, dan Mi Gomak tampil dalam urutan fixture.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-M13-06** · `feat` · Menghubungkan kandidat ke detail menu
-  - **Selesai jika:** Tap isi row membuka detail kandidat.
+  - **Selesai jika:** Tap isi row membuka detail kandidat yang benar.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M13-07** · `feat` · Menyediakan callback Tambah rekomendasi
-  - **Selesai jika:** Menggunakan handler cart bersama ketika milestone v0.4.0 siap.
+- [ ] **KC-M13-07** · `feat` · Menghubungkan tombol tambah kandidat
+  - **Selesai jika:** Tombol tambah memakai handler keranjang bersama ketika milestone v0.4.0 siap.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M15 — Asisten gagal
+### M15 — Chat: jawaban gagal dimuat
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M15 · **[Referensi PNG](../design/baseline/screens/M15_asisten_gagal.png)**
 
 **Dependensi bagian:** M10; hasil failure.
 
-**Kondisi:** Repository asisten mengembalikan kegagalan yang diketahui. **Hasil bagian:** Pengguna bisa retry atau memakai pencarian manual.
+**Kondisi:** Pengguna sudah mengirim pesan tetapi jawaban asisten gagal dimuat. **Hasil bagian:** Pesan pengguna tetap terlihat dan pengguna dapat retry atau beralih ke pencarian manual.
 
-- [ ] **KC-M15-01** · `feat` · Menampilkan banner asisten gagal
-  - **Selesai jika:** Pesan Asisten sedang bermasalah mengikuti sumber.
+- [ ] **KC-M15-01** · `feat` · Menampilkan banner jawaban gagal dimuat
+  - **Selesai jika:** “Jawaban belum bisa dimuat” dan “Pesanmu tetap tersimpan. Coba kirim ulang sebentar lagi.” mengikuti M15.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M15-02** · `feat` · Mempertahankan pilihan saat asisten gagal
-  - **Selesai jika:** Harga, waktu, selera, teks tidak kembali ke default.
+- [ ] **KC-M15-02** · `feat` · Mempertahankan pesan pengguna saat jawaban gagal
+  - **Selesai jika:** Pesan yang sudah dikirim tetap tampil dan composer tetap tersedia.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M15-03** · `feat` · Menghubungkan tombol Coba lagi asisten
-  - **Selesai jika:** Memanggil ulang query yang sama satu kali per tap.
+- [ ] **KC-M15-03** · `feat` · Menghubungkan tombol Coba lagi
+  - **Selesai jika:** Query yang sama dikirim ulang satu kali per tap.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-M15-04** · `feat` · Menghubungkan tombol Cari menu sendiri
-  - **Selesai jika:** Membuka M04 dengan filter harga/waktu yang sesuai.
+  - **Selesai jika:** Membuka M04 tanpa membuat rekomendasi rekaan.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M16 — Rekomendasi kosong
+### M16 — Chat: belum ada menu yang cocok
 
 **Versi:** KantinCerdasv0.3.0 · **Requirement:** FR-M16 · **[Referensi PNG](../design/baseline/screens/M16_rekomendasi_kosong.png)**
 
 **Dependensi bagian:** M13; hasil empty.
 
-**Kondisi:** Asisten berhasil tetapi kandidat berjumlah nol. **Hasil bagian:** Tidak ada rekomendasi rekaan; pilihan dapat diubah.
+**Kondisi:** Query berhasil diproses tetapi tidak memiliki kandidat. **Hasil bagian:** Asisten menjelaskan batas yang tidak terpenuhi dan menyediakan dua cara melonggarkan kebutuhan.
 
-- [ ] **KC-M16-01** · `feat` · Menampilkan empty state rekomendasi
-  - **Selesai jika:** Pesan Belum ada menu yang cocok mengikuti sumber.
+- [ ] **KC-M16-01** · `feat` · Menampilkan bubble kebutuhan tanpa hasil
+  - **Selesai jika:** “Ada menu ayam di bawah Rp10.000, siap 5 menit?” mengikuti fixture M16.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M16-02** · `feat` · Menampilkan saran melonggarkan kriteria
-  - **Selesai jika:** Harga atau waktu dapat disesuaikan.
+- [ ] **KC-M16-02** · `feat` · Menampilkan jawaban belum ada menu yang cocok
+  - **Selesai jika:** Asisten menjelaskan tidak ada menu ayam yang cocok dengan dua batas tersebut tanpa membuat menu rekaan.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M16-03** · `feat` · Menghubungkan Ubah pilihan pada hasil kosong
-  - **Selesai jika:** Kembali ke draft asisten tanpa kehilangan input.
+- [ ] **KC-M16-03** · `feat` · Menghubungkan pilihan Bujet Rp15.000
+  - **Selesai jika:** Batas harga dinaikkan menjadi Rp15.000 dan kebutuhan diproses ulang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M16-04** · `feat` · Menghubungkan Lihat semua menu
-  - **Selesai jika:** Membuka katalog tanpa pembatas rekomendasi.
+- [ ] **KC-M16-04** · `feat` · Menghubungkan pilihan Lihat menu selain ayam
+  - **Selesai jika:** Pembatas ayam dilonggarkan dan alternatif dapat ditampilkan tanpa kehilangan konteks Chat.
   - PIC: — · Status: TODO · Issue: — · PR: —
-
 
 <a id="release-0-4-0"></a>
 
 ## KantinCerdasv0.4.0 — Keranjang dan integrasi lintas katalog
 
 **Target:** 77 task · **Gate milestone:** Cart satu stan, jumlah, catatan, undo, dan availability konsisten.
+
+**Urutan kerja:** M03 Beranda dengan keranjang → M07 Detail stan → M09 Berhasil ditambahkan → M14 Chat + keranjang → M17–M23 alur keranjang.
 
 ### LOGIC — Aturan cart bersama
 
@@ -1069,7 +1086,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Catatan line benar; minus tidak menyimpan nilai negatif.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M03 — Beranda dengan cart
+### M03 — Beranda dengan keranjang
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M03 · **[Referensi PNG](../design/baseline/screens/M03_beranda_dengan_cart.png)**
 
@@ -1097,11 +1114,11 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Tap membuka M17.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M03-06** · `feat` · Menggeser posisi FAB ketika cart tampil
-  - **Selesai jika:** FAB mengikuti referensi di atas sticky cart.
+- [ ] **KC-M03-06** · `feat` · Menempatkan sticky keranjang di atas navigasi
+  - **Selesai jika:** Sticky keranjang tidak menutupi Beranda, Pesanan, Chat, atau Profil.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M07 — Detail stan dengan cart
+### M07 — Detail stan dengan keranjang
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M07 · **[Referensi PNG](../design/baseline/screens/M07_detail_stan_dengan_cart.png)**
 
@@ -1129,8 +1146,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Tap membuka M17.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M07-06** · `feat` · Menempatkan FAB detail stan di atas cart
-  - **Selesai jika:** Tidak bertumpuk dengan CTA cart.
+- [ ] **KC-M07-06** · `feat` · Menempatkan sticky keranjang di atas navigasi detail stan
+  - **Selesai jika:** Sticky keranjang dan navigasi mahasiswa tidak saling menutupi.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 ### M09 — Menu berhasil ditambahkan
@@ -1161,35 +1178,35 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Tap membuka isi cart terbaru.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M14 — Rekomendasi dengan cart
+### M14 — Chat: menu dalam keranjang
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M14 · **[Referensi PNG](../design/baseline/screens/M14_rekomendasi_dengan_cart.png)**
 
 **Dependensi bagian:** M13 dan LOGIC.
 
-**Kondisi:** Rekomendasi dibuka saat cart Bu Rina terisi. **Hasil bagian:** Pilihan rekomendasi menghormati batas satu stan.
+**Kondisi:** Rekomendasi Chat tampil ketika keranjang Dapur Bu Rina sudah berisi item. **Hasil bagian:** Status item dan ringkasan keranjang terlihat tanpa meninggalkan percakapan.
 
-- [ ] **KC-M14-01** · `feat` · Menampilkan banner stan cart di rekomendasi
-  - **Selesai jika:** Dapur Bu Rina, 2 porsi, Rp30.000 sesuai fixture.
+- [ ] **KC-M14-01** · `feat` · Menampilkan state kandidat yang sudah masuk keranjang
+  - **Selesai jika:** Ayam dan telur menampilkan state terpilih “✓ 1” sesuai M14.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M14-02** · `feat` · Menghubungkan kontrol jumlah rekomendasi
-  - **Selesai jika:** Perubahan ayam/telur memperbarui seluruh cart.
+- [ ] **KC-M14-02** · `feat` · Menghubungkan kontrol kandidat dengan keranjang
+  - **Selesai jika:** Perubahan item dari Chat memperbarui state keranjang yang sama.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M14-03** · `feat` · Menampilkan sticky cart rekomendasi
-  - **Selesai jika:** Footer standalone mengikuti M14 tanpa bottom navigation.
+- [ ] **KC-M14-03** · `feat` · Menampilkan sticky keranjang di Chat
+  - **Selesai jika:** “2 porsi · Rp30.000”, Dapur Bu Rina, dan aksi Keranjang tampil di atas composer tanpa menutupi bottom navigation.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-M14-04** · `feat` · Menghubungkan tombol keranjang rekomendasi
-  - **Selesai jika:** Tap membuka M17.
+- [ ] **KC-M14-04** · `feat` · Menghubungkan aksi Keranjang dari Chat
+  - **Selesai jika:** Tap Keranjang membuka M17.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-M14-05** · `feat` · Mencegat tambah kandidat stan berbeda
-  - **Selesai jika:** Mi Gomak memunculkan M21 sebelum cart berubah.
+  - **Selesai jika:** Mi Gomak memunculkan M21 sebelum keranjang berubah.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M17 — Keranjang dua porsi
+### M17 — Keranjang: dua porsi
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M17 · **[Referensi PNG](../design/baseline/screens/M17_keranjang_dua_porsi.png)**
 
@@ -1253,7 +1270,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Cart valid membuka M24 pada v0.5.0; cart tidak valid masuk M23.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M18 — Edit catatan item
+### M18 — Catatan untuk menu
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M18 · **[Referensi PNG](../design/baseline/screens/M18_edit_catatan_item.png)**
 
@@ -1285,7 +1302,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Input dan Simpan dapat dijangkau tanpa overflow.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M19 — Hapus item dengan undo
+### M19 — Hapus menu & urungkan
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M19 · **[Referensi PNG](../design/baseline/screens/M19_hapus_item_dengan_undo.png)**
 
@@ -1313,7 +1330,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Undo lama tidak memulihkan item setelah cart diganti stan atau checkout.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### M20 — Konfirmasi kosongkan cart
+### M20 — Konfirmasi kosongkan keranjang
 
 **Versi:** KantinCerdasv0.4.0 · **Requirement:** FR-M20 · **[Referensi PNG](../design/baseline/screens/M20_konfirmasi_kosongkan_cart.png)**
 
@@ -1427,6 +1444,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 ## KantinCerdasv0.5.0 — Checkout dan pesanan mahasiswa
 
 **Target:** 80 task · **Gate milestone:** Create/lookup/retry tanpa duplikasi serta lima status detail tersedia.
+
+**Urutan kerja:** M24 Konfirmasi → M25–M28 pengiriman pesanan → M29–M35 status dan riwayat pesanan mahasiswa.
 
 ### SUBMIT — Keandalan pengiriman pesanan
 
@@ -1854,6 +1873,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 ## KantinCerdasv0.6.0 — Dashboard dan order pengelola
 
 **Target:** 99 task · **Gate milestone:** Transisi sah dan dashboard konsisten; D-04 dicatat sebagai gate yang belum boleh dianggap lulus.
+
+**Urutan kerja:** P01 Dashboard → P02–P03 buka/tutup stan → P04–P07 daftar/status pesanan → P08–P14 detail dan keputusan pesanan.
 
 ### STATE — Transisi order dan agregasi pengelola
 
@@ -2374,6 +2395,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 **Target:** 82 task · **Gate milestone:** Preferensi, setting, availability, profil dan pendukung tersedia; interaksi tanpa desain menunggu keputusan.
 
+**Urutan kerja:** M36–M37 profil mahasiswa → P15–P18 menu/pengaturan/profil pengelola → U01–U09 layar pendukung.
+
 ### M36 — Profil mahasiswa
 
 **Versi:** KantinCerdasv0.7.0 · **Requirement:** FR-M36 · **[Referensi PNG](../design/baseline/screens/M36_profil_mahasiswa.png)**
@@ -2829,6 +2852,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 **Target:** 70 task · **Gate milestone:** Loading/empty/error/offline bisa direproduksi; data lama dan draft terjaga.
 
+**Urutan kerja:** S01–S17 kondisi loading, kosong, gagal, offline, dan pemulihan.
+
 ### RECOVERY — Penanganan error dan state tambahan
 
 **Versi:** KantinCerdasv0.8.0 · **Dependensi bagian:** Seluruh fitur happy path 0.2.0–0.7.0 tersedia.
@@ -2865,7 +2890,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Cancel tidak mengubah applied; Terapkan benar-benar mengecualikan habis.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### S01 — Loading Beranda
+### S01 — Memuat beranda
 
 **Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S01 · **[Referensi PNG](../design/baseline/screens/S01_loading_beranda.png)**
 
@@ -2933,8 +2958,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Tidak menyatakan status cache sebagai keadaan live.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-S03-04** · `feat` · Menyembunyikan FAB saat offline
-  - **Selesai jika:** Asisten tidak dipanggil.
+- [ ] **KC-S03-04** · `feat` · Mempertahankan navigasi mahasiswa saat offline
+  - **Selesai jika:** Beranda, Pesanan, Chat, dan Profil tetap terlihat serta tidak tertutup banner atau sticky keranjang.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-S03-05** · `feat` · Memblokir submit pesanan saat offline
@@ -3057,7 +3082,7 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Keberhasilan mengganti status dari repository.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### S09 — Loading daftar pesanan
+### S09 — Memuat daftar pesanan
 
 **Versi:** KantinCerdasv0.8.0 · **Requirement:** FR-S09 · **[Referensi PNG](../design/baseline/screens/S09_loading_daftar_pesanan.png)**
 
@@ -3256,7 +3281,9 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 
 **Target:** 46 task · **Gate milestone:** Keputusan pending ditutup, bukti 88 referensi terkumpul, alur kritis diuji.
 
-### Q01 — Beranda cart — 360 dp
+**Urutan kerja:** Q01–Q06 responsive/accessibility → QA akhir.
+
+### Q01 — Beranda dengan keranjang - 360 dp
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q01 · **[Referensi PNG](../design/baseline/screens/Q01_beranda_cart_360_dp.png)**
 
@@ -3276,11 +3303,11 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Nilai total dan tombol keranjang tetap terbaca.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q01-04** · `test` · Memeriksa FAB pada 360 dp
-  - **Selesai jika:** Tidak menutupi CTA cart atau navigasi.
+- [ ] **KC-Q01-04** · `test` · Memeriksa navigasi mahasiswa pada 360 dp
+  - **Selesai jika:** Empat destinasi Beranda, Pesanan, Chat, Profil tetap muat dan dapat dijangkau.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### Q02 — Detail stan — 412 dp
+### Q02 — Detail stan - 412 dp
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q02 · **[Referensi PNG](../design/baseline/screens/Q02_detail_stan_412_dp.png)**
 
@@ -3301,62 +3328,62 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-Q02-04** · `test` · Memeriksa footer stan pada 412 dp
-  - **Selesai jika:** Cart, FAB, navigasi, safe area tidak bertumpuk.
+  - **Selesai jika:** Keranjang, navigasi, dan safe area tidak bertumpuk.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### Q03 — Beranda teks 150%
+### Q03 — Beranda dengan teks 150%
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q03 · **[Referensi PNG](../design/baseline/screens/Q03_beranda_teks_150.png)**
 
-**Dependensi bagian:** M03/S01; D-01/D-03.
+**Dependensi bagian:** M03; golden environment QA.
 
-**Kondisi:** Target beranda pada text scale 150%; PNG sumber justru identik S01. **Hasil bagian:** Pengujian text scale berjalan; kelulusan visual menunggu D-01.
+**Kondisi:** Beranda pada text scale 150% di viewport 390 × 844 dp. **Hasil bagian:** Konten membesar tanpa kehilangan akses ke menu, sticky keranjang, atau navigasi.
 
-- [ ] **KC-Q03-01** · `docs` · Mencatat konflik gambar Q03
-  - **Selesai jika:** Hash duplikat S01 dicatat tanpa menimpa gambar sumber.
+- [ ] **KC-Q03-01** · `test` · Mengatur uji teks 150 persen beranda
+  - **Selesai jika:** TextScaler sistem disetel 1.5 pada fixture M03 dan viewport 390 × 844 dp.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q03-02** · `test` · Mengatur uji teks 150 persen beranda
-  - **Selesai jika:** TextScaler sistem disetel 1.5 pada fixture M03.
+- [ ] **KC-Q03-02** · `test` · Memeriksa header, pencarian, dan kategori pada teks besar
+  - **Selesai jika:** Sapaan, field pencarian, dan chip tetap terbaca tanpa overflow horizontal yang merusak layout.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-Q03-03** · `test` · Memeriksa akses konten beranda pada teks besar
-  - **Selesai jika:** Tidak mengecilkan font untuk memaksa cocok; semua konten dapat digulir.
+  - **Selesai jika:** Font tidak dikecilkan untuk memaksa cocok dan konten tetap dapat digulir.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q03-04** · `docs` · Menentukan referensi golden Q03
-  - **Selesai jika:** BLOCKED oleh D-01 sampai pemilik desain menetapkan acuan.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-01
+- [ ] **KC-Q03-04** · `test` · Memeriksa sticky keranjang dan navigasi pada teks besar
+  - **Selesai jika:** Total, tombol Keranjang, serta Beranda/Pesanan/Chat/Profil tetap dapat dijangkau sesuai Q03.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
-### Q04 — Rekomendasi teks panjang
+### Q04 — Chat dengan teks panjang
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q04 · **[Referensi PNG](../design/baseline/screens/Q04_rekomendasi_teks_panjang.png)**
 
-**Dependensi bagian:** M14; D-03 dan golden environment.
+**Dependensi bagian:** M14; golden environment QA.
 
-**Kondisi:** M14 dengan nama menu panjang di 360 × 800 dp dan teks besar. **Hasil bagian:** Nama panjang tetap terbaca dan aksi dapat dijangkau.
+**Kondisi:** Chat pada viewport 360 × 800 dp dengan pesan dan nama menu panjang. **Hasil bagian:** Teks membungkus, kandidat tetap dapat dibaca, dan kontrol utama tetap dapat dijangkau.
 
 - [ ] **KC-Q04-01** · `feat` · Menambahkan fixture nama menu panjang
   - **Selesai jika:** Nasi Ayam Sambal Matah dengan Lalapan Segar sesuai sumber.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-Q04-02** · `test` · Mengatur uji viewport Q04
-  - **Selesai jika:** 360 × 800 dp, text scale 1.5; catat perbedaan CSS manual dalam D-03.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-03
-
-- [ ] **KC-Q04-03** · `feat` · Membuat nama kandidat membungkus
-  - **Selesai jika:** Tidak terpotong dengan ellipsis yang menyembunyikan informasi utama.
+  - **Selesai jika:** Golden memakai viewport 360 × 800 dp sesuai Q04.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q04-04** · `test` · Memeriksa kontrol jumlah kandidat panjang
-  - **Selesai jika:** Tombol tetap dapat dijangkau dengan scroll.
+- [ ] **KC-Q04-03** · `feat` · Membuat pesan dan nama kandidat membungkus
+  - **Selesai jika:** Pesan serta nama menu panjang tidak terpotong dengan ellipsis yang menyembunyikan informasi utama.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q04-05** · `test` · Memeriksa footer rekomendasi teks panjang
-  - **Selesai jika:** Total dan aksi tetap terlihat tanpa overlay konten penting.
+- [ ] **KC-Q04-04** · `test` · Memeriksa kontrol kandidat pada teks panjang
+  - **Selesai jika:** State jumlah/tambah kandidat tetap dapat dijangkau tanpa overflow horizontal.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### Q05 — Keranjang delapan porsi
+- [ ] **KC-Q04-05** · `test` · Memeriksa sticky keranjang, composer, dan navigasi Chat
+  - **Selesai jika:** Ringkasan keranjang, composer, dan bottom navigation tetap terlihat tanpa menutupi konten penting.
+  - PIC: — · Status: TODO · Issue: — · PR: —
+
+### Q05 — Keranjang: delapan porsi
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q05 · **[Referensi PNG](../design/baseline/screens/Q05_keranjang_delapan_porsi.png)**
 
@@ -3384,49 +3411,49 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
   - **Selesai jika:** Item terakhir dan catatan pesanan dapat dijangkau di atas footer.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-### Q06 — Cart dengan keyboard
+### Q06 — Keranjang: keyboard terbuka
 
 **Versi:** KantinCerdasv0.9.0 · **Requirement:** FR-Q06 · **[Referensi PNG](../design/baseline/screens/Q06_cart_dengan_keyboard.png)**
 
-**Dependensi bagian:** M17; D-02 dan keyboard test.
+**Dependensi bagian:** M17; keyboard test.
 
-**Kondisi:** Input catatan cart aktif pada viewport 360 × 800 dp. **Hasil bagian:** Keyboard tidak menghilangkan draft; koreksi crop menunggu D-02.
+**Kondisi:** Catatan pesanan aktif pada viewport 360 × 800 dp. **Hasil bagian:** Keyboard mempertahankan draft dan field aktif tetap dapat digunakan tanpa footer menutupi input.
 
 - [ ] **KC-Q06-01** · `test` · Mengatur uji keyboard Q06
-  - **Selesai jika:** Viewport logical 360 × 800 dengan insets keyboard nyata/simulasi uji.
+  - **Selesai jika:** Viewport logical 360 × 800 menggunakan insets keyboard nyata/simulasi uji.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q06-02** · `feat` · Mempertahankan catatan cart selama fokus
-  - **Selesai jika:** Teks panjang sesuai fixture tidak hilang.
+- [ ] **KC-Q06-02** · `feat` · Mempertahankan catatan keranjang selama fokus
+  - **Selesai jika:** “Bungkus terpisah” tidak hilang selama keyboard terbuka.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q06-03** · `feat` · Menyembunyikan footer cart saat keyboard aktif
-  - **Selesai jika:** Mengikuti sumber yang tidak merender footer pada Q06.
+- [ ] **KC-Q06-03** · `feat` · Menyembunyikan footer keranjang saat keyboard aktif
+  - **Selesai jika:** Footer total/lanjut tidak menutupi field catatan sesuai Q06.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q06-04** · `feat` · Memulihkan footer setelah keyboard ditutup
-  - **Selesai jika:** Total dan Lanjut konfirmasi kembali dengan nilai terbaru.
+- [ ] **KC-Q06-04** · `feat` · Menyediakan aksi selesai untuk input catatan
+  - **Selesai jika:** Aksi “Selesai” berada di samping field dan menutup fokus/keyboard tanpa membuang draft.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-Q06-05** · `test` · Memeriksa lebar konten Q06
-  - **Selesai jika:** Tidak menjadikan crop 390 ke 360 sebagai perilaku aplikasi; kelulusan visual bergantung D-02.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-02
+- [ ] **KC-Q06-05** · `test` · Memeriksa lebar dan inset konten Q06
+  - **Selesai jika:** Konten 360 × 800 tidak overflow dan field aktif tetap berada di atas keyboard.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
 ### QA — Review visual, integrasi, dan keputusan
 
 **Versi:** KantinCerdasv0.9.0 · **Dependensi bagian:** Semua varian S tersedia; screen Q disiapkan pada milestone ini.
 
-- [ ] **KC-QA-01** · `docs` · Menutup keputusan D-01 Q03
-  - **Selesai jika:** Acuan Q03 yang sah dicatat oleh pemilik desain.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-01
+- [ ] **KC-QA-01** · `docs` · Menyinkronkan acuan Q03 terbaru
+  - **Selesai jika:** Q03 390 × 844 dp dengan teks 150% dicatat sebagai acuan visual yang sah.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-QA-02** · `docs` · Menutup keputusan D-02 crop dan keyboard
-  - **Selesai jika:** Perilaku/layout final disetujui tanpa menimpa baseline lama.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-02
+- [ ] **KC-QA-02** · `docs` · Menyinkronkan perilaku keyboard terbaru
+  - **Selesai jika:** M11 dan Q06 menjadi acuan final untuk inset keyboard, composer, dan catatan keranjang.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-QA-03** · `docs` · Menutup keputusan D-03 tipografi dan target sentuh
-  - **Selesai jika:** Pengecualian per komponen ditetapkan.
-  - PIC: — · Status: BLOCKED · Issue: — · PR: — · Blocker: D-03
+- [ ] **KC-QA-03** · `docs` · Menyinkronkan tipografi dan target sentuh F00
+  - **Selesai jika:** Judul 22–24, judul bagian 17, teks 14–16/12–13, bobot 400/500/600, dan area sentuh 48 dp tercatat dari F00 terbaru.
+  - PIC: — · Status: TODO · Issue: — · PR: —
 
 - [ ] **KC-QA-04** · `docs` · Menutup keputusan D-04 kontrol detail pengelola
   - **Selesai jika:** Perilaku dan treatment kontrol final dinyatakan jelas.
@@ -3498,6 +3525,8 @@ Semua kotak di bawah sengaja belum dicentang. Target versi pada setiap kelompok 
 ## KantinCerdasv1.0.0 — Flutter UI Demo lengkap
 
 **Target:** 12 task · **Gate milestone:** Tidak ada blocker wajib; build demo dan smoke test lulus sebelum tag dibuat.
+
+**Urutan kerja:** REL-01 dan seterusnya → audit akhir → build → smoke test → release.
 
 ### REL — Rilis lengkap Flutter UI Demo
 
