@@ -86,6 +86,26 @@ Biasanya token pada tabel ini **tidak perlu dipakai langsung di screen**.
 | `colors.error` | Status gagal | Error |
 | `colors.errorContainer` | Background gagal | Banner error |
 
+## 1.5.1 Status Pesanan
+
+Status pesanan tidak memiliki palet warna terpisah. Gunakan token semantik
+yang sudah tersedia pada design system.
+
+| Status pesanan | Foreground | Background |
+| --- | --- | --- |
+| Menunggu konfirmasi | `status.warning` | `status.warningContainer` |
+| Diproses | `status.info` | `status.infoContainer` |
+| Siap diambil | `status.success` | `status.successContainer` |
+| Selesai | `status.success` | `status.successContainer` |
+| Ditolak | `colors.error` | `colors.errorContainer` |
+
+Contoh:
+
+```dart
+final colors = Theme.of(context).colorScheme;
+final status = KcStatusColors.of(context);
+```
+
 ---
 
 # 1.6 Typography

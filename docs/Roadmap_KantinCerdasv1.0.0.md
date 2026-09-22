@@ -253,9 +253,9 @@ Tetapkan token warna, status, font, typography, spacing, dan radius sebagai dasa
   - **Selesai jika:** Warna kesalahan #B3261E tersedia untuk status gagal dan aksi destruktif.
   - PIC: Doni · Status: ![DONE](https://img.shields.io/badge/DONE-166534?style=flat-square) · Issue: — · PR: —
 
-- [ ] **KC-F00-09** · `feat` · Mendaftarkan token status
+- ![IN_PROGRESS](https://img.shields.io/badge/%5BIN_PROGRESS%5D-A16207?style=flat-square) **KC-F00-09** · `feat` · Mendaftarkan token status
   - **Selesai jika:** Menunggu, Diproses, Siap diambil, Selesai, dan Ditolak memiliki treatment yang mengikuti F00 dan tetap menampilkan label teks.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: ![IN_PROGRESS](https://img.shields.io/badge/IN_PROGRESS-A16207?style=flat-square) · Issue: #42 · PR: —
 
 - ![DONE](https://img.shields.io/badge/%5BDONE%5D-166534?style=flat-square) **KC-F00-10** · `feat` · Mendaftarkan font Plus Jakarta Sans
   - **Selesai jika:** Tiga berkas font lokal dikenali sebagai bobot 400, 500, dan 600.

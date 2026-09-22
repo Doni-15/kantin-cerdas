@@ -88,6 +88,22 @@ class KcStatusColors extends ThemeExtension<KcStatusColors> {
   final Color info;
   final Color infoContainer;
 
+  /// Menunggu / Menunggu konfirmasi.
+  Color get waiting => warning;
+  Color get waitingContainer => warningContainer;
+
+  /// Diproses.
+  Color get processing => info;
+  Color get processingContainer => infoContainer;
+
+  /// Siap diambil.
+  Color get ready => success;
+  Color get readyContainer => successContainer;
+
+  /// Selesai.
+  Color get completed => success;
+  Color get completedContainer => successContainer;
+
   static const light = KcStatusColors(
     success           : Color(0xFF247A45),
     successContainer  : Color(0xFFE8F4EC),
