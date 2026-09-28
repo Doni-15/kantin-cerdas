@@ -444,21 +444,21 @@ Bangun komponen reusable dari fondasi visual sebelum memasangnya pada screen.
 
 Siapkan entry point tunggal, sesi, dependency injection Riverpod, dan routing `go_router` agar screen dapat dirangkai.
 
-- [ ] **KC-ENG-10** · `chore` · Membuat entry point tunggal aplikasi
+- [x] **KC-ENG-10** · `chore` · Membuat entry point tunggal aplikasi
   - **Selesai jika:** `lib/main.dart` menjalankan `ProviderScope` dan `KantinCerdasApp`; tidak ada entry point per role.
-  - PIC: Doni · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: DONE · Issue: — · PR: —
 
-- [ ] **KC-ENG-11** · `chore` · Memilih shell berdasarkan role
+- [x] **KC-ENG-11** · `chore` · Memilih shell berdasarkan role
   - **Selesai jika:** Setelah login, `AppEntryPage` menampilkan `CustomerShell`, `OwnerShell`, atau `AdminShell` menurut `UserRole`.
-  - PIC: Doni · Status: TODO · Issue: — · PR: —
+  - PIC: Doni · Status: DONE · Issue: — · PR: —
 
-- [ ] **KC-ENG-12** · `refactor` · Menyiapkan dependency injection Riverpod
+- [x] **KC-ENG-12** · `refactor` · Menyiapkan dependency injection Riverpod
   - **Selesai jika:** Repository dan use case disediakan lewat provider; test dapat meng-override dependency tanpa mengubah kode fitur; sesuai docs/Riverpod.md.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
-- [ ] **KC-ENG-13** · `feat` · Membuat state sesi
+- [x] **KC-ENG-13** · `feat` · Membuat state sesi
   - **Selesai jika:** Role (`customer`/`owner`/`admin`) dan scope pengguna dapat dibaca dari provider sesi tanpa backend.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 - [ ] **KC-ENG-14** · `feat` · Membuat route registry go_router
   - **Selesai jika:** Route dan parameter ID terpusat di `core/router/`; unknown ID ditangani sesuai D-09.
@@ -470,45 +470,45 @@ Fitur ini ada di kode tetapi belum ada di SRS; masuk roadmap sebagai usulan (DR-
 
 **Versi:** KantinCerdasv0.1.0 · **Dependensi bagian:** Tahap 04.
 
-- [ ] **KC-AUTH-01** · `feat` · Mendefinisikan enum UserRole
+- [x] **KC-AUTH-01** · `feat` · Mendefinisikan enum UserRole
   - **Selesai jika:** `customer`, `owner`, dan `admin` tersedia di layer domain fitur auth sebagai satu-satunya sumber nilai role.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 - [ ] **KC-AUTH-02** · `feat` · Membuat data source dummy pengguna
   - **Selesai jika:** Akun demo `customer`, `owner`, dan `admin` (sesuai README) tersedia di memori; data hilang saat aplikasi dimulai ulang dan keterbatasan ini tercatat.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-AUTH-03** · `feat` · Membuat AuthRepository
+- [x] **KC-AUTH-03** · `feat` · Membuat AuthRepository
   - **Selesai jika:** Kontrak berada di domain, implementasi di data; UI tidak mengakses data source langsung.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 - [ ] **KC-AUTH-04** · `feat` · Membuat use case login
   - **Selesai jika:** Username atau password salah menghasilkan hasil terstruktur, bukan exception mentah.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-AUTH-05** · `feat` · Membuat use case registrasi
+- [x] **KC-AUTH-05** · `feat` · Membuat use case registrasi
   - **Selesai jika:** Akun baru otomatis mendapat role `customer`; username yang sudah dipakai ditolak dengan pesan jelas.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 - [ ] **KC-AUTH-06** · `feat` · Membuat controller auth (Notifier)
   - **Selesai jika:** State idle, loading, sukses, dan gagal tersedia; aksi tidak dapat dikirim dua kali selama jeda simulasi.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-AUTH-07** · `feat` · Membuat halaman login
+- [x] **KC-AUTH-07** · `feat` · Membuat halaman login
   - **Selesai jika:** Field dan tombol memakai `KcTextField` dan `KcButton`; error tampil tanpa menghapus input; sukses membuka `/app`.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
-- [ ] **KC-AUTH-08** · `feat` · Membuat halaman registrasi
+- [x] **KC-AUTH-08** · `feat` · Membuat halaman registrasi
   - **Selesai jika:** Registrasi publik berjalan dan hasilnya masuk sebagai `customer`.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 - [ ] **KC-AUTH-09** · `feat` · Membuat route guard sesi dan role
   - **Selesai jika:** Pengguna belum login diarahkan ke `/login`; role menentukan shell dan tidak dapat membuka shell role lain. Bergantung pada `KC-ENG-13` dan `KC-ENG-14`.
   - PIC: — · Status: TODO · Issue: — · PR: —
 
-- [ ] **KC-AUTH-10** · `feat` · Membuat shell dan halaman placeholder admin
+- [x] **KC-AUTH-10** · `feat` · Membuat shell dan halaman placeholder admin
   - **Selesai jika:** `AdminShell` dengan tujuan Dashboard, Pengguna, dan Profil dapat dibuka oleh role `admin`.
-  - PIC: — · Status: TODO · Issue: — · PR: —
+  - PIC: — · Status: DONE · Issue: — · PR: —
 
 ### Tahap 05 — DATA · Model, fixture, dan repository dummy
 
