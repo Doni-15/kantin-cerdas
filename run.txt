@@ -1,0 +1,24 @@
+printf '%s\n' '=== AUTH DATA ==='
+cat app/lib/features/auth/data/datasources/auth_datasource.dart
+cat app/lib/features/auth/data/datasources/auth_dummy_datasource.dart
+cat app/lib/features/auth/data/mappers/user_mapper.dart
+cat app/lib/features/auth/data/models/login_response_model.dart
+cat app/lib/features/auth/data/models/user_model.dart
+cat app/lib/features/auth/data/repositories/auth_repository_impl.dart
+
+printf '%s\n' '=== AUTH DOMAIN ==='
+cat app/lib/features/auth/domain/repositories/auth_repository.dart
+cat app/lib/features/auth/domain/usecases/login_usecase.dart
+cat app/lib/features/auth/domain/usecases/register_usecase.dart
+
+printf '%s\n' '=== AUTH STATE / PROVIDERS ==='
+cat app/lib/features/auth/presentation/providers/auth_providers.dart
+cat app/lib/features/auth/presentation/providers/auth_state_provider.dart
+cat app/lib/features/auth/presentation/controllers/login_controller.dart
+cat app/lib/features/auth/presentation/controllers/register_controller.dart
+
+printf '%s\n' '=== AUTH UI ==='
+cat app/lib/features/auth/presentation/pages/login_page.dart
+cat app/lib/features/auth/presentation/pages/register_page.dart
+cat app/lib/features/auth/presentation/widgets/login_form.dart
+cat app/lib/features/auth/presentation/widgets/register_form.dart
