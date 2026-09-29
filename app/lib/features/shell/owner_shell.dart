@@ -26,7 +26,9 @@ class _OwnerShellState extends State<OwnerShell> {
       OwnerTab.dashboard => const OwnerDashboardPage(),
       OwnerTab.canteen => const OwnerCanteenPage(),
       OwnerTab.orders => const OwnerOrdersPage(),
-      OwnerTab.profile => const OwnerProfilePage(),
+      OwnerTab.profile => OwnerProfilePage(
+        user: widget.user,
+      ),
     };
   }
 

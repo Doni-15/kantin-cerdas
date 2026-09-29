@@ -8,8 +8,9 @@ import 'package:kantin_cerdas/core/widgets/kc_button.dart';
 import 'package:kantin_cerdas/core/widgets/kc_logo.dart';
 import 'package:kantin_cerdas/core/widgets/kc_snackbar.dart';
 import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
-import 'package:kantin_cerdas/features/auth/presentation/controllers/register_controller.dart';
+import 'package:kantin_cerdas/features/auth/domain/validators/auth_validator.dart';
+import 'package:kantin_cerdas/features/auth/presentation/pages/register_profile_page.dart';
+import 'package:kantin_cerdas/features/auth/presentation/providers/register_draft_provider.dart';
 
 class RegisterForm extends ConsumerStatefulWidget {
   const RegisterForm({super.key});
@@ -20,7 +21,6 @@ class RegisterForm extends ConsumerStatefulWidget {
 
 class _RegisterFormState extends ConsumerState<RegisterForm> {
   final _nameController = TextEditingController();
-  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -28,10 +28,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  String? _nameError;
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
+
   @override
   void dispose() {
     _nameController.dispose();
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -51,39 +55,46 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
   }
 
   void _handleRegister() {
+    FocusScope.of(context).unfocus();
+
     final name = _nameController.text.trim();
-    final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (name.isEmpty ||
-        username.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty
-    ) {
-      KcSnackBar.error(
-        context,
-        'Silakan lengkapi semua data.',
+    setState(() {
+      _nameError = AuthValidator.name(name);
+      _emailError = AuthValidator.email(email);
+      _passwordError = AuthValidator.password(password);
+      _confirmPasswordError = AuthValidator.confirmPassword(
+        password,
+        confirmPassword,
       );
+    });
+
+    if (_nameError != null ||
+        _emailError != null ||
+        _passwordError != null ||
+        _confirmPasswordError != null) {
       return;
     }
 
-    if (password != confirmPassword) {
-      KcSnackBar.error(
-        context,
-        'Konfirmasi password tidak sesuai.',
-      );
-      return;
-    }
-
-    ref.read(registerControllerProvider.notifier).register(
-          name: name,
-          username: username,
-          email: email,
-          password: password,
+    // Data langkah 1 disimpan di provider, bukan dilempar lewat constructor.
+    ref.read(registerDraftProvider.notifier).setDraft(
+          RegisterDraft(
+            name: name,
+            email: email,
+            password: password,
+          ),
         );
+
+    // TODO: pindahkan ke route GoRouter (mis. Routes.registerProfile) agar
+    // konsisten dengan navigasi lain dan mendukung back stack / deep link.
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const RegisterProfilePage(),
+      ),
+    );
   }
 
   void _handleGoogleRegister() {
@@ -95,53 +106,15 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<User?>>(
-      registerControllerProvider,
-      (previous, next) {
-        next.whenOrNull(
-          data: (user) {
-            if (user == null) {
-              return;
-            }
-
-            KcSnackBar.success(
-              context,
-              'Registrasi berhasil.',
-            );
-
-            context.go(Routes.login);
-          },
-          error: (error, stackTrace) {
-            KcSnackBar.error(
-              context,
-              error.toString().replaceFirst(
-                    'Exception: ',
-                    '',
-                  ),
-            );
-          },
-        );
-      },
-    );
-
-    final registerState = ref.watch(
-      registerControllerProvider,
-    );
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildHeader(),
 
-        // Diperbesar dari 24 ke 40 untuk memisahkan area teks sambutan dan form (konsisten dengan Login)
         const SizedBox(height: 40),
 
         _buildNameField(),
-
-        const SizedBox(height: 16),
-
-        _buildUsernameField(),
 
         const SizedBox(height: 16),
 
@@ -155,24 +128,18 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
 
         _buildConfirmPasswordField(),
 
-        // Diperbesar dari 24 ke 32 agar ada jarak lebih jelas antara input terakhir dan tombol aksi
         const SizedBox(height: 32),
 
-        _buildRegisterButton(
-          isLoading: registerState.isLoading,
-        ),
+        _buildRegisterButton(),
 
-        // Diperbesar dari 24 ke 32 agar proporsional dengan tombol (konsisten dengan Login)
         const SizedBox(height: 32),
 
         _buildDivider(),
 
-        // Diperbesar dari 24 ke 32 (konsisten dengan Login)
         const SizedBox(height: 32),
 
         _buildGoogleButton(),
 
-        // Diperbesar dari 8 ke 48 agar bagian 'Sudah punya akun' terdorong sedikit ke bawah menjadi footer (konsisten dengan Login)
         const SizedBox(height: 48),
 
         _buildLoginPrompt(),
@@ -188,17 +155,13 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
         const KcBrand(
           logoSize: 68,
         ),
-
         const SizedBox(height: 32),
-
         Text(
           'Buat akun baru',
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineSmall,
         ),
-
         const SizedBox(height: 8),
-
         Text(
           'Daftar untuk mulai menggunakan KantinCerdas',
           textAlign: TextAlign.center,
@@ -216,16 +179,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       prefixIcon: Icons.person_outline,
       keyboardType: TextInputType.name,
       textInputAction: TextInputAction.next,
-    );
-  }
-
-  Widget _buildUsernameField() {
-    return KcTextField(
-      label: 'Username',
-      hint: 'Masukkan username',
-      controller: _usernameController,
-      prefixIcon: Icons.person_outline,
-      textInputAction: TextInputAction.next,
+      errorText: _nameError,
+      onChanged: (_) {
+        if (_nameError != null) {
+          setState(() {
+            _nameError = null;
+          });
+        }
+      },
     );
   }
 
@@ -237,6 +198,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       prefixIcon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
+      errorText: _emailError,
+      onChanged: (_) {
+        if (_emailError != null) {
+          setState(() {
+            _emailError = null;
+          });
+        }
+      },
     );
   }
 
@@ -248,6 +217,17 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       prefixIcon: Icons.lock_outline,
       obscureText: _obscurePassword,
       textInputAction: TextInputAction.next,
+      errorText: _passwordError,
+      onChanged: (_) {
+        setState(() {
+          _passwordError = null;
+
+          if (_confirmPasswordError ==
+              'Konfirmasi password tidak sesuai') {
+            _confirmPasswordError = null;
+          }
+        });
+      },
       suffixIcon: IconButton(
         onPressed: _togglePasswordVisibility,
         icon: Icon(
@@ -268,6 +248,14 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       obscureText: _obscureConfirmPassword,
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => _handleRegister(),
+      errorText: _confirmPasswordError,
+      onChanged: (_) {
+        if (_confirmPasswordError != null) {
+          setState(() {
+            _confirmPasswordError = null;
+          });
+        }
+      },
       suffixIcon: IconButton(
         onPressed: _toggleConfirmPasswordVisibility,
         icon: Icon(
@@ -279,13 +267,10 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     );
   }
 
-  Widget _buildRegisterButton({
-    required bool isLoading,
-  }) {
+  Widget _buildRegisterButton() {
     return KcButton(
-      label: 'DAFTAR',
+      label: 'LANJUT',
       onPressed: _handleRegister,
-      isLoading: isLoading,
     );
   }
 

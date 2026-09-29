@@ -287,10 +287,19 @@ Tanggung jawab:
 Contoh:
 
 enum UserRole {
-  admin,
-  cashier,
-  customer,
+  admin,     // pengelola sistem KantinCerdas
+  owner,     // pemilik kantin, mengelola kantinnya sendiri
+  customer,  // pembeli makanan/minuman
 }
+
+Catatan role:
+
+- `owner` adalah pemilik kantin (bukan kasir). Nama role mengikuti kode di `user_role.dart`.
+- Tidak ada role `cashier`. Jika kelak ada kasir/staf kantin, tambahkan sebagai role baru
+  secara eksplisit di enum dan Mapper, lengkap dengan aturan aksesnya. Jangan mencampurnya dengan `owner`.
+- Nilai role dari Backend dinormalisasi di Mapper secara case-insensitive
+  (`"ADMIN"`, `"Admin"`, `"admin"` -> `UserRole.admin`). Role yang tidak dikenal
+  memicu `DataParsingException`, bukan crash generik.
 
 Gunakan:
 
@@ -534,7 +543,7 @@ ApiClient tetap bersifat umum dan tidak mengetahui business feature.
 
 ---
 
-## 5.7 Token / Session Storage — TAMBAH
+## 5.7 Token / Session Storage — SUDAH ADA (in-memory), GANTI KE SECURE STORAGE
 
 Jika login menghasilkan:
 
@@ -563,7 +572,7 @@ Token tidak dikelola langsung oleh Widget.
 
 ---
 
-## 5.8 Authentication State — TAMBAH
+## 5.8 Authentication State — SUDAH ADA (authStateProvider), TINGGAL DIHUBUNGKAN KE ROUTER
 
 Aplikasi nantinya perlu mengetahui:
 
@@ -577,7 +586,7 @@ Authentication state harus terpisah dari UI.
 
 ---
 
-## 5.9 Error Handling — UPDATE
+## 5.9 Error Handling — SUDAH ADA (ApiException -> AuthFailure), PETAKAN ERROR API ASLI
 
 Dummy mungkin hanya memiliki:
 
@@ -734,3 +743,166 @@ Backend
 dengan perubahan seminimal mungkin pada layer di atas Data Layer.
 
 > Tujuan arsitektur ini bukan membuat banyak file, tetapi membuat setiap bagian memiliki tanggung jawab yang jelas sehingga perubahan pada satu bagian tidak merusak bagian lainnya.
+
+---
+
+# 10. Status Implementasi Mode Dummy
+
+Dummy dibuat semirip mungkin dengan Backend supaya masalah kontrak data ketahuan sekarang,
+bukan saat Backend siap.
+
+## 10.1 Struktur yang ditambahkan
+
+```
+data/
+  datasources/
+    auth_datasource.dart          # kontrak: login, register, getCurrentUser, logout
+    auth_dummy_datasource.dart    # meniru Backend (JSON, status code, session, token expiry)
+  # errors/ (ApiException, DataParsingException) dipindah ke lib/core/errors/
+  # karena dipakai bersama feature lain.
+  storage/
+    token_storage.dart            # kontrak penyimpanan token + AuthTokens
+    in_memory_token_storage.dart  # implementasi sementara
+domain/
+  failures/auth_failure.dart      # error yang dipahami Controller/UI (sealed class)
+  validators/auth_validator.dart  # SATU sumber aturan validasi (UI, UseCase, dummy)
+  usecases/logout_usecase.dart
+  usecases/restore_session_usecase.dart
+presentation/
+  pages/register_profile_page.dart        # dipindah dari widgets/
+  providers/register_draft_provider.dart  # data langkah 1 registrasi
+  utils/auth_error_message.dart           # AuthFailure -> teks untuk user
+```
+
+## 10.2 Alur error
+
+```
+DataSource  -> throw ApiException(statusCode, code)
+Repository  -> memetakan menjadi AuthFailure (satu-satunya tempat pemetaan)
+Controller  -> state = AsyncError(AuthFailure)
+UI          -> authErrorMessage(error) / tampilkan di field yang sesuai
+```
+
+| ApiException code / status | AuthFailure               |
+|----------------------------|---------------------------|
+| `invalid_credentials` / 401 | `InvalidCredentialsFailure` |
+| `account_disabled` / 403    | `AccountDisabledFailure`    |
+| `username_taken`            | `UsernameTakenFailure`      |
+| `email_taken`               | `EmailTakenFailure`         |
+| `validation_error` / 422    | `ValidationFailure` (per field) |
+| `network_error`, `timeout`, status 0 | `NetworkFailure`   |
+| lainnya / 5xx / parsing gagal | `UnknownFailure`          |
+
+Saat Backend siap, cukup sesuaikan pemetaan di `AuthRepositoryImpl._mapApiException`
+dengan kode error Backend yang sebenarnya.
+
+## 10.3 Akun dan skenario dummy
+
+Password semua akun seed: `123456`.
+
+| Identifier  | Perilaku                                     |
+|-------------|----------------------------------------------|
+| `admin`     | login sebagai admin                          |
+| `owner`     | login sebagai pemilik kantin                 |
+| `customer`  | login sebagai pembeli                        |
+| `inactive`  | akun nonaktif -> 403 `account_disabled`      |
+| `offline`   | simulasi tidak ada koneksi (`NetworkFailure`) |
+| `timeout`   | simulasi timeout (`NetworkFailure`)           |
+| `error500`  | simulasi server error (`UnknownFailure`)      |
+
+Skenario khusus berlaku untuk kolom identifier saat login dan username saat register.
+Akun yang didaftarkan lewat register tersimpan di memori dan bisa login dengan
+password yang didaftarkan (hilang saat aplikasi ditutup).
+
+## 10.4 Aturan validasi (`AuthValidator`)
+
+- Nama wajib diisi.
+- Email wajib dan berformat valid; disimpan lowercase.
+- Username 3-20 karakter: huruf kecil, angka, titik, underscore (input dinormalisasi lowercase).
+- Password register minimal 6 karakter (ubah di `AuthValidator.minPasswordLength`).
+- Login hanya mewajibkan identifier dan password terisi (tidak membatasi panjang, agar akun lama tetap bisa masuk).
+
+Aturan yang sama dijalankan di UI (feedback cepat), UseCase (pengaman), dan dummy
+(meniru validasi 422 dari Backend).
+
+## 10.5 Session
+
+- Login menyimpan `AuthTokens` (access token, refresh token, waktu kedaluwarsa) lewat `TokenStorage`.
+- `AuthStateNotifier.restoreSession()` memulihkan user dari token yang tersimpan (panggil saat startup/splash).
+- `AuthStateNotifier.logout()` menghapus token walau server gagal dihubungi.
+- `LoginController` yang men-set auth state; UI hanya menampilkan hasil dan navigasi.
+
+## 10.6 Menjalankan dengan dummy / API
+
+```
+flutter run                          # default: dummy
+flutter run --dart-define=USE_DUMMY=true
+flutter run --dart-define=USE_DUMMY=false   # setelah AuthApiDataSource dibuat
+```
+
+## 10.7 Yang MASIH harus dikerjakan saat Backend siap
+
+1. Buat `AuthApiDataSource` (4 method sesuai `AuthDataSource`) di atas `ApiClient`, lalu
+   daftarkan di `authDataSourceProvider`. Lempar `ApiException` dari error HTTP.
+2. Sesuaikan `UserModel` / `LoginResponseModel` dengan JSON Backend.
+3. Ganti `InMemoryTokenStorage` dengan implementasi secure storage
+   (mis. `flutter_secure_storage`) agar session bertahan setelah aplikasi ditutup.
+4. Tambahkan refresh token di `AuthRepositoryImpl.restoreSession` (saat ini token ditolak = logout).
+5. Hubungkan `authStateProvider` ke router (contoh di bawah), lalu hapus `context.go(Routes.app)` di `LoginForm`.
+6. Pindahkan `RegisterProfilePage` ke route GoRouter (saat ini masih `Navigator.push`).
+7. Pertimbangkan redirect per role (`admin` / `owner` / `customer`) di router.
+
+Contoh redirect GoRouter (sketsa, sesuaikan dengan struktur router project):
+
+```dart
+final routerProvider = Provider<GoRouter>((ref) {
+  final auth = ValueNotifier<User?>(ref.read(authStateProvider));
+  ref.listen<User?>(authStateProvider, (_, next) => auth.value = next);
+
+  return GoRouter(
+    refreshListenable: auth,
+    redirect: (context, state) {
+      final user = auth.value;
+      final atAuthPage = state.matchedLocation == Routes.login ||
+          state.matchedLocation == Routes.register;
+
+      if (user == null) return atAuthPage ? null : Routes.login;
+      if (atAuthPage) return Routes.app;
+      return null;
+    },
+    routes: [/* ... */],
+  );
+});
+```
+
+## 10.8 Test
+
+`test/features/auth/auth_flow_test.dart` mencakup login, register, password hasil register,
+duplikat username/email, akun nonaktif, skenario jaringan/server, restore session, logout,
+Mapper role, dan validasi UseCase. Jalankan: `flutter test test/features/auth`.
+
+---
+
+# 11. Persistence lokal (tahap dummy)
+
+Sebelum Backend ada, data dummy disimpan di `shared_preferences` lewat satu
+`LocalStorage` bersama (`lib/core/storage/local_storage.dart`).
+
+Yang disimpan:
+
+| Data | Key | Pemilik |
+|---|---|---|
+| Token (access, refresh, kedaluwarsa) | `auth.tokens` | `PersistentTokenStorage` (sisi klien) |
+| Akun hasil register, session, penghitung id | `auth.dummy_state` | `AuthDummyDataSource` (meniru database Backend) |
+
+Dummy ikut disimpan karena `restoreSession()` memanggil `getCurrentUser`; tanpa
+itu, token yang tersimpan ditolak setelah aplikasi dibuka ulang.
+
+Alur startup (`main.dart`): buat `LocalStorage` -> pulihkan sesi (maks. 8 detik) ->
+`runApp`. Router (`routerProvider`) membaca `authStateProvider`: belum login diarahkan
+ke `/login`, sudah login ke `/app`. Logout cukup mengosongkan auth state; router
+yang memindahkan halaman.
+
+Catatan keamanan: `shared_preferences` tidak terenkripsi. Untuk Backend nyata, ganti
+`PersistentTokenStorage` dengan secure storage dan hapus persistence di dummy.
+Access token dummy berlaku 7 hari agar sesi bertahan selama pengembangan.

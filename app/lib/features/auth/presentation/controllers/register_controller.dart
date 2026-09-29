@@ -2,13 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
 import 'package:kantin_cerdas/features/auth/presentation/providers/auth_providers.dart';
 
-final registerControllerProvider = AsyncNotifierProvider<RegisterController, User?>(
+/// autoDispose: state (error/data) ter-reset setiap halaman registrasi ditutup.
+final registerControllerProvider =
+    AsyncNotifierProvider.autoDispose<RegisterController, User?>(
   RegisterController.new,
 );
 
 class RegisterController extends AsyncNotifier<User?> {
+  bool _disposed = false;
+
   @override
   Future<User?> build() async {
+    _disposed = false;
+    ref.onDispose(() => _disposed = true);
+
     return null;
   }
 
@@ -21,22 +28,24 @@ class RegisterController extends AsyncNotifier<User?> {
     state = const AsyncLoading();
 
     try {
-      final useCase = ref.read(registerUseCaseProvider);
+      final user = await ref.read(registerUseCaseProvider).execute(
+            name: name,
+            username: username,
+            email: email,
+            password: password,
+          );
 
-      final user = await useCase.execute(
-        name: name,
-        username: username,
-        email: email,
-        password: password,
-      );
+      if (_disposed) {
+        return;
+      }
 
       state = AsyncData(user);
-    } 
-    catch (error, stackTrace) {
-      state = AsyncError(
-        error,
-        stackTrace,
-      );
+    } catch (error, stackTrace) {
+      if (_disposed) {
+        return;
+      }
+
+      state = AsyncError(error, stackTrace);
     }
   }
 }

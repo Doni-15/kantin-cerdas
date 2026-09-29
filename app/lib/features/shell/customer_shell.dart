@@ -28,7 +28,10 @@ class _CustomerShellState extends State<CustomerShell> {
       CustomerTab.orders => const CustomerOrdersPage(),
       CustomerTab.ai => const CustomerAiChatPage(),
       CustomerTab.history => const CustomerHistoryPage(),
-      CustomerTab.profile => const CustomerProfilePage(),
+      
+      CustomerTab.profile => CustomerProfilePage(
+        user: widget.user,
+      ),
     };
   }
 
@@ -38,11 +41,15 @@ class _CustomerShellState extends State<CustomerShell> {
       body: _currentPage,
 
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(), 
+        elevation: 6,
+
         onPressed: () {
           setState(() {
             _currentTab = CustomerTab.ai;
           });
         },
+        
         child: const Icon(
           Icons.smart_toy_outlined,
         ),
