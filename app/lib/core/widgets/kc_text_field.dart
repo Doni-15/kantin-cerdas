@@ -15,6 +15,9 @@ class KcTextField extends StatelessWidget {
     this.onSubmitted,
     this.enabled = true,
     this.autofocus = false,
+    this.maxLines = 1,
+    this.errorText,
+    this.onChanged,
   });
 
   final String label;
@@ -31,6 +34,10 @@ class KcTextField extends StatelessWidget {
 
   final bool enabled;
   final bool autofocus;
+  
+  final int? maxLines;
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +46,17 @@ class KcTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Label Field
         Text(
           label,
-          style: theme.textTheme.labelLarge,
+          style: theme.textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
 
         const SizedBox(height: KcSpacing.xs),
+
+        // Input Field
         TextField(
           controller: controller,
           keyboardType: keyboardType,
@@ -53,12 +65,25 @@ class KcTextField extends StatelessWidget {
           onSubmitted: onSubmitted,
           enabled: enabled,
           autofocus: autofocus,
+          maxLines: maxLines,
+          onChanged: onChanged,
+          
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: prefixIcon == null
-              ? null
-              : Icon(prefixIcon),
+            errorText: errorText,
             suffixIcon: suffixIcon,
+            alignLabelWithHint: maxLines != null && maxLines! > 1,
+            
+            prefixIcon: prefixIcon == null
+                ? null
+                : maxLines != null && maxLines! > 1
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          bottom: (maxLines! - 1) * 22.0, 
+                        ),
+                        child: Icon(prefixIcon),
+                      )
+                    : Icon(prefixIcon),
           ),
         ),
       ],

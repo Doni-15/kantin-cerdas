@@ -25,7 +25,9 @@ class _AdminShellState extends State<AdminShell> {
     return switch (_currentTab) {
       AdminTab.dashboard => const AdminDashboardPage(),
       AdminTab.users => const AdminUsersPage(),
-      AdminTab.profile => const AdminProfilePage(),
+      AdminTab.profile => AdminProfilePage(
+        user: widget.user,
+      ),
     };
   }
 

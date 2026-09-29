@@ -1,3 +1,4 @@
+import 'package:kantin_cerdas/core/errors/data_parsing_exception.dart';
 import 'package:kantin_cerdas/features/auth/data/models/user_model.dart';
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
 import 'package:kantin_cerdas/features/auth/domain/enums/user_role.dart';
@@ -5,7 +6,7 @@ import 'package:kantin_cerdas/features/auth/domain/enums/user_role.dart';
 extension UserModelMapper on UserModel {
   User toEntity() {
     return User(
-      id: id.toString(),
+      id: id,
       username: username,
       email: email,
       name: name,
@@ -14,19 +15,15 @@ extension UserModelMapper on UserModel {
     );
   }
 
-  UserRole _mapRole(String role) {
-    switch (role) {
-      case 'admin':
-        return UserRole.admin;
+  UserRole _mapRole(String value) {
+    final normalized = value.trim().toLowerCase();
 
-      case 'owner':
-        return UserRole.owner;
-
-      case 'customer':
-        return UserRole.customer;
-
-      default:
-        throw Exception('Unknown user role: $role');
+    for (final role in UserRole.values) {
+      if (role.name == normalized) {
+        return role;
+      }
     }
+
+    throw DataParsingException('Unknown user role: $value');
   }
 }

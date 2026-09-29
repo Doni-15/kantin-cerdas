@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-
 import 'package:kantin_cerdas/core/router/routes.dart';
 import 'package:kantin_cerdas/core/widgets/kc_brand.dart';
 import 'package:kantin_cerdas/core/widgets/kc_button.dart';
@@ -11,7 +10,8 @@ import 'package:kantin_cerdas/core/widgets/kc_snackbar.dart';
 import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
 import 'package:kantin_cerdas/features/auth/presentation/controllers/login_controller.dart';
-import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
+import 'package:kantin_cerdas/features/auth/domain/validators/auth_validator.dart';
+import 'package:kantin_cerdas/features/auth/presentation/utils/auth_error_message.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -21,14 +21,17 @@ class LoginForm extends ConsumerStatefulWidget {
 }
 
 class _LoginFormState extends ConsumerState<LoginForm> {
-  final _usernameController = TextEditingController();
+  final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
 
+  String? _identifierError;
+  String? _passwordError;
+
   @override
   void dispose() {
-    _usernameController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -40,19 +43,27 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   }
 
   void _handleLogin() {
-    final username = _usernameController.text.trim();
+    FocusScope.of(context).unfocus();
+
+    // Cegah double-submit (mis. Enter di keyboard saat request masih berjalan).
+    if (ref.read(loginControllerProvider).isLoading) {
+      return;
+    }
+
+    final identifier = _identifierController.text.trim();
     final password = _passwordController.text;
 
-    if (username.isEmpty || password.isEmpty) {
-      KcSnackBar.error(
-        context,
-        'Silakan masukkan username dan password.',
-      );
+    setState(() {
+      _identifierError = AuthValidator.identifier(identifier);
+      _passwordError = AuthValidator.loginPassword(password);
+    });
+
+    if (_identifierError != null || _passwordError != null) {
       return;
     }
 
     ref.read(loginControllerProvider.notifier).login(
-      username: username,
+      identifier: identifier,
       password: password,
     );
   }
@@ -68,17 +79,20 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               return;
             }
 
-            ref.read(authStateProvider.notifier).setUser(user);
+            // Auth state sudah di-set oleh LoginController dan router akan
+            // mengarahkan ke /app. Snackbar ditampilkan di sini (bukan di
+            // halaman utama) agar tidak muncul saat sesi dipulihkan.
+            KcSnackBar.success(
+              context,
+              'Login berhasil. Selamat datang, ${user.name}!',
+            );
 
             context.go(Routes.app);
           },
           error: (error, stackTrace) {
             KcSnackBar.error(
               context,
-              error.toString().replaceFirst(
-                    'Exception: ',
-                    '',
-                  ),
+              authErrorMessage(error),
             );
           },
         );
@@ -97,7 +111,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
         const SizedBox(height: 40),
 
-        _buildUsernameField(),
+        _buildIdentifierField(),
 
         const SizedBox(height: 16),
 
@@ -134,17 +148,13 @@ class _LoginFormState extends ConsumerState<LoginForm> {
         const KcBrand(
           logoSize: 68,
         ),
-
         const SizedBox(height: 32),
-
         Text(
           'Selamat datang kembali!',
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineSmall,
         ),
-
         const SizedBox(height: 8),
-
         Text(
           'Masuk untuk melanjutkan ke KantinCerdas',
           textAlign: TextAlign.center,
@@ -154,13 +164,21 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     );
   }
 
-  Widget _buildUsernameField() {
+  Widget _buildIdentifierField() {
     return KcTextField(
-      label: 'Username',
-      hint: 'Masukkan username',
-      controller: _usernameController,
+      label: 'Username atau Email',
+      hint: 'Masukkan username atau email',
+      controller: _identifierController,
       prefixIcon: Icons.person_outline,
       textInputAction: TextInputAction.next,
+      errorText: _identifierError,
+      onChanged: (_) {
+        if (_identifierError != null) {
+          setState(() {
+            _identifierError = null;
+          });
+        }
+      },
     );
   }
 
@@ -173,6 +191,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       obscureText: _obscurePassword,
       textInputAction: TextInputAction.done,
       onSubmitted: (_) => _handleLogin(),
+      errorText: _passwordError,
+      onChanged: (_) {
+        if (_passwordError != null) {
+          setState(() {
+            _passwordError = null;
+          });
+        }
+      },
       suffixIcon: IconButton(
         onPressed: _togglePasswordVisibility,
         icon: Icon(
@@ -188,12 +214,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
-      onPressed: () {
-        KcSnackBar.info(
-          context,
-          'Fitur lupa password belum tersedia.',
-        );
-      },
+        onPressed: () {
+          KcSnackBar.info(
+            context,
+            'Fitur lupa password belum tersedia.',
+          );
+        },
         child: const Text('Lupa password?'),
       ),
     );

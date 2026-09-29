@@ -1,5 +1,5 @@
 name: kantin_cerdas
-description: "A new Flutter project."
+description: "KantinCerdas adalah aplikasi Android berbasis Flutter untuk melihat menu, memperoleh rekomendasi berbantuan AI, dan memesan makanan agar dapat diambil di satu kantin kampus."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -14,6 +14,7 @@ dependencies:
   go_router: ^18.0.1
   flutter_riverpod: ^3.4.3
   dio: ^5.11.1
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
