@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kantin_cerdas/core/widgets/kc_confirm_dialog.dart';
 import 'package:kantin_cerdas/core/widgets/kc_snackbar.dart';
 import 'package:kantin_cerdas/core/widgets/profile/kc_profile_logout_button.dart';
 import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
@@ -20,20 +19,8 @@ class _LogoutButtonState extends ConsumerState<LogoutButton> {
   bool _isLoggingOut = false;
 
   Future<void> _handleLogout() async {
+    // Cegah tekan berulang selama proses berjalan.
     if (_isLoggingOut) {
-      return;
-    }
-
-    final confirmed = await KcConfirmDialog.show(
-      context: context,
-      title: 'Keluar dari akun?',
-      message: 'Apakah kamu yakin ingin keluar dari akun?',
-      confirmLabel: 'Keluar',
-      cancelLabel: 'Batal',
-      isDestructive: true,
-    );
-
-    if (!confirmed || !mounted) {
       return;
     }
 
@@ -44,14 +31,14 @@ class _LogoutButtonState extends ConsumerState<LogoutButton> {
     try {
       await ref.read(authStateProvider.notifier).logout();
 
+      // Router baru berpindah ke login pada frame berikutnya, jadi widget ini
+      // masih terpasang. Snackbar berada di overlay sehingga tetap tampil
+      // di halaman login.
       if (!mounted) {
         return;
       }
 
-      KcSnackBar.success(
-        context,
-        'Berhasil keluar dari akun.',
-      );
+      KcSnackBar.success(context, 'Berhasil keluar dari akun.');
     } catch (_) {
       if (!mounted) {
         return;
@@ -61,12 +48,10 @@ class _LogoutButtonState extends ConsumerState<LogoutButton> {
         _isLoggingOut = false;
       });
 
-      KcSnackBar.error(
-        context,
-        'Gagal keluar dari akun. Silakan coba lagi.',
-      );
+      KcSnackBar.error(context, 'Gagal keluar dari akun. Silakan coba lagi.');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return KcProfileLogoutButton(
