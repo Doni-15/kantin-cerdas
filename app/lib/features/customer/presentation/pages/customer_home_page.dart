@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/home/canteen_application_status_card.dart';
 
 import 'package:kantin_cerdas/features/customer/data/datasources/customer_dummy_data.dart';
 import 'package:kantin_cerdas/features/customer/domain/entities/menu_item.dart';
