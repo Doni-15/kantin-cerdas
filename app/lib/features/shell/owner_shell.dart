@@ -23,7 +23,9 @@ class _OwnerShellState extends State<OwnerShell> {
 
   Widget get _currentPage {
     return switch (_currentTab) {
-      OwnerTab.dashboard => const OwnerDashboardPage(),
+      OwnerTab.dashboard => OwnerDashboardPage(
+        ownerName: widget.user.name,
+      ),
       OwnerTab.canteen => const OwnerCanteenPage(),
       OwnerTab.orders => const OwnerOrdersPage(),
       OwnerTab.profile => OwnerProfilePage(
