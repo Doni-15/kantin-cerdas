@@ -1,4 +1,4 @@
-package com.kantin_cerdas
+package com.kantincerdas.app
 
 import io.flutter.embedding.android.FlutterActivity
 
