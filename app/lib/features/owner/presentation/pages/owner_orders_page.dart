@@ -11,10 +11,9 @@ class OwnerOrdersPage extends StatefulWidget {
 
 class _OwnerOrdersPageState extends State<OwnerOrdersPage> {
   _OrderQueue _selectedQueue = _OrderQueue.baru;
-  final List<_OwnerOrder> _orders = List.of(_sampleOrders);
 
   List<_OwnerOrder> get _visibleOrders =>
-      _orders.where((order) => order.queue == _selectedQueue).toList();
+      _sampleOrders.where((order) => order.queue == _selectedQueue).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class _OwnerOrdersPageState extends State<OwnerOrdersPage> {
                 const SizedBox(width: KcSpacing.sm),
                 Expanded(
                   child: Text(
-                    '${_orders.length} pesanan dalam antrean',
+                    '6 pesanan dalam antrean',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
@@ -72,7 +71,7 @@ class _OwnerOrdersPageState extends State<OwnerOrdersPage> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: _OrderQueue.values.map((queue) {
-                final count = _orders
+                final count = _sampleOrders
                     .where((order) => order.queue == queue)
                     .length;
                 return Padding(
@@ -182,15 +181,6 @@ class _OwnerOrdersPageState extends State<OwnerOrdersPage> {
                         label: const Text('Lihat ringkasan'),
                       ),
                     ),
-                    const SizedBox(height: KcSpacing.xs),
-                    SizedBox(
-                      width: double.infinity,
-                      child: TextButton.icon(
-                        onPressed: () => _editOrderStatus(order),
-                        icon: const Icon(Icons.edit_outlined),
-                        label: const Text('Ubah status'),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -198,76 +188,6 @@ class _OwnerOrdersPageState extends State<OwnerOrdersPage> {
             const SizedBox(height: KcSpacing.sm),
           ],
         ],
-      ),
-    );
-  }
-
-  Future<void> _editOrderStatus(_OwnerOrder order) async {
-    final newQueue = await showModalBottomSheet<_OrderQueue>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) {
-        final colors = Theme.of(context).colorScheme;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              KcSpacing.lg,
-              KcSpacing.sm,
-              KcSpacing.lg,
-              KcSpacing.lg,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Ubah status pesanan',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: KcSpacing.xs),
-                Text(
-                  order.id,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: KcSpacing.sm),
-                for (final queue in _OrderQueue.values)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(queue.statusLabel),
-                    trailing: order.queue == queue
-                        ? Icon(Icons.check, color: colors.primary)
-                        : null,
-                    onTap: () => Navigator.of(context).pop(queue),
-                  ),
-                const SizedBox(height: KcSpacing.xs),
-                Text(
-                  'Perubahan demo ini hanya tersimpan selama aplikasi berjalan.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    if (newQueue == null || newQueue == order.queue || !mounted) return;
-
-    setState(() {
-      final orderIndex = _orders.indexWhere((item) => item.id == order.id);
-      if (orderIndex != -1) {
-        _orders[orderIndex] = order.copyWith(queue: newQueue);
-      }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${order.id} diperbarui: ${newQueue.statusLabel}'),
       ),
     );
   }
@@ -365,15 +285,6 @@ class _OwnerOrder {
   final String total;
   final String time;
   final _OrderQueue queue;
-
-  _OwnerOrder copyWith({_OrderQueue? queue}) => _OwnerOrder(
-    id: id,
-    customer: customer,
-    portions: portions,
-    total: total,
-    time: time,
-    queue: queue ?? this.queue,
-  );
 }
 
 class _SummaryRow extends StatelessWidget {
