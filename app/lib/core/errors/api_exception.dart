@@ -1,36 +1,37 @@
-/// Error level HTTP yang dilempar DataSource (Dummy maupun API).
-///
-/// Repository yang memetakannya menjadi AuthFailure untuk Domain.
-class ApiException implements Exception {
-  const ApiException({
-    required this.statusCode,
-    required this.code,
-    this.fieldErrors = const {},
-  });
+/// Jenis kegagalan pada komunikasi API.
+enum ApiExceptionType { connection, timeout, cancelled, response, unexpected }
 
-  final int statusCode;
+final class ApiException implements Exception {
+  ApiException({
+    required this.type,
+    this.statusCode,
+    this.code,
+    this.message,
+    this.requestId,
+    this.retryAfterSeconds,
+    Map<String, String> fieldErrors = const {},
+    Map<String, Object?> details = const {},
+  }) : fieldErrors = Map<String, String>.unmodifiable(fieldErrors),
+       details = Map<String, Object?>.unmodifiable(details);
 
-  /// Kode error dari Backend, lihat [ApiErrorCode].
-  final String code;
-
-  /// Error per field (untuk 422 Validation Error). Key = nama field.
+  final ApiExceptionType type;
+  final int? statusCode;
+  final String? code;
+  final String? message;
+  final String? requestId;
+  final int? retryAfterSeconds;
   final Map<String, String> fieldErrors;
+  final Map<String, Object?> details;
+
+  /// Menandakan apakah respons HTTP membawa envelope kode bisnis dari backend.
+  bool get hasBackendErrorCode => code != null && code!.trim().isNotEmpty;
 
   @override
-  String toString() => 'ApiException($statusCode, $code)';
-}
-
-/// Kode error yang dikenal Data Layer.
-abstract final class ApiErrorCode {
-  static const invalidCredentials = 'invalid_credentials';
-  static const accountDisabled = 'account_disabled';
-  static const usernameTaken = 'username_taken';
-  static const emailTaken = 'email_taken';
-  static const wrongPassword = 'wrong_password';
-  static const validationError = 'validation_error';
-  static const tokenInvalid = 'token_invalid';
-  static const tokenExpired = 'token_expired';
-  static const network = 'network_error';
-  static const timeout = 'timeout';
-  static const serverError = 'server_error';
+  String toString() {
+    return 'ApiException('
+        'type: ${type.name}, '
+        'statusCode: $statusCode, '
+        'code: $code'
+        ')';
+  }
 }

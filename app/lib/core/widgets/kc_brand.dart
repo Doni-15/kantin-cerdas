@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
-import 'kc_logo.dart';
+import 'package:kantin_cerdas/core/widgets/kc_logo.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
 
 class KcBrand extends StatelessWidget {
-  const KcBrand({
-    super.key,
-    this.logoSize = 48,
-  });
+  const KcBrand({super.key, this.logoSize = 48});
 
   final double logoSize;
 
@@ -16,15 +13,17 @@ class KcBrand extends StatelessWidget {
 
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        KcLogo(
-          size: logoSize,
-        ),
-        const SizedBox(width: 12),
-        Text(
-          'KantinCerdas',
-          style: theme.textTheme.headlineLarge?.copyWith(
-            fontWeight: FontWeight.w700,
+        KcLogo(size: logoSize),
+        const SizedBox(width: KcSpacing.sm),
+        Flexible(
+          child: Text(
+            'KantinCerdas',
+            style: theme.textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.primary,
+            ),
           ),
         ),
       ],

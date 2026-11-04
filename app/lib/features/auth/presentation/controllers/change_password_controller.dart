@@ -1,50 +1,48 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kantin_cerdas/features/auth/presentation/providers/auth_providers.dart';
+import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
 
-/// autoDispose: state (error/sukses) ter-reset setiap halaman ditutup.
-///
-/// Nilai state: false = belum berhasil, true = password berhasil diubah.
 final changePasswordControllerProvider =
-    AsyncNotifierProvider.autoDispose<ChangePasswordController, bool>(
+    NotifierProvider.autoDispose<ChangePasswordController, AsyncValue<void>>(
       ChangePasswordController.new,
     );
 
-class ChangePasswordController extends AsyncNotifier<bool> {
-  bool _disposed = false;
+class ChangePasswordController extends Notifier<AsyncValue<void>> {
+  int _generation = 0;
 
   @override
-  FutureOr<bool> build() {
-    _disposed = false;
-    ref.onDispose(() => _disposed = true);
-
-    return false;
+  AsyncValue<void> build() {
+    ++_generation;
+    ref.listen(authStateProvider, (previous, next) {
+      if (next.isLoading ||
+          next.hasError ||
+          previous?.asData?.value?.id != next.asData?.value?.id) {
+        ++_generation;
+        state = const AsyncData<void>(null);
+      }
+    });
+    return const AsyncData<void>(null);
   }
 
-  Future<void> changePassword({
+  Future<void> submit({
     required String currentPassword,
     required String newPassword,
   }) async {
-    state = const AsyncLoading();
-
-    try {
-      await ref
-          .read(changePasswordUseCaseProvider)
-          .execute(currentPassword: currentPassword, newPassword: newPassword);
-
-      // Halaman ditutup saat request berjalan: jangan sentuh state lagi.
-      if (_disposed) {
-        return;
-      }
-
-      state = const AsyncData(true);
-    } catch (error, stackTrace) {
-      if (_disposed) {
-        return;
-      }
-
-      state = AsyncError(error, stackTrace);
+    if (state.isLoading) return;
+    final auth = ref.read(authStateProvider.notifier);
+    final session = auth.sessionGeneration;
+    final generation = ++_generation;
+    state = const AsyncLoading<void>();
+    final result = await AsyncValue.guard<void>(
+      () => auth.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      ),
+    );
+    if (!ref.mounted ||
+        generation != _generation ||
+        session != auth.sessionGeneration) {
+      return;
     }
+    state = result;
   }
 }

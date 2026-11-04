@@ -6,88 +6,114 @@ abstract final class KcTypography {
   static TextTheme apply(TextTheme base) {
     final textTheme = base.apply(fontFamily: fontFamily);
 
+    TextStyle style(
+      TextStyle? baseStyle, {
+      required double fontSize,
+      required double lineHeight,
+      required FontWeight fontWeight,
+    }) {
+      return (baseStyle ?? const TextStyle(fontFamily: fontFamily)).copyWith(
+        fontSize: fontSize,
+        height: lineHeight / fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: 0,
+      );
+    }
+
     return textTheme.copyWith(
-      /// Judul layar utama.
-      headlineLarge: textTheme.headlineLarge?.copyWith(
+      // Judul utama halaman.
+      headlineLarge: style(
+        textTheme.headlineLarge,
         fontSize: 24,
-        height: 32 / 24,
+        lineHeight: 32,
         fontWeight: FontWeight.w600,
       ),
 
-      /// Alternatif judul layar yang sedikit lebih kecil.
-      headlineMedium: textTheme.headlineMedium?.copyWith(
+      // Alternatif judul halaman yang lebih ringkas.
+      headlineMedium: style(
+        textTheme.headlineMedium,
         fontSize: 22,
-        height: 30 / 22,
+        lineHeight: 30,
         fontWeight: FontWeight.w600,
       ),
 
-      /// Judul bagian.
-      titleLarge: textTheme.titleLarge?.copyWith(
-        fontSize: 17,
-        height: 24 / 17,
-        fontWeight: FontWeight.w600,
-      ),
-
-      /// Judul item / emphasis sedang.
-      titleMedium: textTheme.titleMedium?.copyWith(
-        fontSize: 16,
-        height: 24 / 16,
-        fontWeight: FontWeight.w500,
-      ),
-
-      /// Teks utama besar.
-      bodyLarge: textTheme.bodyLarge?.copyWith(
-        fontSize: 16,
-        height: 24 / 16,
-        fontWeight: FontWeight.w400,
-      ),
-
-      /// Teks utama normal.
-      bodyMedium: textTheme.bodyMedium?.copyWith(
-        fontSize: 14,
-        height: 20 / 14,
-        fontWeight: FontWeight.w400,
-      ),
-
-      /// Informasi pendukung.
-      bodySmall: textTheme.bodySmall?.copyWith(
-        fontSize: 12,
-        height: 16 / 12,
-        fontWeight: FontWeight.w400,
-      ),
-
-      /// Label aksi utama.
-      labelLarge: textTheme.labelLarge?.copyWith(
-        fontSize: 14,
-        height: 20 / 14,
-        fontWeight: FontWeight.w600,
-      ),
-
-      /// Label kecil.
-      labelMedium: textTheme.labelMedium?.copyWith(
-        fontSize: 12,
-        height: 16 / 12,
-        fontWeight: FontWeight.w500,
-      ),
-
-      // Judul layar ringkas atau judul dialog.
-      headlineSmall: textTheme.headlineSmall?.copyWith(
+      // Judul dialog atau bagian konten yang menonjol.
+      headlineSmall: style(
+        textTheme.headlineSmall,
         fontSize: 20,
-        height: 28 / 20,
+        lineHeight: 28,
         fontWeight: FontWeight.w600,
       ),
 
-      // Judul kecil, misalnya judul kartu yang padat.
-      titleSmall: textTheme.titleSmall?.copyWith(
+      // Judul app bar dan bagian konten.
+      titleLarge: style(
+        textTheme.titleLarge,
+        fontSize: 18,
+        lineHeight: 24,
+        fontWeight: FontWeight.w600,
+      ),
+
+      // Nama menu atau judul item.
+      titleMedium: style(
+        textTheme.titleMedium,
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: FontWeight.w600,
+      ),
+
+      // Judul kecil pada konten yang padat.
+      titleSmall: style(
+        textTheme.titleSmall,
         fontSize: 14,
-        height: 20 / 14,
+        lineHeight: 20,
         fontWeight: FontWeight.w600,
       ),
 
-      // Label pendukung; tetap terbaca.
-      labelSmall: textTheme.labelSmall?.copyWith(
+      // Isi teks besar dan dasar teks input.
+      bodyLarge: style(
+        textTheme.bodyLarge,
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: FontWeight.w400,
+      ),
+
+      // Deskripsi dan isi teks standar.
+      bodyMedium: style(
+        textTheme.bodyMedium,
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: FontWeight.w400,
+      ),
+
+      // Metadata dan keterangan singkat.
+      bodySmall: style(
+        textTheme.bodySmall,
         fontSize: 12,
-        height: 16 / 12,
+        lineHeight: 16,
+        fontWeight: FontWeight.w400,
+      ),
+
+      // Label tombol dan chip.
+      labelLarge: style(
+        textTheme.labelLarge,
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: FontWeight.w600,
+      ),
+
+      // Label navigasi dan kontrol ringkas.
+      labelMedium: style(
+        textTheme.labelMedium,
+        fontSize: 12,
+        lineHeight: 16,
+        fontWeight: FontWeight.w500,
+      ),
+
+      // Label pendukung dengan ukuran minimum yang dipilih aplikasi.
+      labelSmall: style(
+        textTheme.labelSmall,
+        fontSize: 12,
+        lineHeight: 16,
         fontWeight: FontWeight.w500,
       ),
     );

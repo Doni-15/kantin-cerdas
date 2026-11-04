@@ -1,347 +1,110 @@
 import 'package:flutter/material.dart';
-
-import 'package:kantin_cerdas/features/customer/domain/entities/menu_item.dart';
-import 'package:kantin_cerdas/features/customer/domain/entities/stall.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kantin_cerdas/app/router/routes.dart';
+import 'package:kantin_cerdas/core/widgets/kc_button.dart';
+import 'package:kantin_cerdas/core/widgets/kc_loading_skeleton.dart';
+import 'package:kantin_cerdas/core/widgets/kc_status_panel.dart';
+import 'package:kantin_cerdas/features/customer/presentation/mappers/customer_catalog_message.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/customer_catalog_provider.dart';
 import 'package:kantin_cerdas/features/customer/presentation/widgets/cart_summary_bar.dart';
-import 'package:kantin_cerdas/features/customer/presentation/widgets/category_filter_chip.dart';
-import 'package:kantin_cerdas/features/customer/presentation/widgets/menu_item_card.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/stall/customer_stall_content.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
 
-class CustomerStallDetailPage
-    extends StatefulWidget {
-  const CustomerStallDetailPage({
-    super.key,
-    required this.stall,
-  });
+/// Detail stan berdasarkan identitas dari router.
+class CustomerStallDetailPage extends ConsumerWidget {
+  const CustomerStallDetailPage({super.key, required this.stallId});
 
-  final Stall stall;
+  final String stallId;
 
-  @override
-  State<CustomerStallDetailPage>
-      createState() =>
-          _CustomerStallDetailPageState();
-}
+  void _goBack(BuildContext context) {
+    FocusScope.of(context).unfocus();
 
-class _CustomerStallDetailPageState
-    extends State<CustomerStallDetailPage> {
-  final TextEditingController
-      _searchController =
-      TextEditingController();
-
-  String selectedCategory =
-      'Semua';
-
-  final List<String> categories = [
-    'Semua',
-    'Makanan',
-    'Minuman',
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _searchController
-        .addListener(
-      _refreshSearch,
-    );
-  }
-
-  void _refreshSearch() {
-    setState(() {});
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(Routes.customerHome);
+    }
   }
 
   @override
-  void dispose() {
-    _searchController
-        .removeListener(
-      _refreshSearch,
-    );
-
-    _searchController.dispose();
-
-    super.dispose();
-  }
-
-  List<MenuItem> get filteredMenus {
-    final query =
-        _searchController.text
-            .trim()
-            .toLowerCase();
-
-    return widget.stall.menus.where(
-      (menu) {
-        final matchesSearch =
-            menu.name
-                .toLowerCase()
-                .contains(query);
-
-        final matchesCategory =
-            selectedCategory ==
-                    'Semua' ||
-                (selectedCategory ==
-                        'Makanan' &&
-                    menu.category !=
-                        'Minuman') ||
-                (selectedCategory ==
-                        'Minuman' &&
-                    menu.category ==
-                        'Minuman');
-
-        return matchesSearch &&
-            matchesCategory;
-      },
-    ).toList();
-  }
-
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final theme =
-        Theme.of(context);
-
-    final menus =
-        filteredMenus;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalogState = ref.watch(customerCatalogProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Detail stan',
-        ),
-      ),
-
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding:
-                  const EdgeInsets.all(
-                16,
-              ),
-              children: [
-                // FOTO STAN
-                Container(
-                  height: 140,
-                  decoration:
-                      BoxDecoration(
-                    color: theme
-                        .colorScheme
-                        .surfaceContainerHighest,
-                    borderRadius:
-                        BorderRadius.circular(
-                      12,
-                    ),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons
-                          .storefront_outlined,
-                      size: 52,
-                      color: theme
-                          .colorScheme
-                          .onSurfaceVariant,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                Text(
-                  widget.stall.name,
-                  style: theme
-                      .textTheme
-                      .headlineMedium,
-                ),
-
-                const SizedBox(
-                  height: 8,
-                ),
-
-                Row(
-                  children: [
-                    Container(
-                      padding:
-                          const EdgeInsets
-                              .symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration:
-                          BoxDecoration(
-                        color: widget
-                                .stall
-                                .isOpen
-                            ? theme
-                                .colorScheme
-                                .tertiaryContainer
-                            : theme
-                                .colorScheme
-                                .errorContainer,
-                        borderRadius:
-                            BorderRadius
-                                .circular(
-                          8,
-                        ),
-                      ),
-                      child: Text(
-                        widget.stall
-                                .isOpen
-                            ? 'Buka'
-                            : 'Tutup',
-                        style: theme
-                            .textTheme
-                            .bodySmall,
-                      ),
-                    ),
-
-                    const SizedBox(
-                      width: 8,
-                    ),
-
-                    Expanded(
-                      child: Text(
-                        '${widget.stall.block}'
-                        ' · ${widget.stall.waitTime}',
-                        style: theme
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                          color: theme
-                              .colorScheme
-                              .onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(
-                  height: 16,
-                ),
-
-                Text(
-                  widget.stall
-                      .description,
-                  style: theme
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(
-                    color: theme
-                        .colorScheme
-                        .onSurfaceVariant,
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 20,
-                ),
-
-                // SEARCH
-                TextField(
-                  controller:
-                      _searchController,
-                  decoration:
-                      InputDecoration(
-                    hintText:
-                        'Cari menu di stan',
-                    prefixIcon:
-                        const Icon(
-                      Icons.search,
-                    ),
-                    suffixIcon:
-                        _searchController
-                                .text
-                                .isNotEmpty
-                            ? IconButton(
-                                onPressed:
-                                    () {
-                                  _searchController
-                                      .clear();
-                                },
-                                icon:
-                                    const Icon(
-                                  Icons.close,
-                                ),
-                              )
-                            : null,
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 12,
-                ),
-
-                // CATEGORY
-                SizedBox(
-                  height: 44,
-                  child: ListView(
-                    scrollDirection:
-                        Axis.horizontal,
-                    children:
-                        categories.map(
-                      (category) {
-                        return CategoryFilterChip(
-                          label:
-                              category,
-                          selected:
-                              selectedCategory ==
-                                  category,
-                          onTap: () {
-                            setState(() {
-                              selectedCategory =
-                                  category;
-                            });
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 8,
-                ),
-
-                if (menus.isEmpty)
-                  Padding(
-                    padding:
-                        const EdgeInsets
-                            .symmetric(
-                      vertical: 32,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Menu tidak ditemukan',
-                        style: theme
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                          color: theme
-                              .colorScheme
-                              .onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  ),
-
-                ...menus.map(
-                  (menu) {
-                    return MenuItemCard(
-                      menu: menu,
-                      showStallName:
-                          false,
-                    );
-                  },
-                ),
-              ],
-            ),
+        leading: BackButton(onPressed: () => _goBack(context)),
+        title: const Text('Detail stan'),
+        actions: [
+          IconButton(
+            tooltip: 'Muat ulang katalog',
+            icon: const Icon(Icons.refresh),
+            onPressed: catalogState.isLoading
+                ? null
+                : () => ref.invalidate(customerCatalogProvider),
           ),
-
-          const CartSummaryBar(),
+          IconButton(
+            tooltip: 'Buka keranjang',
+            icon: const Icon(Icons.shopping_bag_outlined),
+            onPressed: () => context.push(Routes.customerCart),
+          ),
         ],
       ),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: catalogState.when(
+              skipLoadingOnRefresh: false,
+              skipLoadingOnReload: false,
+              loading: () => const SingleChildScrollView(
+                padding: EdgeInsets.all(KcSpacing.pageHorizontal),
+                child: KcLoadingSkeleton(
+                  label: 'Memuat detail stan',
+                  layout: KcSkeletonLayout.detail,
+                ),
+              ),
+              error: (error, _) => SingleChildScrollView(
+                padding: const EdgeInsets.all(KcSpacing.pageHorizontal),
+                child: KcStatusPanel(
+                  icon: Icons.cloud_off_outlined,
+                  title: customerCatalogErrorTitle(error),
+                  message: customerCatalogErrorMessage(error),
+                  action: KcButton(
+                    label: 'Coba lagi',
+                    onPressed: () => ref.invalidate(customerCatalogProvider),
+                  ),
+                ),
+              ),
+              data: (catalog) {
+                final selectedStall = catalog.stallById(stallId);
+
+                if (selectedStall == null) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(KcSpacing.pageHorizontal),
+                    child: KcStatusPanel(
+                      icon: Icons.storefront_outlined,
+                      title: 'Stan tidak ditemukan',
+                      message: 'Stan ini tidak ada dalam katalog yang dimuat.',
+                      action: KcButton(
+                        label: 'Kembali ke beranda',
+                        onPressed: () => context.go(Routes.customerHome),
+                      ),
+                    ),
+                  );
+                }
+
+                return CustomerStallContent(
+                  key: ValueKey(selectedStall.id),
+                  stall: selectedStall,
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: const CartSummaryBar(),
     );
   }
 }

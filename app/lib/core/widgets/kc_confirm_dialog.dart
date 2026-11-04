@@ -17,6 +17,7 @@ class KcConfirmDialog {
         final theme = Theme.of(context);
 
         return AlertDialog(
+          scrollable: true,
           title: Text(title),
           content: Text(
             message,
