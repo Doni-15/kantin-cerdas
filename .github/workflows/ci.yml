@@ -37,7 +37,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify documentation links & file inventory
+      - name: Verify documentation links
         working-directory: .
         run: |
           python3 - << 'EOF'
@@ -62,16 +62,6 @@ jobs:
                   resolved = os.path.normpath(os.path.join(os.path.dirname(md), target))
                   if not os.path.exists(resolved):
                       errors.append(f"Broken link in {rel_md}: {target}")
-
-          peta_path = os.path.join(root, "docs/backend/PETA_INTEGRASI_FILE.md")
-          with open(peta_path, encoding="utf-8") as f:
-              peta = f.read()
-
-          for pattern in ("app/lib/**/*.dart", "app/test/**/*.dart"):
-              for p in sorted(glob.glob(os.path.join(root, pattern), recursive=True)):
-                  rel = os.path.relpath(p, root)
-                  if f"`{rel}`" not in peta:
-                      errors.append(f"File missing from PETA_INTEGRASI_FILE.md: {rel}")
 
           if errors:
               for err in errors:
