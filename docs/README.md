@@ -7,7 +7,6 @@ Dokumentasi aktif KantinCerdas (diperbarui 4 November 2026). Seluruh arsitektur 
 | Dokumen | Fungsi | Pembaca utama |
 | --- | --- | --- |
 | [01 — Mulai dan simulasi](01_MULAI_DAN_SIMULASI.md) | Setup, perintah jalan (simulasi & REST API), akun uji, kontrol simulasi dan batasnya | Anggota baru, penguji, demonstrator |
-| [Daftar Fitur](DAFTAR_FITUR.md) | Daftar seluruh fitur yang telah dibuat berdasarkan role dan modul | Semua anggota, reviewer/dosen |
 | [02 — Arsitektur dan aturan](02_ARSITEKTUR_DAN_ATURAN.md) | Struktur kode 3-lapis, komposisi DI, alur state/data, sesi, recovery dan aturan mengubah source | Pengembang Flutter |
 | [03 — UI/UX](03_UI_UX.md) | Perilaku loading/form/error/navigasi, komponen media dan acuan desain | Pengembang UI, desainer |
 | [04 — Status dan pengujian](04_STATUS_DAN_PENGUJIAN.md) | Bukti verifikasi otomatis terkini, kesiapan integrasi backend, dan checklist QA langsung | Semua anggota, reviewer/dosen |
