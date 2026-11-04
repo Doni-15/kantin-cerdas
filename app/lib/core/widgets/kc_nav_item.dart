@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kantin_cerdas/theme/kc_radius.dart';
+import 'package:kantin_cerdas/theme/kc_sizes.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
 
+/// Item navigasi bersama. Pemilihan tab dikelola oleh widget pemanggil.
 class KcNavItem extends StatelessWidget {
   const KcNavItem({
     super.key,
@@ -18,56 +22,91 @@ class KcNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(debugCheckHasMaterial(context));
+
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colors = theme.colorScheme;
+    final navigationTheme = NavigationBarTheme.of(context);
+    final states = <WidgetState>{if (isSelected) WidgetState.selected};
 
-    final iconColor = isSelected
-      ? colorScheme.onSecondaryContainer
-      : colorScheme.onSurfaceVariant;
-        
-    final labelColor = isSelected
-      ? colorScheme.primary
-      : colorScheme.onSurfaceVariant;
-        
+    final baseLabelStyle =
+        theme.textTheme.labelMedium ??
+        const TextStyle(fontSize: 12, height: 4 / 3);
+
+    final labelStyle =
+        navigationTheme.labelTextStyle?.resolve(states) ??
+        baseLabelStyle.copyWith(
+          color: isSelected ? colors.onSurface : colors.onSurfaceVariant,
+          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+        );
+
+    final iconTheme = IconThemeData(
+      size: 24,
+      color: isSelected ? colors.onSecondaryContainer : colors.onSurfaceVariant,
+    ).merge(navigationTheme.iconTheme?.resolve(states));
+
     final indicatorColor = isSelected
-      ? colorScheme.secondaryContainer
-      : Colors.transparent;
+        ? navigationTheme.indicatorColor ?? colors.secondaryContainer
+        : Colors.transparent;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-            decoration: BoxDecoration(
-              color: indicatorColor,
-              borderRadius: BorderRadius.circular(16),
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: label,
+      child: Tooltip(
+        message: label,
+        excludeFromSemantics: true,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(KcRadius.control),
+          child: ExcludeSemantics(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: KcSizes.minimumTouchTarget,
+                minHeight: KcSizes.minimumTouchTarget,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: KcSpacing.xs / 2,
+                  vertical: KcSpacing.xs,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 64),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 32,
+                        child: Ink(
+                          decoration: ShapeDecoration(
+                            color: indicatorColor,
+                            shape:
+                                navigationTheme.indicatorShape ??
+                                const StadiumBorder(),
+                          ),
+                          child: IconTheme(
+                            data: iconTheme,
+                            child: Icon(isSelected ? selectedIcon : icon),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: KcSpacing.xs),
+                    Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: labelStyle,
+                    ),
+                  ],
+                ),
+              ),
             ),
-
-            child: Icon(
-              isSelected ? selectedIcon : icon,
-              color: iconColor,
-              size: 24,
-            ),
-            
           ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: labelColor,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

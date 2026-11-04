@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'kc_colors.dart';
-import 'kc_radius.dart';
-import 'kc_sizes.dart';
-import 'kc_typography.dart';
+import 'package:kantin_cerdas/theme/kc_colors.dart';
+import 'package:kantin_cerdas/theme/kc_radius.dart';
+import 'package:kantin_cerdas/theme/kc_sizes.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
+import 'package:kantin_cerdas/theme/kc_typography.dart';
 
 abstract final class KcTheme {
   static final ThemeData light = _build(KcColors.light, KcStatusColors.light);
@@ -13,7 +14,7 @@ abstract final class KcTheme {
 
   static ThemeData _build(ColorScheme colors, KcStatusColors statusColors) {
     final isDark = colors.brightness == Brightness.dark;
-    final radius = BorderRadius.circular(KcRadius.control);
+    final controlRadius = BorderRadius.circular(KcRadius.control);
 
     final base = ThemeData(
       useMaterial3: true,
@@ -29,11 +30,64 @@ abstract final class KcTheme {
       base.textTheme,
     ).apply(bodyColor: colors.onSurface, displayColor: colors.onSurface);
 
-    final buttonShape = RoundedRectangleBorder(borderRadius: radius);
+    final controlShape = RoundedRectangleBorder(borderRadius: controlRadius);
+
+    final disabledColor = colors.onSurface.withValues(alpha: 0.38);
+
+    const minimumTouchTargetSize = Size(
+      KcSizes.minimumTouchTarget,
+      KcSizes.minimumTouchTarget,
+    );
+
+    const buttonPadding = EdgeInsets.symmetric(
+      horizontal: KcSpacing.lg,
+      vertical: KcSpacing.sm,
+    );
+
+    const textButtonPadding = EdgeInsets.symmetric(
+      horizontal: KcSpacing.md,
+      vertical: KcSpacing.sm,
+    );
+
+    Color inputForeground(Set<WidgetState> states) {
+      if (states.contains(WidgetState.disabled)) {
+        return disabledColor;
+      }
+
+      if (states.contains(WidgetState.error)) {
+        return colors.error;
+      }
+
+      if (states.contains(WidgetState.focused)) {
+        return colors.primary;
+      }
+
+      return colors.onSurfaceVariant;
+    }
+
+    final inputLabelStyle = WidgetStateTextStyle.resolveWith((states) {
+      return textTheme.bodyLarge!.copyWith(color: inputForeground(states));
+    });
+
+    final inputIconColor = WidgetStateColor.resolveWith(inputForeground);
+
+    final chipLabelStyle = textTheme.labelLarge!.copyWith(
+      color: WidgetStateColor.resolveWith((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return disabledColor;
+        }
+
+        if (states.contains(WidgetState.selected)) {
+          return colors.onSecondaryContainer;
+        }
+
+        return colors.onSurfaceVariant;
+      }),
+    );
 
     OutlineInputBorder inputBorder(Color color, [double width = 1]) {
       return OutlineInputBorder(
-        borderRadius: radius,
+        borderRadius: controlRadius,
         borderSide: BorderSide(color: color, width: width),
       );
     }
@@ -50,9 +104,12 @@ abstract final class KcTheme {
         scrolledUnderElevation: 0,
         centerTitle: false,
         titleTextStyle: textTheme.titleLarge,
-        systemOverlayStyle: isDark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
+
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: colors.brightness,
+        ),
       ),
 
       dividerTheme: DividerThemeData(
@@ -66,8 +123,9 @@ abstract final class KcTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         margin: EdgeInsets.zero,
+
         shape: RoundedRectangleBorder(
-          borderRadius: radius,
+          borderRadius: BorderRadius.circular(KcRadius.card),
           side: BorderSide(color: colors.outlineVariant),
         ),
       ),
@@ -75,24 +133,24 @@ abstract final class KcTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colors.surfaceContainer,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 14,
-        ),
-        hintStyle: textTheme.bodyMedium?.copyWith(
+        contentPadding: const EdgeInsets.all(KcSpacing.md),
+
+        hintStyle: textTheme.bodyLarge?.copyWith(
           color: colors.onSurfaceVariant,
         ),
-        labelStyle: textTheme.bodyMedium?.copyWith(
-          color: colors.onSurfaceVariant,
-        ),
-        floatingLabelStyle: TextStyle(color: colors.primary),
+
+        labelStyle: inputLabelStyle,
+        floatingLabelStyle: inputLabelStyle,
+
         helperStyle: textTheme.bodySmall?.copyWith(
           color: colors.onSurfaceVariant,
         ),
+
         errorStyle: textTheme.bodySmall?.copyWith(color: colors.error),
+
         errorMaxLines: 3,
-        prefixIconColor: colors.onSurfaceVariant,
-        suffixIconColor: colors.onSurfaceVariant,
+        prefixIconColor: inputIconColor,
+        suffixIconColor: inputIconColor,
         border: inputBorder(colors.outline),
         enabledBorder: inputBorder(colors.outline),
         disabledBorder: inputBorder(colors.outlineVariant),
@@ -103,51 +161,53 @@ abstract final class KcTheme {
 
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          minimumSize: const Size(
-            KcSizes.minimumTouchTarget,
-            KcSizes.minimumTouchTarget,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          minimumSize: minimumTouchTargetSize,
+          padding: buttonPadding,
           textStyle: textTheme.labelLarge,
-          shape: buttonShape,
+          shape: controlShape,
         ),
       ),
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          minimumSize: const Size(
-            KcSizes.minimumTouchTarget,
-            KcSizes.minimumTouchTarget,
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          minimumSize: minimumTouchTargetSize,
+          padding: buttonPadding,
           textStyle: textTheme.labelLarge,
-          shape: buttonShape,
+          shape: controlShape,
         ),
       ),
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          minimumSize: const Size(
-            KcSizes.minimumTouchTarget,
-            KcSizes.minimumTouchTarget,
-          ),
+          minimumSize: minimumTouchTargetSize,
+          padding: textButtonPadding,
           textStyle: textTheme.labelLarge,
-          shape: buttonShape,
+          shape: controlShape,
         ),
       ),
 
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
-          minimumSize: const Size(
-            KcSizes.minimumTouchTarget,
-            KcSizes.minimumTouchTarget,
-          ),
+          minimumSize: minimumTouchTargetSize,
+          padding: const EdgeInsets.all(KcSpacing.xs),
         ),
       ),
 
       chipTheme: base.chipTheme.copyWith(
-        backgroundColor: colors.surfaceContainer,
-        selectedColor: colors.secondaryContainer,
+        color: WidgetStateProperty.resolveWith<Color?>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return colors.onSurface.withValues(alpha: 0.12);
+          }
+
+          if (states.contains(WidgetState.selected)) {
+            return colors.secondaryContainer;
+          }
+
+          return colors.surfaceContainer;
+        }),
+
+        labelStyle: chipLabelStyle,
+        secondaryLabelStyle: chipLabelStyle,
         checkmarkColor: colors.onSecondaryContainer,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(KcRadius.small),
@@ -160,16 +220,31 @@ abstract final class KcTheme {
         elevation: 0,
         indicatorColor: colors.secondaryContainer,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return IconThemeData(color: disabledColor);
+          }
+
           final selected = states.contains(WidgetState.selected);
+
           return IconThemeData(
             color: selected
                 ? colors.onSecondaryContainer
                 : colors.onSurfaceVariant,
           );
         }),
+
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return textTheme.labelMedium!.copyWith(
+              color: disabledColor,
+              fontWeight: FontWeight.w500,
+            );
+          }
+
           final selected = states.contains(WidgetState.selected);
+
           return textTheme.labelMedium!.copyWith(
             color: selected ? colors.onSurface : colors.onSurfaceVariant,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -182,17 +257,23 @@ abstract final class KcTheme {
         modalBackgroundColor: colors.surfaceContainerLow,
         surfaceTintColor: Colors.transparent,
         dragHandleColor: colors.onSurfaceVariant,
+
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(KcRadius.modal),
+          ),
         ),
       ),
 
       dialogTheme: DialogThemeData(
         backgroundColor: colors.surfaceContainerLow,
         surfaceTintColor: Colors.transparent,
-        titleTextStyle: textTheme.titleLarge,
+        titleTextStyle: textTheme.headlineSmall,
         contentTextStyle: textTheme.bodyMedium,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(KcRadius.modal),
+        ),
       ),
 
       snackBarTheme: SnackBarThemeData(
@@ -202,7 +283,7 @@ abstract final class KcTheme {
           color: colors.onInverseSurface,
         ),
         actionTextColor: colors.inversePrimary,
-        shape: RoundedRectangleBorder(borderRadius: radius),
+        shape: controlShape,
       ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(

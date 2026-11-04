@@ -1,5 +1,1 @@
-enum UserRole {
-  admin, // pengelola sistem KantinCerdas.
-  owner, // pemilik kantin, sekaligus mengelola kantinnya sendiri.
-  customer, // orang yang membeli makanan/minuman.
-}
+export 'package:kantin_cerdas/core/session/user_role.dart';

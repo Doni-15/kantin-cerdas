@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kantin_cerdas/core/storage/local_storage.dart';
+
 import 'package:kantin_cerdas/core/storage/local_storage_provider.dart';
 
-/// Pengaturan aplikasi yang sudah tersedia di UI dan tersimpan di local storage.
-/// (Bahasa belum punya state, jadi belum disimpan.)
+@immutable
 class AppSettings {
   const AppSettings({
-    this.themeMode = ThemeMode.system,
+    required this.themeMode,
     this.notificationsEnabled = true,
   });
 
   final ThemeMode themeMode;
   final bool notificationsEnabled;
 
-  AppSettings copyWith({
-    ThemeMode? themeMode,
-    bool? notificationsEnabled,
-  }) {
+  AppSettings copyWith({ThemeMode? themeMode, bool? notificationsEnabled}) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
@@ -25,41 +21,79 @@ class AppSettings {
   }
 }
 
-final appSettingsProvider = NotifierProvider<AppSettingsNotifier, AppSettings>(
-  AppSettingsNotifier.new,
-);
+final appSettingsProvider =
+    NotifierProvider<AppSettingsController, AppSettings>(
+      AppSettingsController.new,
+    );
 
-class AppSettingsNotifier extends Notifier<AppSettings> {
+class AppSettingsController extends Notifier<AppSettings> {
+  static const _themeModeKey = 'settings.theme_mode';
+  static const _notificationsEnabledKey = 'settings.notifications_enabled';
+  Future<void> _pendingWrite = Future<void>.value();
+
   @override
   AppSettings build() {
-    final storage = ref.read(localStorageProvider);
-    final savedTheme = storage.getString(StorageKeys.themeMode);
+    final storage = ref.watch(localStorageProvider);
+    final savedMode = storage.getString(_themeModeKey);
+    final savedNotifications = storage.getBool(_notificationsEnabledKey);
+
+    final themeMode = switch (savedMode) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system,
+    };
 
     return AppSettings(
-      themeMode: ThemeMode.values
-              .where((mode) => mode.name == savedTheme)
-              .firstOrNull ??
-          ThemeMode.system,
-      notificationsEnabled:
-          storage.getBool(StorageKeys.notificationsEnabled) ?? true,
+      themeMode: themeMode,
+      notificationsEnabled: savedNotifications ?? true,
     );
   }
 
-  /// State berubah seketika. Mengembalikan false jika gagal menyimpan.
-  Future<bool> setThemeMode(ThemeMode mode) {
-    state = state.copyWith(themeMode: mode);
+  /// Menyimpan pilihan sebelum menerapkannya pada aplikasi.
+  Future<void> setThemeMode(ThemeMode mode) {
+    final currentRef = ref;
 
-    return ref
-        .read(localStorageProvider)
-        .setString(StorageKeys.themeMode, mode.name);
+    final operation = _pendingWrite.then<void>((_) async {
+      if (!currentRef.mounted) return;
+      if (state.themeMode == mode) return;
+
+      final storage = currentRef.read(localStorageProvider);
+      await storage.setString(_themeModeKey, mode.name);
+
+      if (!currentRef.mounted) return;
+
+      state = state.copyWith(themeMode: mode);
+    });
+
+    _pendingWrite = operation.then<void>(
+      (_) {},
+      onError: (Object error, StackTrace stackTrace) {},
+    );
+
+    return operation;
   }
 
-  /// State berubah seketika. Mengembalikan false jika gagal menyimpan.
-  Future<bool> setNotificationsEnabled(bool enabled) {
-    state = state.copyWith(notificationsEnabled: enabled);
+  /// Menyimpan status notifikasi pada penyimpanan lokal.
+  Future<void> setNotificationsEnabled(bool enabled) {
+    final currentRef = ref;
 
-    return ref
-        .read(localStorageProvider)
-        .setBool(StorageKeys.notificationsEnabled, enabled);
+    final operation = _pendingWrite.then<void>((_) async {
+      if (!currentRef.mounted) return;
+      if (state.notificationsEnabled == enabled) return;
+
+      final storage = currentRef.read(localStorageProvider);
+      await storage.setBool(_notificationsEnabledKey, enabled);
+
+      if (!currentRef.mounted) return;
+
+      state = state.copyWith(notificationsEnabled: enabled);
+    });
+
+    _pendingWrite = operation.then<void>(
+      (_) {},
+      onError: (Object error, StackTrace stackTrace) {},
+    );
+
+    return operation;
   }
 }

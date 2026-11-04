@@ -1,51 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_canteen_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_dashboard_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_orders_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_profile_page.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kantin_cerdas/app/router/routes.dart';
 import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_bottom_navigation.dart';
+import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_recovery_banner.dart';
 
-class OwnerShell extends StatefulWidget {
-  const OwnerShell({
-    super.key,
-    required this.user,
-  });
+/// Layout dan navigasi utama untuk pemilik kantin.
+class OwnerShell extends StatelessWidget {
+  const OwnerShell({super.key, required this.location, required this.child});
 
-  final User user;
+  final String location;
+  final Widget child;
 
-  @override
-  State<OwnerShell> createState() => _OwnerShellState();
-}
-
-class _OwnerShellState extends State<OwnerShell> {
-  OwnerTab _currentTab = OwnerTab.dashboard;
-
-  Widget get _currentPage {
-    return switch (_currentTab) {
-      OwnerTab.dashboard => OwnerDashboardPage(
-        ownerName: widget.user.name,
-      ),
-      OwnerTab.canteen => const OwnerCanteenPage(),
-      OwnerTab.orders => const OwnerOrdersPage(),
-      OwnerTab.profile => OwnerProfilePage(
-        user: widget.user,
-      ),
+  OwnerTab get _currentTab {
+    return switch (location) {
+      Routes.ownerCanteen => OwnerTab.canteen,
+      Routes.ownerOrders => OwnerTab.orders,
+      Routes.ownerProfile => OwnerTab.profile,
+      _ => OwnerTab.dashboard,
     };
+  }
+
+  void _selectTab(BuildContext context, OwnerTab tab) {
+    final target = switch (tab) {
+      OwnerTab.dashboard => Routes.ownerDashboard,
+      OwnerTab.canteen => Routes.ownerCanteen,
+      OwnerTab.orders => Routes.ownerOrders,
+      OwnerTab.profile => Routes.ownerProfile,
+    };
+
+    if (target != location) {
+      context.go(target);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentPage,
-
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            const OwnerRecoveryBanner(),
+            Expanded(child: child),
+          ],
+        ),
+      ),
       bottomNavigationBar: OwnerBottomNavigation(
         currentTab: _currentTab,
-        onTabSelected: (tab) {
-          setState(() {
-            _currentTab = tab;
-          });
-        },
+        onTabSelected: (tab) => _selectTab(context, tab),
       ),
     );
   }

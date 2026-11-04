@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' as services;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:kantin_cerdas/core/router/routes.dart';
+import 'package:kantin_cerdas/app/router/auth_destination.dart';
+import 'package:kantin_cerdas/app/router/routes.dart';
+import 'package:kantin_cerdas/core/config/app_feature_flags.dart';
 import 'package:kantin_cerdas/core/widgets/kc_brand.dart';
 import 'package:kantin_cerdas/core/widgets/kc_button.dart';
 import 'package:kantin_cerdas/core/widgets/kc_logo.dart';
-import 'package:kantin_cerdas/core/widgets/kc_snackbar.dart';
+import 'package:kantin_cerdas/core/widgets/kc_password_field.dart';
+import 'package:kantin_cerdas/core/widgets/kc_snack_bar.dart';
 import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
-import 'package:kantin_cerdas/features/auth/presentation/controllers/login_controller.dart';
+import 'package:kantin_cerdas/features/auth/domain/failures/auth_failure.dart';
 import 'package:kantin_cerdas/features/auth/domain/validators/auth_validator.dart';
+import 'package:kantin_cerdas/features/auth/presentation/controllers/login_controller.dart';
 import 'package:kantin_cerdas/features/auth/presentation/utils/auth_error_message.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -21,13 +26,12 @@ class LoginForm extends ConsumerStatefulWidget {
 }
 
 class _LoginFormState extends ConsumerState<LoginForm> {
+  final _formKey = GlobalKey<FormState>();
   final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _obscurePassword = true;
-
-  String? _identifierError;
-  String? _passwordError;
+  Map<String, String> _fieldErrors = const {};
+  bool _submitted = false;
 
   @override
   void dispose() {
@@ -36,257 +40,206 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     super.dispose();
   }
 
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
-
-  void _handleLogin() {
-    FocusScope.of(context).unfocus();
-
-    // Cegah double-submit (mis. Enter di keyboard saat request masih berjalan).
+  Future<void> _submit() async {
     if (ref.read(loginControllerProvider).isLoading) {
       return;
     }
 
-    final identifier = _identifierController.text.trim();
-    final password = _passwordController.text;
-
     setState(() {
-      _identifierError = AuthValidator.identifier(identifier);
-      _passwordError = AuthValidator.loginPassword(password);
+      _submitted = true;
+      _fieldErrors = const {};
     });
 
-    if (_identifierError != null || _passwordError != null) {
+    if (_formKey.currentState?.validate() != true) {
       return;
     }
 
-    ref.read(loginControllerProvider.notifier).login(
-      identifier: identifier,
-      password: password,
-    );
+    final identifier = _identifierController.text;
+    final password = _passwordController.text;
+
+    FocusScope.of(context).unfocus();
+
+    await ref
+        .read(loginControllerProvider.notifier)
+        .submit(identifier: identifier, password: password);
+  }
+
+  void _clearFieldError(String field) {
+    if (!_fieldErrors.containsKey(field)) {
+      return;
+    }
+
+    setState(() {
+      _fieldErrors = Map<String, String>.of(_fieldErrors)..remove(field);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<User?>>(
-      loginControllerProvider,
-      (previous, next) {
-        next.whenOrNull(
-          data: (user) {
-            if (user == null) {
-              return;
-            }
+    ref.listen<AsyncValue<void>>(loginControllerProvider, (previous, next) {
+      if (!mounted) {
+        return;
+      }
 
-            // Auth state sudah di-set oleh LoginController dan router akan
-            // mengarahkan ke /app. Snackbar ditampilkan di sini (bukan di
-            // halaman utama) agar tidak muncul saat sesi dipulihkan.
-            KcSnackBar.success(
-              context,
-              'Login berhasil. Selamat datang, ${user.name}!',
-            );
+      if (next case AsyncError<void>(:final error)) {
+        setState(() {
+          _fieldErrors = error is AuthValidationFailure
+              ? error.fieldErrors
+              : const {};
+        });
 
-            context.go(Routes.app);
-          },
-          error: (error, stackTrace) {
-            KcSnackBar.error(
-              context,
-              authErrorMessage(error),
-            );
-          },
-        );
-      },
-    );
+        KcSnackBar.error(context, authErrorMessage(error));
+        return;
+      }
 
-    final loginState = ref.watch(
-      loginControllerProvider,
-    );
+      if (previous?.isLoading == true && next is AsyncData<void>) {
+        services.TextInput.finishAutofillContext();
+      }
+    });
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildHeader(),
-
-        const SizedBox(height: 40),
-
-        _buildIdentifierField(),
-
-        const SizedBox(height: 16),
-
-        _buildPasswordField(),
-
-        _buildForgotPassword(),
-
-        const SizedBox(height: 16),
-
-        _buildLoginButton(
-          isLoading: loginState.isLoading,
-        ),
-
-        const SizedBox(height: 32),
-
-        _buildDivider(),
-
-        const SizedBox(height: 32),
-
-        _buildGoogleButton(),
-
-        const SizedBox(height: 48),
-
-        _buildRegisterPrompt(),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
+    final isLoading = ref.watch(loginControllerProvider).isLoading;
     final theme = Theme.of(context);
 
-    return Column(
-      children: [
-        const KcBrand(
-          logoSize: 68,
-        ),
-        const SizedBox(height: 32),
-        Text(
-          'Selamat datang kembali!',
-          textAlign: TextAlign.center,
-          style: theme.textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Masuk untuk melanjutkan ke KantinCerdas',
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodyMedium,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildIdentifierField() {
-    return KcTextField(
-      label: 'Username atau Email',
-      hint: 'Masukkan username atau email',
-      controller: _identifierController,
-      prefixIcon: Icons.person_outline,
-      textInputAction: TextInputAction.next,
-      errorText: _identifierError,
-      onChanged: (_) {
-        if (_identifierError != null) {
-          setState(() {
-            _identifierError = null;
-          });
-        }
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return KcTextField(
-      label: 'Password',
-      hint: 'Masukkan password',
-      controller: _passwordController,
-      prefixIcon: Icons.lock_outline,
-      obscureText: _obscurePassword,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => _handleLogin(),
-      errorText: _passwordError,
-      onChanged: (_) {
-        if (_passwordError != null) {
-          setState(() {
-            _passwordError = null;
-          });
-        }
-      },
-      suffixIcon: IconButton(
-        onPressed: _togglePasswordVisibility,
-        icon: Icon(
-          _obscurePassword
-              ? Icons.visibility_off_outlined
-              : Icons.visibility_outlined,
+    return AutofillGroup(
+      onDisposeAction: AutofillContextAction.cancel,
+      child: Form(
+        key: _formKey,
+        autovalidateMode: _submitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Center(child: KcBrand(logoSize: 68)),
+            const SizedBox(height: KcSpacing.lg),
+            Text(
+              'Selamat datang kembali!',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineSmall,
+            ),
+            const SizedBox(height: KcSpacing.xs),
+            Text(
+              'Masuk untuk melanjutkan ke KantinCerdas.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: KcSpacing.lg),
+            KcTextField(
+              label: 'Username atau email',
+              hint: 'Masukkan username atau email',
+              controller: _identifierController,
+              prefixIcon: Icons.person_outline,
+              enabled: !isLoading,
+              textInputAction: TextInputAction.next,
+              autocorrect: false,
+              enableSuggestions: false,
+              smartDashesType: services.SmartDashesType.disabled,
+              smartQuotesType: services.SmartQuotesType.disabled,
+              autofillHints: const [services.AutofillHints.username],
+              validator: (value) => authFieldErrorMessage(
+                field: 'identifier',
+                code: AuthValidator.identifier(value ?? '')?.name,
+              ),
+              errorText: authFieldErrorMessage(
+                field: 'identifier',
+                code: _fieldErrors['identifier'],
+              ),
+              onChanged: (_) => _clearFieldError('identifier'),
+            ),
+            const SizedBox(height: KcSpacing.md),
+            KcPasswordField(
+              label: 'Password',
+              hint: 'Masukkan password',
+              controller: _passwordController,
+              enabled: !isLoading,
+              validator: (value) => authFieldErrorMessage(
+                field: 'password',
+                code: AuthValidator.loginPassword(value ?? '')?.name,
+              ),
+              errorText: authFieldErrorMessage(
+                field: 'password',
+                code: _fieldErrors['password'],
+              ),
+              onChanged: (_) => _clearFieldError('password'),
+              onSubmitted: (_) => _submit(),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        FocusScope.of(context).unfocus();
+                        context.push(
+                          continueAuthLocation(
+                            GoRouterState.of(context).uri,
+                            Routes.resetPassword,
+                          ),
+                        );
+                      },
+                child: const Text('Lupa password?'),
+              ),
+            ),
+            const SizedBox(height: KcSpacing.md),
+            KcButton(label: 'Masuk', onPressed: _submit, isLoading: isLoading),
+            if (AppFeatureFlags.enableGoogleAuth) ...[
+              const SizedBox(height: KcSpacing.lg),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: KcSpacing.sm,
+                    ),
+                    child: Text('atau', style: theme.textTheme.bodySmall),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: KcSpacing.lg),
+              KcButton(
+                label: 'Masuk dengan Google',
+                variant: KcButtonVariant.outlined,
+                leading: const KcLogo(
+                  assetPath: 'assets/images/logos/google_logo.png',
+                  size: 20,
+                ),
+                onPressed: isLoading
+                    ? null
+                    : () {
+                        KcSnackBar.info(
+                          context,
+                          'Login dengan Google belum tersedia.',
+                        );
+                      },
+              ),
+            ],
+            const SizedBox(height: KcSpacing.lg),
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: KcSpacing.xs,
+              children: [
+                const Text('Belum punya akun?'),
+                TextButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          context.push(
+                            continueAuthLocation(
+                              GoRouterState.of(context).uri,
+                              Routes.register,
+                            ),
+                          );
+                        },
+                  child: const Text('Daftar'),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-    );
-  }
-
-  Widget _buildForgotPassword() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          KcSnackBar.info(
-            context,
-            'Fitur lupa password belum tersedia.',
-          );
-        },
-        child: const Text('Lupa password?'),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton({
-    required bool isLoading,
-  }) {
-    return KcButton(
-      label: 'MASUK',
-      onPressed: _handleLogin,
-      isLoading: isLoading,
-    );
-  }
-
-  Widget _buildDivider() {
-    return Row(
-      children: [
-        const Expanded(
-          child: Divider(),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            'atau',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ),
-        const Expanded(
-          child: Divider(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGoogleButton() {
-    return KcButton(
-      label: 'Masuk dengan Google',
-      variant: KcButtonVariant.outlined,
-      leading: const KcLogo(
-        assetPath: 'assets/images/logos/google_logo.png',
-        size: 20,
-      ),
-      onPressed: () {
-        KcSnackBar.info(
-          context,
-          'Login dengan Google belum tersedia.',
-        );
-      },
-    );
-  }
-
-  Widget _buildRegisterPrompt() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Belum punya akun?',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        TextButton(
-          onPressed: () {
-            context.push(Routes.register);
-          },
-          child: const Text('Daftar'),
-        ),
-      ],
     );
   }
 }

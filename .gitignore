@@ -1,0 +1,27 @@
+# IDE & Editor
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# Flutter & Dart Build Artifacts
+app/build/
+app/.dart_tool/
+app/.flutter-plugins-dependencies
+app/coverage/
+**/doc/api/
+
+# Android / iOS Signing & Secrets
+**/android/key.properties
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.pfx
+.env
+.env.*
+
+# Crash / Heap Dumps & Logs
+**/*.hprof
+*.log

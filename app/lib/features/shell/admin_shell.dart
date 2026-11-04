@@ -1,47 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kantin_cerdas/app/router/routes.dart';
 import 'package:kantin_cerdas/features/admin/presentation/widgets/admin_bottom_navigation.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
+import 'package:kantin_cerdas/features/admin/presentation/widgets/admin_recovery_banner.dart';
 
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_profile_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_users_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_dashboard_page.dart';
+/// Layout dan navigasi utama untuk admin.
+class AdminShell extends StatelessWidget {
+  const AdminShell({super.key, required this.location, required this.child});
 
-class AdminShell extends StatefulWidget {
-  const AdminShell({
-    super.key,
-    required this.user,
-  });
+  final String location;
+  final Widget child;
 
-  final User user;
-
-  @override
-  State<AdminShell> createState() => _AdminShellState();
-}
-
-class _AdminShellState extends State<AdminShell> {
-  AdminTab _currentTab = AdminTab.dashboard;
-
-  Widget get _currentPage {
-    return switch (_currentTab) {
-      AdminTab.dashboard => const AdminDashboardPage(),
-      AdminTab.users => const AdminUsersPage(),
-      AdminTab.profile => AdminProfilePage(
-        user: widget.user,
-      ),
+  AdminTab get _currentTab {
+    return switch (location) {
+      Routes.adminUsers => AdminTab.users,
+      Routes.adminProfile => AdminTab.profile,
+      _ => AdminTab.dashboard,
     };
+  }
+
+  void _selectTab(BuildContext context, AdminTab tab) {
+    final target = switch (tab) {
+      AdminTab.dashboard => Routes.adminDashboard,
+      AdminTab.users => Routes.adminUsers,
+      AdminTab.profile => Routes.adminProfile,
+    };
+
+    if (target != location) {
+      context.go(target);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentPage,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            const AdminRecoveryBanner(),
+            Expanded(child: child),
+          ],
+        ),
+      ),
       bottomNavigationBar: AdminBottomNavigation(
         currentTab: _currentTab,
-        onTabSelected: (tab) {
-          setState(() {
-            _currentTab = tab;
-          });
-        },
+        onTabSelected: (tab) => _selectTab(context, tab),
       ),
     );
   }

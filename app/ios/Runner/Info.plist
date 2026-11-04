@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Kantin Cerdas</string>
+	<string>KantinCerdas</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>KantinCerdas memerlukan akses kamera untuk mengambil foto profil, foto stan kantin, dan foto menu makanan.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>KantinCerdas memerlukan akses galeri untuk memilih foto profil, foto stan kantin, dan foto menu makanan.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
