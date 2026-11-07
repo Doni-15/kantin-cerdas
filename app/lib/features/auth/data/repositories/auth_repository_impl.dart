@@ -21,6 +21,8 @@ class AuthRepositoryImpl implements AuthRepository {
   static const _requestLimit = Duration(seconds: 30);
   int _sessionRevision = 0;
   Future<void> _storageQueue = Future<void>.value();
+  ({int revision, String refreshToken, Future<(AuthTokens, User?)?> future})?
+  _activeRefresh;
 
   @override
   Future<User> login({
@@ -87,42 +89,26 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<User?> restoreSession() async {
     final revision = ++_sessionRevision;
-    var tokens = await _guardedStorage(revision, _tokenStorage.read);
-    if (tokens == null) return null;
-    if (tokens.isExpiredAt(DateTime.now())) {
-      final refreshed = await _tryRefreshTokens(revision, tokens);
-      if (refreshed == null) {
-        return null;
-      }
-      tokens = refreshed.$1;
-      if (refreshed.$2 != null) {
-        return refreshed.$2;
-      }
-    }
-    final activeTokens = tokens;
     try {
-      return await _api<User>(AuthApiOperation.restoreSession, () async {
-        final model = await _dataSource
-            .getCurrentUser(accessToken: activeTokens.accessToken)
-            .timeout(_requestLimit);
-        _requireCurrent(revision);
-        if (activeTokens.isExpiredAt(DateTime.now())) {
-          throw const AuthSessionExpiredFailure();
-        }
-        final user = model.toEntity();
-        _requireActive(user);
-        return user;
-      });
+      return await _withAuthenticatedSession<User?>(
+        revision: revision,
+        operation: AuthApiOperation.restoreSession,
+        onRefreshedUserShortcut: (user) async => user,
+        action: (tokens) async {
+          final model = await _dataSource
+              .getCurrentUser(accessToken: tokens.accessToken)
+              .timeout(_requestLimit);
+          _requireCurrent(revision);
+          if (tokens.isExpiredAt(DateTime.now())) {
+            throw const AuthSessionExpiredFailure();
+          }
+          final user = model.toEntity();
+          _requireActive(user);
+          return user;
+        },
+      );
     } on AuthSessionExpiredFailure {
-      final refreshed = await _tryRefreshTokens(revision, activeTokens);
-      if (refreshed != null && refreshed.$2 != null) {
-        return refreshed.$2;
-      }
-      await _guardedStorage(revision, _tokenStorage.clear);
       return null;
-    } on AuthAccountDisabledFailure {
-      await _guardedStorage(revision, _tokenStorage.clear);
-      rethrow;
     }
   }
 
@@ -185,36 +171,19 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> changePassword({
     required String currentPassword,
     required String newPassword,
-  }) async {
+  }) {
     final revision = _sessionRevision;
-    var tokens = await _guardedStorage(revision, _tokenStorage.read);
-    if (tokens == null) throw const AuthSessionExpiredFailure();
-    if (tokens.isExpiredAt(DateTime.now())) {
-      final refreshed = await _tryRefreshTokens(revision, tokens);
-      if (refreshed == null) {
-        throw const AuthSessionExpiredFailure();
-      }
-      tokens = refreshed.$1;
-    }
-    final activeTokens = tokens;
-    try {
-      await _api<void>(AuthApiOperation.changePassword, () {
-        return _dataSource
-            .changePassword(
-              accessToken: activeTokens.accessToken,
-              currentPassword: currentPassword,
-              newPassword: newPassword,
-            )
-            .timeout(_requestLimit);
-      });
-      _requireCurrent(revision);
-    } on AuthFailure catch (failure) {
-      if (failure is AuthSessionExpiredFailure ||
-          failure is AuthAccountDisabledFailure) {
-        await _guardedStorage(revision, _tokenStorage.clear);
-      }
-      rethrow;
-    }
+    return _withAuthenticatedSession<void>(
+      revision: revision,
+      operation: AuthApiOperation.changePassword,
+      action: (tokens) => _dataSource
+          .changePassword(
+            accessToken: tokens.accessToken,
+            currentPassword: currentPassword,
+            newPassword: newPassword,
+          )
+          .timeout(_requestLimit),
+    );
   }
 
   @override
@@ -230,42 +199,78 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     final revision = _sessionRevision;
+    return _withAuthenticatedSession<User>(
+      revision: revision,
+      operation: AuthApiOperation.updateProfileAvatar,
+      action: (tokens) async {
+        final model = await _dataSource
+            .updateProfileAvatar(
+              accessToken: tokens.accessToken,
+              avatarUrl: safeUrl,
+            )
+            .timeout(_requestLimit);
+        _requireCurrent(revision);
+        final mapped = model.toEntity();
+        _requireActive(mapped);
+        if (mapped.avatarUrl != safeUrl) {
+          throw const AuthUnexpectedFailure();
+        }
+        return mapped;
+      },
+    );
+  }
+
+  Future<T> _withAuthenticatedSession<T>({
+    required int revision,
+    required AuthApiOperation operation,
+    required Future<T> Function(AuthTokens tokens) action,
+    Future<T> Function(User refreshedUser)? onRefreshedUserShortcut,
+  }) async {
     var tokens = await _guardedStorage(revision, _tokenStorage.read);
-    if (tokens == null) throw const AuthSessionExpiredFailure();
+    if (tokens == null) {
+      throw const AuthSessionExpiredFailure();
+    }
+    var preRefreshed = false;
     if (tokens.isExpiredAt(DateTime.now())) {
       final refreshed = await _tryRefreshTokens(revision, tokens);
       if (refreshed == null) {
         throw const AuthSessionExpiredFailure();
       }
       tokens = refreshed.$1;
+      preRefreshed = true;
+      if (refreshed.$2 != null && onRefreshedUserShortcut != null) {
+        return onRefreshedUserShortcut(refreshed.$2!);
+      }
     }
     final activeTokens = tokens;
     try {
-      final user = await _api<User>(
-        AuthApiOperation.updateProfileAvatar,
-        () async {
-          final model = await _dataSource
-              .updateProfileAvatar(
-                accessToken: activeTokens.accessToken,
-                avatarUrl: safeUrl,
-              )
-              .timeout(_requestLimit);
-          _requireCurrent(revision);
-          final mapped = model.toEntity();
-          _requireActive(mapped);
-          if (mapped.avatarUrl != safeUrl) {
-            throw const AuthUnexpectedFailure();
-          }
-          return mapped;
-        },
-      );
+      final result = await _api<T>(operation, () => action(activeTokens));
       _requireCurrent(revision);
-      return user;
-    } on AuthFailure catch (failure) {
-      if (failure is AuthSessionExpiredFailure ||
-          failure is AuthAccountDisabledFailure) {
-        await _guardedStorage(revision, _tokenStorage.clear);
+      return result;
+    } on AuthSessionExpiredFailure {
+      if (!preRefreshed) {
+        final refreshed = await _tryRefreshTokens(revision, activeTokens);
+        if (refreshed != null) {
+          if (refreshed.$2 != null && onRefreshedUserShortcut != null) {
+            return onRefreshedUserShortcut(refreshed.$2!);
+          }
+          try {
+            final result = await _api<T>(operation, () => action(refreshed.$1));
+            _requireCurrent(revision);
+            return result;
+          } on AuthFailure catch (retryFailure) {
+            if (retryFailure is AuthSessionExpiredFailure ||
+                retryFailure is AuthAccountDisabledFailure) {
+              await _guardedStorage(revision, _tokenStorage.clear);
+            }
+            rethrow;
+          }
+        }
       }
+      await _guardedStorage(revision, _tokenStorage.clear);
+      rethrow;
+    } on AuthAccountDisabledFailure {
+      await _guardedStorage(revision, _tokenStorage.clear);
       rethrow;
     }
   }
@@ -278,6 +283,47 @@ class AuthRepositoryImpl implements AuthRepository {
     if (refreshToken == null || refreshToken.trim().isEmpty) {
       await _guardedStorage(revision, _tokenStorage.clear);
       return null;
+    }
+    final inflight = _activeRefresh;
+    if (inflight != null && inflight.revision == revision) {
+      if (inflight.refreshToken == refreshToken) {
+        return inflight.future;
+      }
+      try {
+        await inflight.future;
+      } catch (_) {
+        // Kegagalan refresh terdahulu ditangani pada pemeriksaan storage di bawah.
+      }
+    }
+    final future = _performRefreshTokens(revision, currentTokens, refreshToken);
+    _activeRefresh = (
+      revision: revision,
+      refreshToken: refreshToken,
+      future: future,
+    );
+    try {
+      return await future;
+    } finally {
+      if (identical(_activeRefresh?.future, future)) {
+        _activeRefresh = null;
+      }
+    }
+  }
+
+  Future<(AuthTokens, User?)?> _performRefreshTokens(
+    int revision,
+    AuthTokens currentTokens,
+    String refreshToken,
+  ) async {
+    final latestStored = await _guardedStorage(revision, _tokenStorage.read);
+    if (latestStored != null &&
+        latestStored.accessToken.trim().isNotEmpty &&
+        !latestStored.isExpiredAt(DateTime.now()) &&
+        ((currentTokens.accessToken.trim().isNotEmpty &&
+                latestStored.accessToken != currentTokens.accessToken) ||
+            (latestStored.refreshToken != null &&
+                latestStored.refreshToken != refreshToken))) {
+      return (latestStored, null);
     }
     try {
       return await _api<(AuthTokens, User?)>(

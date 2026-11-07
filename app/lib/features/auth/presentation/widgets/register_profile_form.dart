@@ -5,14 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:kantin_cerdas/app/router/auth_destination.dart';
 import 'package:kantin_cerdas/app/router/routes.dart';
-import 'package:kantin_cerdas/core/config/app_feature_flags.dart';
-import 'package:kantin_cerdas/core/media/image_picker_port.dart';
-import 'package:kantin_cerdas/core/media/image_security_validator.dart';
-import 'package:kantin_cerdas/core/media/media_upload_category.dart';
-import 'package:kantin_cerdas/core/media/media_upload_failure.dart';
 import 'package:kantin_cerdas/core/widgets/kc_button.dart';
-import 'package:kantin_cerdas/core/widgets/kc_entity_image.dart';
-import 'package:kantin_cerdas/core/widgets/kc_image_source_sheet.dart';
 import 'package:kantin_cerdas/core/widgets/kc_snack_bar.dart';
 import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
@@ -37,73 +30,11 @@ class _RegisterProfileFormState extends ConsumerState<RegisterProfileForm> {
 
   String? _usernameError;
   bool _submitted = false;
-  bool _pickingPhoto = false;
 
   @override
   void dispose() {
     _usernameController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handlePickPhoto() async {
-    final draft = ref.read(registerDraftProvider);
-    final registerState = ref.read(registerControllerProvider);
-    if (draft == null ||
-        _pickingPhoto ||
-        registerState.isLoading ||
-        registerState.asData?.value != null) {
-      return;
-    }
-
-    final hasPhoto = draft.avatarPreviewBytes != null;
-    final choice = await showKcImageSourceSheet(
-      context: context,
-      title: 'Foto profil',
-      canRemove: hasPhoto,
-      removeLabel: 'Hapus foto profil',
-    );
-    if (!mounted || choice == null) {
-      return;
-    }
-
-    switch (choice) {
-      case KcImageRemoveSelected():
-        ref.read(registerDraftProvider.notifier).updateAvatar(null);
-        KcSnackBar.info(context, 'Foto profil dihapus.');
-      case KcImagePickSourceSelected(:final source):
-        setState(() {
-          _pickingPhoto = true;
-        });
-        try {
-          final picker = ref.read(imagePickerPortProvider);
-          final raw = await picker.pickImage(source);
-          if (!mounted || raw == null) {
-            return;
-          }
-
-          final validated = ImageSecurityValidator.validateAndPrepare(
-            bytes: raw.bytes,
-            actorId: 'register_draft',
-            category: MediaUploadCategory.profileAvatar,
-          );
-          ref
-              .read(registerDraftProvider.notifier)
-              .updateAvatar(validated.bytes);
-          if (mounted) {
-            KcSnackBar.success(context, 'Foto profil berhasil dipilih.');
-          }
-        } catch (error) {
-          if (mounted) {
-            KcSnackBar.error(context, mediaUploadErrorMessage(error));
-          }
-        } finally {
-          if (mounted) {
-            setState(() {
-              _pickingPhoto = false;
-            });
-          }
-        }
-    }
   }
 
   Future<void> _submit() async {
@@ -115,7 +46,7 @@ class _RegisterProfileFormState extends ConsumerState<RegisterProfileForm> {
 
     final draft = ref.read(registerDraftProvider);
 
-    if (draft == null) {
+    if (draft == null || draft.password.isEmpty) {
       context.go(
         continueAuthLocation(GoRouterState.of(context).uri, Routes.register),
       );
@@ -230,12 +161,11 @@ class _RegisterProfileFormState extends ConsumerState<RegisterProfileForm> {
 
     final isSubmitting = registerState.isLoading;
     final isRegistered = registerState.asData?.value != null;
-    final canSubmit = draft != null && !isRegistered;
+    final canSubmit =
+        draft != null && draft.password.isNotEmpty && !isRegistered;
     final enabled = canSubmit && !isSubmitting;
-    final hasPhoto = draft?.avatarPreviewBytes != null;
 
     final theme = Theme.of(context);
-    final colors = theme.colorScheme;
 
     return AutofillGroup(
       onDisposeAction: AutofillContextAction.cancel,
@@ -251,88 +181,9 @@ class _RegisterProfileFormState extends ConsumerState<RegisterProfileForm> {
             Text('Satu langkah lagi', style: theme.textTheme.headlineSmall),
             const SizedBox(height: KcSpacing.xs),
             Text(
-              'Langkah 2 dari 2 · Pilih username dan foto profil untuk akunmu.',
+              'Langkah 2 dari 2 · Pilih username untuk akunmu. '
+              'Foto profil dapat diatur setelah kamu masuk.',
               style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: KcSpacing.lg),
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Semantics(
-                    button: AppFeatureFlags.enableProfilePhotoUpload,
-                    label: hasPhoto ? 'Ubah foto profil' : 'Tambah foto profil',
-                    child: InkWell(
-                      key: const Key('register_profile_avatar_trigger'),
-                      customBorder: const CircleBorder(),
-                      onTap:
-                          AppFeatureFlags.enableProfilePhotoUpload &&
-                              enabled &&
-                              !_pickingPhoto
-                          ? _handlePickPhoto
-                          : null,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          KcEntityImage.avatar(
-                            imageUrl: null,
-                            previewBytes: draft?.avatarPreviewBytes,
-                            radius: 48,
-                            fallbackIcon: Icons.person_outline,
-                          ),
-                          if (AppFeatureFlags.enableProfilePhotoUpload)
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: ExcludeSemantics(
-                                child: Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: colors.primary,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: colors.surface,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: _pickingPhoto
-                                      ? SizedBox(
-                                          width: 14,
-                                          height: 14,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: colors.onPrimary,
-                                          ),
-                                        )
-                                      : Icon(
-                                          Icons.photo_camera_outlined,
-                                          size: 16,
-                                          color: colors.onPrimary,
-                                        ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (AppFeatureFlags.enableProfilePhotoUpload) ...[
-                    const SizedBox(height: KcSpacing.sm),
-                    TextButton.icon(
-                      key: const Key('register_profile_photo_button'),
-                      onPressed: enabled && !_pickingPhoto
-                          ? _handlePickPhoto
-                          : null,
-                      icon: const Icon(Icons.camera_alt_outlined),
-                      label: Text(
-                        hasPhoto ? 'Ubah foto profil' : 'Tambah foto profil',
-                      ),
-                    ),
-                  ],
-                ],
-              ),
             ),
             const SizedBox(height: KcSpacing.lg),
             KcTextField(

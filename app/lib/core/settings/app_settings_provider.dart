@@ -19,6 +19,16 @@ class AppSettings {
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSettings &&
+          other.themeMode == themeMode &&
+          other.notificationsEnabled == notificationsEnabled);
+
+  @override
+  int get hashCode => Object.hash(themeMode, notificationsEnabled);
 }
 
 final appSettingsProvider =
@@ -49,7 +59,6 @@ class AppSettingsController extends Notifier<AppSettings> {
     );
   }
 
-  /// Menyimpan pilihan sebelum menerapkannya pada aplikasi.
   Future<void> setThemeMode(ThemeMode mode) {
     final currentRef = ref;
 
@@ -73,7 +82,6 @@ class AppSettingsController extends Notifier<AppSettings> {
     return operation;
   }
 
-  /// Menyimpan status notifikasi pada penyimpanan lokal.
   Future<void> setNotificationsEnabled(bool enabled) {
     final currentRef = ref;
 

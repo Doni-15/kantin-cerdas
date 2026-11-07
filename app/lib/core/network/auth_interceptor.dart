@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:kantin_cerdas/core/errors/api_exception.dart';
+import 'package:kantin_cerdas/core/errors/data_parsing_exception.dart';
 import 'package:kantin_cerdas/core/network/api_exception_mapper.dart';
 import 'package:kantin_cerdas/core/session/auth_failure.dart';
 import 'package:kantin_cerdas/core/session/auth_tokens.dart';
@@ -62,6 +63,7 @@ class AuthInterceptor extends Interceptor {
     try {
       var tokens = await tokenStorage.read();
       if (tokens != null && tokens.isExpiredAt(DateTime.now())) {
+        final expiredAccess = tokens.accessToken;
         final refreshToken = tokens.refreshToken;
         if (refreshToken != null &&
             refreshToken.trim().isNotEmpty &&
@@ -71,12 +73,18 @@ class AuthInterceptor extends Interceptor {
             tokens = outcome.tokens;
           } else {
             if (outcome.definitive && !outcome.superseded) {
-              await _invalidate(accountDisabled: outcome.accountDisabled);
+              await _invalidateIfTokenMatches(
+                expectedAccessToken: expiredAccess,
+                accountDisabled: outcome.accountDisabled,
+              );
             }
             tokens = null;
           }
         } else {
-          await _invalidate(accountDisabled: false);
+          await _invalidateIfTokenMatches(
+            expectedAccessToken: expiredAccess,
+            accountDisabled: false,
+          );
           tokens = null;
         }
       }
@@ -84,6 +92,8 @@ class AuthInterceptor extends Interceptor {
       if (tokens != null && tokens.accessToken.trim().isNotEmpty) {
         options.headers['Authorization'] = 'Bearer ${tokens.accessToken}';
       }
+    } on DataParsingException {
+      await _invalidate(accountDisabled: false);
     } catch (_) {
       // Biarkan request berlanjut tanpa token jika pembacaan storage gagal;
       // endpoint terproteksi akan menolak dengan 401 secara eksplisit.
@@ -105,9 +115,15 @@ class AuthInterceptor extends Interceptor {
 
     final statusCode = err.response?.statusCode;
     final errorCode = _extractErrorCode(err.response?.data);
+    final sentToken = _extractBearerToken(
+      err.requestOptions.headers['Authorization'],
+    );
 
     if (statusCode == 403 && errorCode == 'ACCOUNT_DISABLED') {
-      await _invalidate(accountDisabled: true);
+      await _invalidateIfTokenMatches(
+        expectedAccessToken: sentToken,
+        accountDisabled: true,
+      );
       handler.next(err);
       return;
     }
@@ -131,15 +147,14 @@ class AuthInterceptor extends Interceptor {
 
         try {
           final currentTokens = await tokenStorage.read();
-          final sentToken = _extractBearerToken(
-            err.requestOptions.headers['Authorization'],
-          );
           if (currentTokens != null &&
               currentTokens.accessToken.trim().isNotEmpty &&
               !currentTokens.isExpiredAt(DateTime.now()) &&
               sentToken != null &&
               currentTokens.accessToken != sentToken) {
             refreshedTokens = currentTokens;
+            shouldInvalidate = false;
+          } else if (currentTokens == null && sentToken != null) {
             shouldInvalidate = false;
           } else {
             final refreshToken = currentTokens?.refreshToken;
@@ -151,6 +166,8 @@ class AuthInterceptor extends Interceptor {
               superseded = outcome.superseded;
             }
           }
+        } on DataParsingException {
+          shouldInvalidate = true;
         } catch (_) {
           shouldInvalidate = false;
         }
@@ -175,11 +192,17 @@ class AuthInterceptor extends Interceptor {
               final retryStatus = retryErr.response?.statusCode;
               final retryCode = _extractErrorCode(retryErr.response?.data);
               if (retryStatus == 403 && retryCode == 'ACCOUNT_DISABLED') {
-                await _invalidate(accountDisabled: true);
+                await _invalidateIfTokenMatches(
+                  expectedAccessToken: refreshedTokens.accessToken,
+                  accountDisabled: true,
+                );
               } else if (retryStatus == 401 &&
                   retryCode != 'INVALID_CURRENT_PASSWORD' &&
                   retryCode != 'INVALID_CREDENTIALS') {
-                await _invalidate(accountDisabled: false);
+                await _invalidateIfTokenMatches(
+                  expectedAccessToken: refreshedTokens.accessToken,
+                  accountDisabled: false,
+                );
               }
               handler.next(retryErr);
               return;
@@ -194,12 +217,18 @@ class AuthInterceptor extends Interceptor {
           return;
         }
 
-        await _invalidate(accountDisabled: accountDisabled);
+        await _invalidateIfTokenMatches(
+          expectedAccessToken: sentToken,
+          accountDisabled: accountDisabled,
+        );
         handler.next(err);
         return;
       }
 
-      await _invalidate(accountDisabled: false);
+      await _invalidateIfTokenMatches(
+        expectedAccessToken: sentToken,
+        accountDisabled: false,
+      );
     }
 
     handler.next(err);
@@ -300,6 +329,23 @@ class AuthInterceptor extends Interceptor {
     }
     final token = trimmed.substring(7).trim();
     return token.isEmpty ? null : token;
+  }
+
+  Future<void> _invalidateIfTokenMatches({
+    required String? expectedAccessToken,
+    required bool accountDisabled,
+  }) async {
+    if (expectedAccessToken != null) {
+      try {
+        final current = await tokenStorage.read();
+        if (current != null && current.accessToken != expectedAccessToken) {
+          return;
+        }
+      } on DataParsingException {
+        // Storage rusak, lanjutkan pembersihan.
+      } catch (_) {}
+    }
+    await _invalidate(accountDisabled: accountDisabled);
   }
 
   Future<void> _invalidate({required bool accountDisabled}) async {

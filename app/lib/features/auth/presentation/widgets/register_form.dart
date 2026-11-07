@@ -45,8 +45,8 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
 
     _nameController = TextEditingController(text: draft?.name);
     _emailController = TextEditingController(text: draft?.email);
-    _passwordController = TextEditingController(text: draft?.password);
-    _confirmPasswordController = TextEditingController(text: draft?.password);
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -95,6 +95,8 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
           Routes.registerProfile,
         ),
       );
+
+      ref.read(registerDraftProvider.notifier).clearPassword();
 
       if (!mounted || failure == null) {
         return;

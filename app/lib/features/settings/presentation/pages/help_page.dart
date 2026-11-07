@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kantin_cerdas/app/router/routes.dart';
+import 'package:kantin_cerdas/core/config/app_build_info.dart';
 import 'package:kantin_cerdas/core/widgets/kc_snack_bar.dart';
 import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
 import 'package:kantin_cerdas/theme/kc_spacing.dart';
@@ -16,7 +18,6 @@ class HelpPage extends StatefulWidget {
 class _HelpPageState extends State<HelpPage> {
   static const _contentMaxWidth = 640.0;
 
-  // Konten panduan aplikasi yang dikelola bersama UI.
   static const _guides = <String, String>{
     'Bagaimana cara membuat akun?':
         'Pilih Daftar pada halaman masuk. Isi nama lengkap, email, '
@@ -214,35 +215,22 @@ class _HelpPageState extends State<HelpPage> {
                   const SizedBox(height: KcSpacing.sm),
                   Card(
                     clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.email_outlined),
-                          title: const Text('Email'),
-                          subtitle: const Text('Hubungi kami melalui email'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            KcSnackBar.info(
-                              context,
-                              'Silakan kirim email ke support@kantincerdas.ac.id',
-                            );
-                          },
-                        ),
-                        const Divider(),
-                        ListTile(
-                          leading: const Icon(Icons.chat_outlined),
-                          title: const Text('WhatsApp'),
-                          subtitle: const Text('Hubungi kami melalui WhatsApp'),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () {
-                            KcSnackBar.info(
-                              context,
-                              'Layanan bantuan WhatsApp segera tersedia.',
-                            );
-                          },
-                        ),
-                      ],
+                    child: ListTile(
+                      leading: const Icon(Icons.email_outlined),
+                      title: const Text('Email dukungan'),
+                      subtitle: const Text(AppBuildInfo.supportEmail),
+                      trailing: const Icon(Icons.copy_outlined),
+                      onTap: () async {
+                        await Clipboard.setData(
+                          const ClipboardData(text: AppBuildInfo.supportEmail),
+                        );
+                        if (context.mounted) {
+                          KcSnackBar.success(
+                            context,
+                            'Alamat email ${AppBuildInfo.supportEmail} disalin ke papan klip.',
+                          );
+                        }
+                      },
                     ),
                   ),
                 ],

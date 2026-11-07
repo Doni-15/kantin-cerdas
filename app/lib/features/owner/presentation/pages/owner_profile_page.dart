@@ -1,3 +1,4 @@
+import 'package:kantin_cerdas/core/config/app_build_info.dart';
 import 'package:kantin_cerdas/features/auth/presentation/widgets/profile_identity_header.dart';
 import 'package:kantin_cerdas/features/auth/presentation/widgets/refresh_session_button.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,7 @@ class OwnerProfilePage extends StatelessWidget {
             const SizedBox(height: KcSpacing.lg),
             Center(
               child: Text(
-                'Kantin Cerdas v1.0.0',
+                AppBuildInfo.displayVersion,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),

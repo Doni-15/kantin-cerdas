@@ -223,15 +223,19 @@ class AuthStateNotifier extends Notifier<AsyncValue<User?>> {
       );
       if (!_current(generation)) throw const AuthOperationSupersededFailure();
     } catch (error, stackTrace) {
-      if (_current(generation) &&
-          (error is AuthSessionExpiredFailure ||
-              error is AuthAccountDisabledFailure ||
-              error is AuthStorageFailure)) {
-        state = AsyncError<User?>(error, stackTrace);
+      if (_current(generation)) {
+        if (error is AuthSessionExpiredFailure) {
+          ++_generation;
+          state = const AsyncData<User?>(null);
+        } else if (error is AuthAccountDisabledFailure ||
+            error is AuthStorageFailure) {
+          ++_generation;
+          state = AsyncError<User?>(error, stackTrace);
+        }
       }
       rethrow;
     } finally {
-      if (_current(generation)) _mutating = false;
+      if (ref.mounted && _mutating) _mutating = false;
     }
   }
 
@@ -260,15 +264,19 @@ class AuthStateNotifier extends Notifier<AsyncValue<User?>> {
       state = AsyncData<User?>(updatedUser);
       return updatedUser;
     } catch (error, stackTrace) {
-      if (_current(generation) &&
-          (error is AuthSessionExpiredFailure ||
-              error is AuthAccountDisabledFailure ||
-              error is AuthStorageFailure)) {
-        state = AsyncError<User?>(error, stackTrace);
+      if (_current(generation)) {
+        if (error is AuthSessionExpiredFailure) {
+          ++_generation;
+          state = const AsyncData<User?>(null);
+        } else if (error is AuthAccountDisabledFailure ||
+            error is AuthStorageFailure) {
+          ++_generation;
+          state = AsyncError<User?>(error, stackTrace);
+        }
       }
       rethrow;
     } finally {
-      if (_current(generation)) _mutating = false;
+      if (ref.mounted && _mutating) _mutating = false;
     }
   }
 

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:kantin_cerdas/core/config/app_feature_flags.dart';
 import 'package:kantin_cerdas/core/session/shared_data_revision_provider.dart';
 import 'package:kantin_cerdas/features/customer/presentation/providers/cart_catalog_reconciliation_provider.dart';
@@ -8,13 +6,13 @@ import '../support/simulation_harness.dart';
 void main() {
   group('AppFeatureFlags & RegisterDraft', () {
     test(
-      'seluruh feature flag standar UI bernilai true secara default dan RegisterDraft mendukung preview foto profil',
+      'feature flag yang belum memiliki endpoint backend bernilai false secara default dan RegisterDraft membersihkan password dengan aman',
       () async {
-        expect(AppFeatureFlags.enableGoogleAuth, isTrue);
+        expect(AppFeatureFlags.enableGoogleAuth, isFalse);
         expect(AppFeatureFlags.enableProfilePhotoUpload, isTrue);
-        expect(AppFeatureFlags.enableEmailVerification, isTrue);
-        expect(AppFeatureFlags.enableDeviceSessionManagement, isTrue);
-        expect(AppFeatureFlags.enableLoginActivityHistory, isTrue);
+        expect(AppFeatureFlags.enableEmailVerification, isFalse);
+        expect(AppFeatureFlags.enableDeviceSessionManagement, isFalse);
+        expect(AppFeatureFlags.enableLoginActivityHistory, isFalse);
 
         final h = await createHarness();
         addTearDown(h.dispose);
@@ -31,23 +29,15 @@ void main() {
               ),
             );
         expect(
-          h.container.read(registerDraftProvider)?.avatarPreviewBytes,
-          isNull,
+          h.container.read(registerDraftProvider)?.password,
+          'Password123!',
         );
 
-        final sampleBytes = Uint8List.fromList([1, 2, 3, 4]);
-        h.container
-            .read(registerDraftProvider.notifier)
-            .updateAvatar(sampleBytes);
+        h.container.read(registerDraftProvider.notifier).clearPassword();
+        expect(h.container.read(registerDraftProvider)?.password, isEmpty);
         expect(
-          h.container.read(registerDraftProvider)?.avatarPreviewBytes,
-          equals(sampleBytes),
-        );
-
-        h.container.read(registerDraftProvider.notifier).updateAvatar(null);
-        expect(
-          h.container.read(registerDraftProvider)?.avatarPreviewBytes,
-          isNull,
+          h.container.read(registerDraftProvider)?.email,
+          'budi@kampus.ac.id',
         );
       },
     );
@@ -66,7 +56,6 @@ void main() {
         expect(initialRec.hasPriceChanges, isFalse);
         expect(initialRec.reconciledTotalPriceIdr, 15000);
 
-        // Ubah harga menu-0-0 di sisi Owner dari 15000 menjadi 18000
         final ownerRepo = SimulationOwnerRepository(h.store);
         await SimulationAuthRepository(
           h.store,
@@ -113,7 +102,6 @@ void main() {
           customerCheckoutReviewProvider,
         )!;
 
-        // Invalidate & reload katalog sehingga instance CustomerOrderPriceConfirmation baru terbentuk dengan nilai sama
         h.container.invalidate(customerCatalogProvider);
         await h.container.read(customerCatalogProvider.future);
         final refreshedConfirmation = h.container.read(

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kantin_cerdas/core/errors/data_parsing_exception.dart';
 import 'package:kantin_cerdas/core/storage/secure_storage_provider.dart';
+import 'package:kantin_cerdas/core/utils/json_map_utils.dart';
 import 'package:kantin_cerdas/features/auth/data/storage/auth_tokens.dart';
 import 'package:kantin_cerdas/features/auth/data/storage/token_storage.dart';
 
 class SecureTokenStorage implements TokenStorage {
-  SecureTokenStorage({this._storage = defaultSecureStorage});
+  SecureTokenStorage({FlutterSecureStorage? storage})
+    : _storage = storage ?? defaultSecureStorage;
 
   static const _storageKey = 'kantin_cerdas.auth.tokens.v1';
   final FlutterSecureStorage _storage;
@@ -57,15 +59,11 @@ class SecureTokenStorage implements TokenStorage {
       'refresh_token': final String? refreshToken,
       'expires_at': final String? expiry,
     }) {
-      final expiresAt = expiry == null ? null : DateTime.tryParse(expiry);
-
-      if (expiry != null &&
-          (expiresAt == null ||
-              !expiresAt.isUtc ||
-              expiresAt.toIso8601String() != expiry)) {
-        throw const DataParsingException(
-          'Stored session contains an invalid expiry.',
-        );
+      final DateTime? expiresAt;
+      if (expiry == null) {
+        expiresAt = null;
+      } else {
+        expiresAt = parseStrictUtcDateTime(expiry, fieldName: 'expires_at');
       }
 
       final tokens = AuthTokens(

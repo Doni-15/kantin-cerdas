@@ -65,7 +65,7 @@ String? authFieldErrorMessage({required String field, required String? code}) {
     AuthValidationIssue.invalidUsernameLength =>
       'Username harus ${AuthValidator.minUsernameLength}'
           '-${AuthValidator.maxUsernameLength} karakter.',
-    null => '$label tidak valid.',
+    null => code.trim().contains(' ') ? code.trim() : '$label tidak valid.',
   };
 }
 
