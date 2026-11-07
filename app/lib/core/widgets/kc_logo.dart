@@ -4,7 +4,7 @@ class KcLogo extends StatelessWidget {
   const KcLogo({
     super.key,
     this.size = 100,
-    this.assetPath = 'assets/images/logos/in_app_logo.png',
+    this.assetPath = 'assets/images/logos/app_logo.png',
   });
 
   final double size;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kantin_cerdas/core/config/app_feature_flags.dart';
 import 'package:kantin_cerdas/core/widgets/kc_entity_image.dart';
 import 'package:kantin_cerdas/core/widgets/kc_image_source_sheet.dart';
 import 'package:kantin_cerdas/core/widgets/kc_snack_bar.dart';
@@ -20,6 +21,9 @@ class ProfileIdentityHeader extends ConsumerWidget {
     WidgetRef ref,
     User effectiveUser,
   ) async {
+    if (!AppFeatureFlags.enableProfilePhotoUpload) {
+      return;
+    }
     final avatarState = ref.read(profileAvatarControllerProvider);
     if (avatarState.isBusy) {
       return;
@@ -79,16 +83,17 @@ class ProfileIdentityHeader extends ConsumerWidget {
             effectiveUser.avatarUrl == avatarState.previewForUrl)
         ? avatarState.previewBytes
         : null;
+    final canUploadPhoto = AppFeatureFlags.enableProfilePhotoUpload;
 
     return Row(
       children: [
         Semantics(
-          button: true,
-          label: 'Ubah foto profil',
+          button: canUploadPhoto,
+          label: canUploadPhoto ? 'Ubah foto profil' : 'Foto profil',
           child: InkWell(
             key: const Key('profile_avatar_picker_trigger'),
             customBorder: const CircleBorder(),
-            onTap: avatarState.isBusy
+            onTap: !canUploadPhoto || avatarState.isBusy
                 ? null
                 : () => _handleTapAvatar(context, ref, effectiveUser),
             child: Stack(
@@ -100,36 +105,37 @@ class ProfileIdentityHeader extends ConsumerWidget {
                   radius: 36,
                   fallbackIcon: Icons.person_outline,
                 ),
-                Positioned(
-                  right: -2,
-                  bottom: -2,
-                  child: ExcludeSemantics(
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: colors.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: colors.surface, width: 2),
-                      ),
-                      alignment: Alignment.center,
-                      child: avatarState.isBusy
-                          ? SizedBox(
-                              width: 14,
-                              height: 14,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
+                if (canUploadPhoto)
+                  Positioned(
+                    right: -2,
+                    bottom: -2,
+                    child: ExcludeSemantics(
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: colors.surface, width: 2),
+                        ),
+                        alignment: Alignment.center,
+                        child: avatarState.isBusy
+                            ? SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: colors.onPrimary,
+                                ),
+                              )
+                            : Icon(
+                                Icons.photo_camera_outlined,
+                                size: 15,
                                 color: colors.onPrimary,
                               ),
-                            )
-                          : Icon(
-                              Icons.photo_camera_outlined,
-                              size: 15,
-                              color: colors.onPrimary,
-                            ),
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

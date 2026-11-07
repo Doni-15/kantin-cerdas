@@ -29,7 +29,6 @@ permissions:
   contents: write
 
 env:
-  FLUTTER_VERSION: "3.44.9"
   JAVA_VERSION: "17"
 
 jobs:
@@ -52,11 +51,10 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
-      - name: Setup Flutter (${{ env.FLUTTER_VERSION }})
+      - name: Setup Flutter (stable)
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
       - name: Install dependencies (enforce lockfile)
@@ -74,9 +72,14 @@ jobs:
           SECRET_API_BASE_URL: ${{ secrets.PROD_API_BASE_URL }}
           VAR_API_BASE_URL: ${{ vars.PROD_API_BASE_URL }}
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          LEGACY_KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LEGACY_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          LEGACY_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          LEGACY_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
         run: |
           RESOLVED_API_URL="${INPUT_API_BASE_URL:-${SECRET_API_BASE_URL:-$VAR_API_BASE_URL}}"
           if [ -z "$RESOLVED_API_URL" ]; then
@@ -92,20 +95,29 @@ jobs:
           esac
           echo "RESOLVED_API_URL=$RESOLVED_API_URL" >> "$GITHUB_ENV"
 
-          if [ -z "$KEYSTORE_BASE64" ] || [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
-            echo "::error::Secret signing rilis Android belum lengkap. Wajib mengatur ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, dan ANDROID_KEY_PASSWORD di GitHub Secrets."
+          RESOLVED_KS_B64="${KEYSTORE_BASE64:-$LEGACY_KEYSTORE_BASE64}"
+          RESOLVED_KS_PASS="${KEYSTORE_PASSWORD:-$LEGACY_STORE_PASSWORD}"
+          RESOLVED_KEY_ALIAS="${KEY_ALIAS:-$LEGACY_KEY_ALIAS}"
+          RESOLVED_KEY_PASS="${KEY_PASSWORD:-$LEGACY_KEY_PASSWORD}"
+
+          if [ -z "$RESOLVED_KS_B64" ] || [ -z "$RESOLVED_KS_PASS" ] || [ -z "$RESOLVED_KEY_ALIAS" ] || [ -z "$RESOLVED_KEY_PASS" ]; then
+            echo "::error::Secret signing rilis Android belum lengkap. Atur ANDROID_KEYSTORE_BASE64/KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD/STORE_PASSWORD, ANDROID_KEY_ALIAS/KEY_ALIAS, dan ANDROID_KEY_PASSWORD/KEY_PASSWORD di GitHub Secrets."
             exit 1
           fi
 
           KEYSTORE_PATH="$RUNNER_TEMP/kantin-cerdas-release.jks"
-          echo "$KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
+          echo "$RESOLVED_KS_B64" | base64 --decode > "$KEYSTORE_PATH"
 
           cat > android/key.properties <<EOF
-          storePassword=$KEYSTORE_PASSWORD
-          keyPassword=$KEY_PASSWORD
-          keyAlias=$KEY_ALIAS
+          storePassword=$RESOLVED_KS_PASS
+          keyPassword=$RESOLVED_KEY_PASS
+          keyAlias=$RESOLVED_KEY_ALIAS
           storeFile=$KEYSTORE_PATH
           EOF
+
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+          fi
 
       - name: Build Signed Production APK & App Bundle (AAB)
         env:

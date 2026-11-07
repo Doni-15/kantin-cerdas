@@ -1,3 +1,4 @@
+import 'package:kantin_cerdas/core/media/image_security_validator.dart';
 import 'package:kantin_cerdas/core/utils/collection_equality.dart';
 import 'package:kantin_cerdas/features/customer/domain/entities/menu_item.dart';
 import 'package:kantin_cerdas/features/customer/domain/entities/stall.dart';
@@ -17,6 +18,10 @@ class CustomerCatalog {
           stallIndex.containsKey(stall.id)) {
         throw const FormatException('Identitas stan kosong atau duplikat.');
       }
+      ImageSecurityValidator.normalizeSafeImageUrl(
+        stall.imageUrl,
+        fieldName: 'image_url',
+      );
       stallIndex[stall.id] = stall;
     }
     final menuIndex = <String, MenuItem>{};
@@ -33,18 +38,59 @@ class CustomerCatalog {
           'Identitas, harga, atau relasi menu tidak valid.',
         );
       }
-      menuIndex[menu.id] = menu;
+      final safeMenuImageUrl = ImageSecurityValidator.normalizeSafeImageUrl(
+        menu.imageUrl,
+        fieldName: 'image_url',
+      );
+      menuIndex[menu.id] = safeMenuImageUrl == menu.imageUrl
+          ? menu
+          : MenuItem(
+              id: menu.id,
+              name: menu.name,
+              stallId: menu.stallId,
+              stallName: menu.stallName,
+              block: menu.block,
+              price: menu.price,
+              waitTime: menu.waitTime,
+              description: menu.description,
+              category: menu.category,
+              available: menu.available,
+              imageUrl: safeMenuImageUrl,
+            );
     }
     final nestedIds = <String>{};
     final canonicalStalls = <Stall>[];
     for (final stall in stalls) {
+      final safeStallImageUrl = ImageSecurityValidator.normalizeSafeImageUrl(
+        stall.imageUrl,
+        fieldName: 'image_url',
+      );
       final canonicalMenus = <MenuItem>[];
       for (final nested in stall.menus) {
+        final safeNestedImageUrl = ImageSecurityValidator.normalizeSafeImageUrl(
+          nested.imageUrl,
+          fieldName: 'image_url',
+        );
+        final normalizedNested = safeNestedImageUrl == nested.imageUrl
+            ? nested
+            : MenuItem(
+                id: nested.id,
+                name: nested.name,
+                stallId: nested.stallId,
+                stallName: nested.stallName,
+                block: nested.block,
+                price: nested.price,
+                waitTime: nested.waitTime,
+                description: nested.description,
+                category: nested.category,
+                available: nested.available,
+                imageUrl: safeNestedImageUrl,
+              );
         final menu = menuIndex[nested.id];
         if (menu == null ||
             nested.stallId != stall.id ||
             !nestedIds.add(nested.id) ||
-            menu != nested) {
+            menu != normalizedNested) {
           throw const FormatException(
             'Menu detail berbeda dari daftar katalog.',
           );
@@ -60,6 +106,7 @@ class CustomerCatalog {
           description: stall.description,
           menus: canonicalMenus,
           isOpen: stall.isOpen,
+          imageUrl: safeStallImageUrl,
         ),
       );
     }

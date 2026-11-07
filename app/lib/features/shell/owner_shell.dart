@@ -1,36 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kantin_cerdas/app/router/routes.dart';
 import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_bottom_navigation.dart';
 import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_recovery_banner.dart';
 
 /// Layout dan navigasi utama untuk pemilik kantin.
 class OwnerShell extends StatelessWidget {
-  const OwnerShell({super.key, required this.location, required this.child});
+  const OwnerShell({super.key, required this.navigationShell});
 
-  final String location;
-  final Widget child;
+  /// Urutan branch pada router harus sama dengan urutan [OwnerTab].
+  final StatefulNavigationShell navigationShell;
 
-  OwnerTab get _currentTab {
-    return switch (location) {
-      Routes.ownerCanteen => OwnerTab.canteen,
-      Routes.ownerOrders => OwnerTab.orders,
-      Routes.ownerProfile => OwnerTab.profile,
-      _ => OwnerTab.dashboard,
-    };
-  }
+  OwnerTab get _currentTab => OwnerTab.values[navigationShell.currentIndex];
 
-  void _selectTab(BuildContext context, OwnerTab tab) {
-    final target = switch (tab) {
-      OwnerTab.dashboard => Routes.ownerDashboard,
-      OwnerTab.canteen => Routes.ownerCanteen,
-      OwnerTab.orders => Routes.ownerOrders,
-      OwnerTab.profile => Routes.ownerProfile,
-    };
-
-    if (target != location) {
-      context.go(target);
-    }
+  void _selectTab(OwnerTab tab) {
+    navigationShell.goBranch(
+      tab.index,
+      initialLocation: tab.index == navigationShell.currentIndex,
+    );
   }
 
   @override
@@ -41,13 +27,13 @@ class OwnerShell extends StatelessWidget {
         child: Column(
           children: [
             const OwnerRecoveryBanner(),
-            Expanded(child: child),
+            Expanded(child: navigationShell),
           ],
         ),
       ),
       bottomNavigationBar: OwnerBottomNavigation(
         currentTab: _currentTab,
-        onTabSelected: (tab) => _selectTab(context, tab),
+        onTabSelected: _selectTab,
       ),
     );
   }

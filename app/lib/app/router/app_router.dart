@@ -1,38 +1,37 @@
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_food_preferences_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_user_detail_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_applications_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_application_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_order_detail_page.dart';
-import 'package:kantin_cerdas/features/auth/presentation/pages/password_reset_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:kantin_cerdas/app/router/auth_redirect.dart';
 import 'package:kantin_cerdas/app/router/route_error_page.dart';
 import 'package:kantin_cerdas/app/router/routes.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_order_detail_page.dart';
+
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_application_detail_page.dart';
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_applications_page.dart';
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_dashboard_page.dart';
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_profile_page.dart';
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_user_detail_page.dart';
+import 'package:kantin_cerdas/features/admin/presentation/pages/admin_users_page.dart';
 
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
 import 'package:kantin_cerdas/features/auth/domain/enums/user_role.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/account_security_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/change_password_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/login_page.dart';
+import 'package:kantin_cerdas/features/auth/presentation/pages/password_reset_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/register_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/register_profile_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/pages/session_restore_page.dart';
 import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
 
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_dashboard_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_profile_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_users_page.dart';
-
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_ai_chat_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_canteen_application_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_cart_page.dart';
+import 'package:kantin_cerdas/features/customer/presentation/pages/customer_food_preferences_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_history_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_home_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_order_confirmation_page.dart';
+import 'package:kantin_cerdas/features/customer/presentation/pages/customer_order_detail_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_order_success_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_orders_page.dart';
 import 'package:kantin_cerdas/features/customer/presentation/pages/customer_profile_page.dart';
@@ -41,6 +40,7 @@ import 'package:kantin_cerdas/features/customer/presentation/pages/customer_stal
 
 import 'package:kantin_cerdas/features/owner/presentation/pages/owner_canteen_page.dart';
 import 'package:kantin_cerdas/features/owner/presentation/pages/owner_dashboard_page.dart';
+import 'package:kantin_cerdas/features/owner/presentation/pages/owner_order_detail_page.dart';
 import 'package:kantin_cerdas/features/owner/presentation/pages/owner_orders_page.dart';
 import 'package:kantin_cerdas/features/owner/presentation/pages/owner_profile_page.dart';
 import 'package:kantin_cerdas/features/owner/presentation/pages/owner_stall_settings_page.dart';
@@ -56,7 +56,6 @@ import 'package:kantin_cerdas/features/shell/owner_shell.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   final authRefresh = ValueNotifier<int>(0);
 
-  // Dengarkan auth tanpa membangun ulang instance GoRouter.
   final authSubscription = ref.listen<AsyncValue<User?>>(authStateProvider, (
     previous,
     next,
@@ -125,47 +124,85 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Navigasi utama customer.
-      ShellRoute(
-        builder: (context, state, child) => _withActiveUser(
-          (user) => CustomerShell(location: state.uri.path, child: child),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => _withActiveUser(
+          (user) => CustomerShell(navigationShell: navigationShell),
           role: UserRole.customer,
         ),
-        routes: [
-          GoRoute(
-            path: Routes.customerHome,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const CustomerHomePage()),
-          ),
-          GoRoute(
-            path: Routes.customerOrders,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const CustomerOrdersPage()),
-          ),
-          GoRoute(
-            path: Routes.customerHistory,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const CustomerHistoryPage()),
-          ),
-          GoRoute(
-            path: Routes.customerProfile,
-            pageBuilder: (context, state) => _tabPage(
-              state,
-              _withActiveUser(
-                (user) => CustomerProfilePage(user: user),
-                role: UserRole.customer,
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.customerHome,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const CustomerHomePage(),
+                    role: UserRole.customer,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: Routes.customerAiChat,
-            pageBuilder: (context, state) => _tabPage(
-              state,
-              CustomerAiChatPage(
-                onBackToHome: () {
-                  context.go(Routes.customerHome);
-                },
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.customerOrders,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const CustomerOrdersPage(),
+                    role: UserRole.customer,
+                  ),
+                ),
               ),
-            ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.customerAiChat,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => CustomerAiChatPage(
+                      onBackToHome: () {
+                        context.go(Routes.customerHome);
+                      },
+                    ),
+                    role: UserRole.customer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.customerHistory,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const CustomerHistoryPage(),
+                    role: UserRole.customer,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.customerProfile,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => CustomerProfilePage(user: user),
+                    role: UserRole.customer,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -235,41 +272,67 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Navigasi utama owner.
-      ShellRoute(
-        builder: (context, state, child) => _withActiveUser(
-          (user) => OwnerShell(location: state.uri.path, child: child),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => _withActiveUser(
+          (user) => OwnerShell(navigationShell: navigationShell),
           role: UserRole.owner,
         ),
-        routes: [
-          GoRoute(
-            path: Routes.ownerDashboard,
-            pageBuilder: (context, state) => _tabPage(
-              state,
-              _withActiveUser(
-                (user) => OwnerDashboardPage(ownerName: user.name),
-                role: UserRole.owner,
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.ownerDashboard,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => OwnerDashboardPage(ownerName: user.name),
+                    role: UserRole.owner,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-          GoRoute(
-            path: Routes.ownerCanteen,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const OwnerCanteenPage()),
-          ),
-          GoRoute(
-            path: Routes.ownerOrders,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const OwnerOrdersPage()),
-          ),
-          GoRoute(
-            path: Routes.ownerProfile,
-            pageBuilder: (context, state) => _tabPage(
-              state,
-              _withActiveUser(
-                (user) => OwnerProfilePage(user: user),
-                role: UserRole.owner,
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.ownerCanteen,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const OwnerCanteenPage(),
+                    role: UserRole.owner,
+                  ),
+                ),
               ),
-            ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.ownerOrders,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const OwnerOrdersPage(),
+                    role: UserRole.owner,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.ownerProfile,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => OwnerProfilePage(user: user),
+                    role: UserRole.owner,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -316,31 +379,53 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Navigasi utama admin.
-      ShellRoute(
-        builder: (context, state, child) => _withActiveUser(
-          (user) => AdminShell(location: state.uri.path, child: child),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) => _withActiveUser(
+          (user) => AdminShell(navigationShell: navigationShell),
           role: UserRole.admin,
         ),
-        routes: [
-          GoRoute(
-            path: Routes.adminDashboard,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const AdminDashboardPage()),
-          ),
-          GoRoute(
-            path: Routes.adminUsers,
-            pageBuilder: (context, state) =>
-                _tabPage(state, const AdminUsersPage()),
-          ),
-          GoRoute(
-            path: Routes.adminProfile,
-            pageBuilder: (context, state) => _tabPage(
-              state,
-              _withActiveUser(
-                (user) => AdminProfilePage(user: user),
-                role: UserRole.admin,
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.adminDashboard,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const AdminDashboardPage(),
+                    role: UserRole.admin,
+                  ),
+                ),
               ),
-            ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.adminUsers,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => const AdminUsersPage(),
+                    role: UserRole.admin,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.adminProfile,
+                pageBuilder: (context, state) => _tabPage(
+                  state,
+                  _withActiveUser(
+                    (user) => AdminProfilePage(user: user),
+                    role: UserRole.admin,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -356,14 +441,10 @@ final routerProvider = Provider<GoRouter>((ref) {
   return router;
 });
 
-/// Perpindahan tab menggunakan halaman tanpa animasi transisi.
 NoTransitionPage<void> _tabPage(GoRouterState state, Widget child) {
   return NoTransitionPage<void>(key: state.pageKey, child: child);
 }
 
-/// Melindungi tampilan ketika auth berubah sebelum redirect selesai.
-///
-/// Key sesi mereset state halaman saat identitas atau generasi sesi berganti.
 Widget _withActiveUser(Widget Function(User user) builder, {UserRole? role}) {
   return Consumer(
     builder: (context, ref, child) {

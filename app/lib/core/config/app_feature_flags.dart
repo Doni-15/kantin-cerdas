@@ -2,7 +2,7 @@
 abstract final class AppFeatureFlags {
   static const bool enableGoogleAuth = bool.fromEnvironment(
     'ENABLE_GOOGLE_AUTH',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool enableProfilePhotoUpload = bool.fromEnvironment(
@@ -12,16 +12,16 @@ abstract final class AppFeatureFlags {
 
   static const bool enableEmailVerification = bool.fromEnvironment(
     'ENABLE_EMAIL_VERIFICATION',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool enableDeviceSessionManagement = bool.fromEnvironment(
     'ENABLE_DEVICE_SESSION_MANAGEMENT',
-    defaultValue: true,
+    defaultValue: false,
   );
 
   static const bool enableLoginActivityHistory = bool.fromEnvironment(
     'ENABLE_LOGIN_ACTIVITY_HISTORY',
-    defaultValue: true,
+    defaultValue: false,
   );
 }

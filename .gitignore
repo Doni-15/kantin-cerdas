@@ -1,29 +1,51 @@
-# IDE & Editor
+# Flutter / Dart / Gradle build & tool artifacts
+.dart_tool/
+.packages
+build/
+coverage/
+.gradle/
+.kotlin/
 .idea/
 .vscode/
+.DS_Store
 *.iml
 *.ipr
 *.iws
-.DS_Store
+*.hprof
+*.log
+local.properties
 
-# Flutter & Dart Build Artifacts
-app/build/
-app/android/build/
-app/android/.gradle/
-app/.dart_tool/
-app/.flutter-plugins-dependencies
-app/coverage/
-**/doc/api/
-
-# Android / iOS Signing & Secrets
-**/android/key.properties
-**/*.jks
+# Android signing & rahasia rilis
+key.properties
 **/*.keystore
+**/*.jks
 **/*.p12
 **/*.pfx
+
+# Kredensial Cloud & Environment Backend (Jangan pernah di-commit ke Git)
+**/google-services.json
+**/service-account*.json
+**/firebase-adminsdk*.json
 .env
 .env.*
+!.env.example
+.firebase/
+.supabase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
 
-# Crash / Heap Dumps & Logs
-**/*.hprof
-*.log
+# Dokumen referensi eksternal & skrip utilitas sementara
+Modul_Pemrograman_Mobile.pdf
+tahap*.bash
+fase*.bash
+hasil.txt
+
+# Backend Dart & Supabase Local
+backend/.dart_tool/
+backend/build/
+backend/.env
+backend/.env.*
+!backend/.env.example
+supabase/.temp/
+supabase/.branches/
