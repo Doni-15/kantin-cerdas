@@ -1,6 +1,24 @@
 # Spesifikasi backend strict
 
-Diperbarui 4 November 2026. **Sisi aplikasi Flutter (client) sudah siap 100% untuk integrasi backend**: seluruh adapter HTTP (`*_api_datasource.dart`), model JSON (`*_model.dart`), mapper error, `AuthInterceptor`, jurnal idempotensi lokal, serta layanan unggah media Zero-Trust (`DioMediaUploadRepository`) telah selesai diimplementasikan dan diikat melalui `buildProductionOverrides()`. Dokumen ini menjadi kontrak acuan bagi pengembangan **server backend dan database** agar langsung kompatibel dengan aplikasi ketika dijalankan menggunakan `--dart-define=API_BASE_URL=...`.
+Dokumen ini menetapkan kontrak endpoint REST API `/v1/*`, aturan validasi input, otorisasi lintas peran, protokol idempotensi, dan kode error HTTP antara aplikasi Flutter (`app/`) dan server backend.
+
+## Daftar isi
+
+- [1. Cakupan](#1-cakupan)
+- [2. Validasi umum](#2-validasi-umum)
+- [3. Otorisasi](#3-otorisasi)
+- [4. Tabel/collection logis yang diharapkan](#4-tabelcollection-logis-yang-diharapkan)
+- [5. Auth dan sesi](#5-auth-dan-sesi)
+- [6. Checkout dan transisi pesanan](#6-checkout-dan-transisi-pesanan)
+- [7. Pengajuan, approval dan akses](#7-pengajuan-approval-dan-akses)
+- [8. Menu, stan, preferensi, asisten](#8-menu-stan-preferensi-asisten)
+- [9. Idempotensi, unknown dan receipt](#9-idempotensi-unknown-dan-receipt)
+- [10. Pembacaan, pagination dan cache](#10-pembacaan-pagination-dan-cache)
+- [11. Kontrak transport, endpoint, dan kode error HTTP](#11-kontrak-transport-endpoint-dan-kode-error-http)
+- [12. Gate integrasi](#12-gate-integrasi)
+- [13. Signature repository aktual](#13-signature-repository-aktual)
+- [14. Pintu adapter aplikasi (Sudah Terhubung)](#14-pintu-adapter-aplikasi-sudah-terhubung)
+- [15. Pilihan stack server backend](#15-pilihan-stack-server-backend)
 
 ## 1. Cakupan
 
@@ -25,6 +43,8 @@ ID string opaque nonkosong; server menghasilkan ID entity, client menghasilkan s
 | Persiapan | 1–180 menit |
 | Pengajuan | Nama 120, deskripsi wajib 1.000, lokasi 120; telepon max 24 karakter, 8–15 digit; optional + di awal, digit/spasi/()- |
 | Alasan | Maksimal 300 grapheme; wajib saat reject atau ubah akses |
+
+> Perlu konfirmasi: `OwnerOrderTransition.maxRejectionReasonLength` di `app/lib/features/owner/domain/entities/owner_order_transition.dart` membatasi alasan penolakan pesanan pemilik stan hingga 240 grapheme, sedangkan tabel ini dan alasan admin menetapkan 300 grapheme.
 | Bahan dihindari | Maksimal 20, masing-masing 60 grapheme, trim, unik case-insensitive, tanpa koma/newline per elemen |
 | Pencarian | Maksimal 120 grapheme |
 | Pesan asisten | Wajib, maksimal 500 grapheme |
@@ -130,6 +150,8 @@ Otorisasi/prasyarat, CAS, data, receipt immutable dan audit harus konsisten. Cli
 | Admin | pending/applied/notApplied | PendingAdminMutation lengkap, versi/intent akses/keputusan; approval owner+approvedStallId |
 | Preferensi | pending/applied/notApplied | PendingFoodPreferences+input/expectedVersion dan snapshot commit |
 | Cancel | pending/applied/notApplied | Aktor/order/stan/nomor/ID/versi; cancelled+notCharged+versi meningkat |
+
+> Perlu konfirmasi: Enum Dart `OrderCancellationOutcome` memakai nama `cancelled` (parser menerima string `"applied"` maupun `"cancelled"`), dan pemulihan `GET /v1/operations/{family}/{id}` untuk mutasi yang belum pernah sampai ke server memerlukan keputusan antara pengiriman header `X-Recovery-Intent` atau relaksasi parser saat `unseen_sealed = true`.
 
 **Tidak ditemukan bukan notApplied.** Versi berubah/null/read gagal bukan receipt. Final negatif hanya sah setelah ID disegel atomik terhadap late commit. Lookup boleh mengoordinasikan seal di server tetapi tidak mengirim ulang mutasi bisnis. Pending mengunci aksi sampai hasil pasti.
 

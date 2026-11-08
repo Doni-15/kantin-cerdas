@@ -4,6 +4,46 @@ Deklarasi class/enum/field diambil dari source terkini (`app/lib/`); snippet mer
 
 Pemetaan utama: `MenuItem.price` ↔ `price_idr` server, `available` ↔ `is_available`; kategori menu menggunakan standar tunggal `MenuCategory` (`rice`/`Nasi`, `noodles`/`Mi`, `drinks`/`Minuman`, `snacks`/`Camilan`, `other`/`Lainnya` di `features/orders/domain/entities/menu_category.dart`); `waitTime` teks diturunkan bila server mengirim `prep_time_min`; `OrderDraft.orderNote` → `OrderRecord.note`. `User` tidak menyimpan versi (versi pengguna untuk CAS admin dibungkus pada `AdminUserRecord`).
 
+## Daftar isi
+
+- [`admin_application_page`](#admin_application_page)
+- [`admin_application_review`](#admin_application_review)
+- [`admin_mutation_lookup`](#admin_mutation_lookup)
+- [`admin_summary`](#admin_summary)
+- [`admin_user_access_change`](#admin_user_access_change)
+- [`admin_user_page`](#admin_user_page)
+- [`admin_user_record`](#admin_user_record)
+- [`pending_admin_mutation`](#pending_admin_mutation)
+- [`user (session_user)`](#user-session_user)
+- [`media_upload (Zero-Trust image validation)`](#media_upload-zero-trust-image-validation)
+- [`assistant_reply`](#assistant_reply)
+- [`canteen_application`](#canteen_application)
+- [`canteen_application_lookup`](#canteen_application_lookup)
+- [`cart_item`](#cart_item)
+- [`cart_state`](#cart_state)
+- [`customer_catalog`](#customer_catalog)
+- [`customer_order_cancellation`](#customer_order_cancellation)
+- [`customer_order_price_confirmation`](#customer_order_price_confirmation)
+- [`food_preferences`](#food_preferences)
+- [`food_preferences_lookup`](#food_preferences_lookup)
+- [`food_preferences_snapshot`](#food_preferences_snapshot)
+- [`menu_item`](#menu_item)
+- [`order_cancellation_lookup`](#order_cancellation_lookup)
+- [`order_draft`](#order_draft)
+- [`order_submission_lookup`](#order_submission_lookup)
+- [`pending_canteen_application`](#pending_canteen_application)
+- [`pending_food_preferences`](#pending_food_preferences)
+- [`pending_order_cancellation`](#pending_order_cancellation)
+- [`pending_order_submission`](#pending_order_submission)
+- [`stall`](#stall)
+- [`order_record`](#order_record)
+- [`menu_category`](#menu_category)
+- [`owner_menu`](#owner_menu)
+- [`owner_mutation_lookup`](#owner_mutation_lookup)
+- [`owner_order_transition`](#owner_order_transition)
+- [`owner_stall`](#owner_stall)
+- [`pending_owner_mutation`](#pending_owner_mutation)
+
 ## admin_application_page
 
 [Source](../../app/lib/features/admin/domain/entities/admin_application_page.dart)

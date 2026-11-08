@@ -1,6 +1,14 @@
 # Panduan integrasi backend per file
 
-Acuan seluruh **393 file Dart di `app/lib/`**, **13 file simulasi di `app/test/support/`**, dan **17 berkas pengujian di `app/test/`**. Path relatif terhadap root repositori. **Di sisi aplikasi Flutter, seluruh integrasi layer data telah selesai dibangun**: adapter `*_api_datasource.dart`, model/mapper JSON, `AuthInterceptor`, `DioMediaUploadRepository`, dan komposisi DI `production_overrides.dart` sudah siap digunakan bersama server REST API melalui `--dart-define=API_BASE_URL=...`.
+Peta peran integrasi backend, titik sambung HTTP/jurnal, dan kriteria verifikasi untuk setiap berkas di `app/lib/` serta `app/test/`.
+
+## Daftar isi
+
+- [Urutan integrasi dengan server backend](#urutan-integrasi-dengan-server-backend)
+- [Titik sambung utama](#titik-sambung-utama)
+- [Dampak lintas file](#dampak-lintas-file)
+- [Setiap file `app/lib/` dan dukungan simulasi](#setiap-file-applib-dan-dukungan-simulasi)
+- [Berkas pengujian di `app/test/`](#berkas-pengujian-di-apptest)
 
 ## Urutan integrasi dengan server backend
 
@@ -9,7 +17,7 @@ Acuan seluruh **393 file Dart di `app/lib/`**, **13 file simulasi di `app/test/s
 3. Seluruh `RepositoryImpl` dan `ApiDataSource` untuk auth, katalog, checkout, pelacakan pesanan, pengajuan kantin, preferensi makanan, asisten, owner, admin, dan unggah media (`DioMediaUploadRepository`) telah terhubung melalui `buildProductionOverrides()` di `app/lib/app/production_overrides.dart`.
 4. Pastikan server mengembalikan kode error JSON (`code` nonkosong sehingga `hasBackendErrorCode == true`) pada respons error bisnis (`400`/`401`/`403`/`404`/`409`/`422`/`429`) serta menyediakan keenam endpoint lookup `/v1/operations/*`.
 5. Pertahankan jurnal lokal, penjagaan sesi/generasi, dan state UI; apabila kontrak API diubah, sinkronkan domain, model/mapper data, simulator, tes, dan dokumentasi.
-6. Jalankan [validasi](../04_STATUS_DAN_PENGUJIAN.md), tes kontrak/integrasi terhadap server staging, dan QA perangkat sebelum rilis.
+6. Jalankan [pengujian](../../README.md#pengujian), tes kontrak/integrasi terhadap server staging, dan QA perangkat sebelum rilis.
 
 ## Titik sambung utama
 

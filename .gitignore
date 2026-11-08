@@ -34,6 +34,18 @@ key.properties
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+.branches
+.temp
+.env.keys
+.env.local
+.env.*.local
+
+# Backend Dart & Environment Secrets
+**/backend/.dart_tool/
+**/backend/build/
+**/backend/.env
+*.env
+!*.env.example
 
 # Dokumen referensi eksternal & skrip utilitas sementara
 Modul_Pemrograman_Mobile.pdf
