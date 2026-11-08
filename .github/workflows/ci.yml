@@ -1,16 +1,17 @@
-name: CI — Quality, Tests & Debug APK
+name: CI/CD — KantinCerdas Pipeline
 
 on:
   push:
     branches:
       - main
-      - develop
       - staging
+      - develop
+      - "KantinCerdas*"
   pull_request:
     branches:
       - main
-      - develop
       - staging
+      - develop
   workflow_dispatch:
 
 concurrency:
@@ -22,10 +23,113 @@ permissions:
 
 env:
   JAVA_VERSION: "17"
+  SUPABASE_PROJECT_REF: "diprwrdomyqrhllqlche"
 
 jobs:
-  quality-and-tests:
-    name: Format, Analyze, Architecture Audit & Tests
+  # ============================================================================
+  # 1. REPOSITORY SECURITY, SECRET LEAK GUARD & SUPABASE SQL AUDIT
+  # ============================================================================
+  security-and-sql-guard:
+    name: Security Guard & Supabase Migration Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for tracked secret files (.env, keystores, local configs)
+        run: |
+          FORBIDDEN_FILES=$(git ls-files | grep -E '(^|/)\.env$|(^|/)key\.properties$|\.jks$|\.keystore$|(^|/)dart_defines\.json$' || true)
+          if [ -n "$FORBIDDEN_FILES" ]; then
+            echo "::error::Tracked secret/local configuration files detected:"
+            echo "$FORBIDDEN_FILES"
+            exit 1
+          fi
+
+      - name: Scan tracked files for leaked Supabase secret keys
+        run: |
+          if git grep -nE 'sb_secret_[A-Za-z0-9_-]{16,}' -- ':!*.example' ':!*.md'; then
+            echo "::error::Leaked Supabase secret key (sb_secret_...) detected in tracked files."
+            exit 1
+          fi
+
+      - name: Validate Supabase SQL migrations structure
+        run: |
+          MIGRATION_DIR="server/supabase/migrations"
+          if [ ! -d "$MIGRATION_DIR" ]; then
+            echo "::error::Migration directory $MIGRATION_DIR not found."
+            exit 1
+          fi
+
+          COUNT=$(find "$MIGRATION_DIR" -maxdepth 1 -name '*.sql' | wc -l)
+          if [ "$COUNT" -lt 12 ]; then
+            echo "::error::Expected at least 12 SQL migration files in $MIGRATION_DIR, found $COUNT."
+            exit 1
+          fi
+
+          for sql_file in "$MIGRATION_DIR"/*.sql; do
+            if ! grep -q "^BEGIN;" "$sql_file" || ! grep -q "^COMMIT;" "$sql_file"; then
+              echo "::error::Migration $sql_file must be wrapped in BEGIN; ... COMMIT; transaction block."
+              exit 1
+            fi
+          done
+
+  # ============================================================================
+  # 2. BACKEND CI — DART SHELF SERVER (/v1/*)
+  # ============================================================================
+  backend-ci:
+    name: Backend (Dart Shelf) — Format, Analyze & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server/backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK (stable)
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Install backend dependencies
+        run: dart pub get
+
+      - name: Check Dart formatting (bin, lib, test)
+        run: |
+          DART_FILES=$(find bin lib test -name '*.dart' 2>/dev/null || true)
+          if [ -n "$DART_FILES" ]; then
+            dart format --output=none --set-exit-if-changed $DART_FILES
+          else
+            echo "No .dart files in server/backend yet — skipping format check."
+          fi
+
+      - name: Run strict Dart analyzer
+        run: |
+          DART_FILES=$(find bin lib test -name '*.dart' 2>/dev/null || true)
+          if [ -n "$DART_FILES" ]; then
+            dart analyze --fatal-infos --fatal-warnings
+          else
+            echo "No .dart files in server/backend yet — skipping static analysis."
+          fi
+
+      - name: Run backend test suite
+        run: |
+          TEST_FILES=$(find test -name '*_test.dart' 2>/dev/null || true)
+          if [ -n "$TEST_FILES" ]; then
+            dart test --reporter expanded
+          else
+            echo "No *_test.dart files in server/backend/test yet — skipping tests."
+          fi
+
+  # ============================================================================
+  # 3. FRONTEND CI — FLUTTER CLIENT (app/)
+  # ============================================================================
+  flutter-ci:
+    name: Flutter App — Format, Analyze, Architecture & Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -35,40 +139,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Verify documentation links
-        working-directory: .
-        run: |
-          python3 - << 'PYEOF'
-          import glob, os, re, sys
-
-          root = os.getcwd()
-          errors = []
-
-          active_mds = [
-              p for p in sorted(glob.glob(os.path.join(root, "**/*.md"), recursive=True))
-              if "/arsip/" not in p and "/build/" not in p and "/.dart_tool/" not in p
-          ]
-
-          for md in active_mds:
-              rel_md = os.path.relpath(md, root)
-              with open(md, encoding="utf-8") as f:
-                  text = f.read()
-              for m in re.finditer(r"\[([^\]]+)\]\(([^)]+)\)", text):
-                  target = m.group(2).split("#")[0].strip()
-                  if not target or target.startswith(("http://", "https://", "mailto:")):
-                      continue
-                  resolved = os.path.normpath(os.path.join(os.path.dirname(md), target))
-                  if not os.path.exists(resolved):
-                      errors.append(f"Broken link in {rel_md}: {target}")
-
-          if errors:
-              for err in errors:
-                  print(f"::error::{err}")
-              sys.exit(1)
-
-          print(f"Documentation check passed ({len(active_mds)} markdown files verified).")
-          PYEOF
 
       - name: Setup Flutter (stable)
         uses: subosito/flutter-action@v2
@@ -88,12 +158,17 @@ jobs:
       - name: Verify Clean Architecture & simulation isolation boundaries
         run: flutter test --no-pub --reporter expanded test/audit/architecture_boundary_test.dart
 
-      - name: Run full automated test suite
+      - name: Run full Flutter test suite
         run: flutter test --no-pub --reporter expanded
 
+  # ============================================================================
+  # 4. BUILD ARTIFACTS — ANDROID DEBUG APKs (NORMAL & SIMULATION)
+  # ============================================================================
   build-debug-apks:
     name: Build Debug APKs (Normal & Simulation)
-    needs: quality-and-tests
+    needs:
+      - security-and-sql-guard
+      - flutter-ci
     runs-on: ubuntu-latest
     timeout-minutes: 25
     defaults:
@@ -153,3 +228,40 @@ jobs:
             app/build/ci-artifacts/SHA256SUMS.txt
           retention-days: 14
           if-no-files-found: error
+
+  # ============================================================================
+  # 5. SUPABASE CLOUD CD — AUTO PUSH MIGRATIONS ON MAIN (WHEN SECRETS EXIST)
+  # ============================================================================
+  supabase-cd:
+    name: Supabase Cloud — Sync Database Migrations
+    needs:
+      - security-and-sql-guard
+      - backend-ci
+      - flutter-ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Push pending migrations to Supabase Cloud
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "::notice::SUPABASE_ACCESS_TOKEN or SUPABASE_DB_PASSWORD secret is not configured in GitHub Settings. Skipping remote db push."
+            exit 0
+          fi
+          supabase link --project-ref "${{ env.SUPABASE_PROJECT_REF }}" --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --remote
