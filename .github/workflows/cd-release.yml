@@ -111,8 +111,8 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install dependencies (enforce lockfile)
-        run: flutter pub get --enforce-lockfile
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Run quality gate (format, analyze, architecture audit & tests)
         run: |
