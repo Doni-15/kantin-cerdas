@@ -78,15 +78,13 @@ Middleware rateLimitMiddleware(AppConfig config) {
   };
 }
 
- String _clientIp(Request request, bool trustProxy) {
-   if (trustProxy) {
-     final forwarded = request.headers['x-forwarded-for'];
-     
-     if (forwarded != null && forwarded.trim().isNotEmpty) {
-      final candidate = forwarded.split(',').last.trim();
-      if (InternetAddress.tryParse(candidate) != null) return candidate;
-     }
-   }
+String _clientIp(Request request, bool trustProxy) {
+  if (trustProxy) {
+    final forwarded = request.headers['x-forwarded-for'];
+    if (forwarded != null && forwarded.trim().isNotEmpty) {
+      return forwarded.split(',').first.trim();
+    }
+  }
 
   final info = request.context['shelf.io.connection_info'];
   if (info is HttpConnectionInfo) return info.remoteAddress.address;

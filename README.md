@@ -212,7 +212,3 @@ Gunakan `supabase db push` sebagai satu-satunya jalur resmi karena eksekusi manu
 ## Kontribusi
 
 Baca aturan pembuatan branch, format pesan commit, pemeriksaan wajib sebelum membuka Pull Request, dan disiplin migrasi database di [`CONTRIBUTING.md`](CONTRIBUTING.md).
-
-## Lisensi
-
-Isi manual: tentukan lisensi atau status privat (`app/pubspec.yaml` saat ini menyetel `publish_to: 'none'` dan belum ada berkas `LICENSE` di repositori).
