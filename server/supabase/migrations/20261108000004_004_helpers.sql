@@ -1,3 +1,4 @@
+-- Active: 1794135430745@@aws-0-ap-southeast-1.pooler.supabase.com@5432@postgres@public
 -- ============================================================================
 -- MIGRASI 004: FUNGSI HELPER OTORISASI, PROYEKSI JSON, & NORMALISASI INPUT
 -- Proyek   : KantinCerdas (Supabase PostgreSQL 15-17)
