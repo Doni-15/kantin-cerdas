@@ -1,3 +1,4 @@
+-- Active: 1794135430745@@aws-0-ap-southeast-1.pooler.supabase.com@5432@postgres@public
 -- ============================================================================
 -- MIGRASI 001: EKSTENSI & TIPE ENUM KUSTOM
 -- Proyek   : KantinCerdas (Supabase PostgreSQL 15-17)

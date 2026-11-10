@@ -1,3 +1,4 @@
+-- Active: 1794135430745@@aws-0-ap-southeast-1.pooler.supabase.com@5432@postgres@public
 -- ============================================================================
 -- MIGRASI 003: KEAMANAN, PRIVILEGE, RLS ZERO-POLICY, & GUARD SERVICE_ROLE
 -- Proyek   : KantinCerdas (Supabase PostgreSQL 15-17)

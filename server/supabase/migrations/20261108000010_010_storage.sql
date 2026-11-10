@@ -1,3 +1,4 @@
+-- Active: 1794135430745@@aws-0-ap-southeast-1.pooler.supabase.com@5432@postgres@public
 -- ============================================================================
 -- MIGRASI 010: STORAGE BUCKET KANTIN-MEDIA & TATA KELOLA MEDIA ASSETS (MODUL J)
 -- Proyek   : KantinCerdas (Supabase PostgreSQL 15-17)

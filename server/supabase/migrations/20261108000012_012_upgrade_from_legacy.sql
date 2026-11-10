@@ -1,3 +1,4 @@
+-- Active: 1794135430745@@aws-0-ap-southeast-1.pooler.supabase.com@5432@postgres@public
 -- ============================================================================
 -- MIGRASI 012: UPGRADE TRANSAKSIONAL DARI SKEMA LAMA (supabase_schema_complete.sql)
 -- Proyek   : KantinCerdas (Supabase PostgreSQL 15-17)
