@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:kantin_cerdas/core/network/api_exception_mapper.dart';
 import 'package:kantin_cerdas/core/network/app_environment.dart';
 import 'package:kantin_cerdas/core/utils/json_map_utils.dart';
+import 'package:kantin_cerdas/core/utils/mutation_id_generator.dart';
 import 'package:kantin_cerdas/features/auth/data/datasources/auth_datasource.dart';
 import 'package:kantin_cerdas/features/auth/data/models/login_response_model.dart';
 import 'package:kantin_cerdas/features/auth/data/models/user_model.dart';
@@ -9,7 +13,6 @@ import 'package:kantin_cerdas/features/auth/domain/failures/auth_failure.dart';
 
 class AuthApiDataSource implements AuthDataSource {
   const AuthApiDataSource({this.dio});
-
   final Dio? dio;
 
   bool get isConfigured => dio != null && AppEnvironment.isApiConfigured;
@@ -37,11 +40,30 @@ class AuthApiDataSource implements AuthDataSource {
   }
 
   @override
+  Future<bool> isEmailAvailable({required String email}) async {
+    final client = dio;
+    if (!isConfigured || client == null) {
+      throw const AuthNotConfiguredFailure();
+    }
+    try {
+      final response = await client.post<Object?>(
+        '/v1/auth/availability',
+        data: <String, Object?>{'email': email},
+      );
+      final body = asJsonMap(response.data, fieldName: 'availability');
+      return body['email_available'] as bool? ?? true;
+    } on DioException catch (error) {
+      throw mapDioException(error);
+    }
+  }
+
+  @override
   Future<UserModel> register({
     required String name,
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) async {
     final client = dio;
     if (!isConfigured || client == null) {
@@ -55,6 +77,8 @@ class AuthApiDataSource implements AuthDataSource {
           'username': username,
           'email': email,
           'password': password,
+          if (avatarBytes != null && avatarBytes.isNotEmpty)
+            'avatar_base64': base64Encode(avatarBytes),
         },
       );
       return UserModel.fromJson(
@@ -156,12 +180,19 @@ class AuthApiDataSource implements AuthDataSource {
     if (!isConfigured || client == null) {
       throw const AuthNotConfiguredFailure();
     }
+    final mutationId = generateSecureMutationId();
     try {
       final response = await client.put<Object?>(
         '/v1/auth/profile/avatar',
-        data: <String, Object?>{'avatar_url': avatarUrl},
+        data: <String, Object?>{
+          'avatar_url': avatarUrl,
+          'mutation_id': mutationId,
+        },
         options: Options(
-          headers: <String, Object?>{'Authorization': 'Bearer $accessToken'},
+          headers: <String, Object?>{
+            'Authorization': 'Bearer $accessToken',
+            'Idempotency-Key': mutationId,
+          },
         ),
       );
       return UserModel.fromJson(

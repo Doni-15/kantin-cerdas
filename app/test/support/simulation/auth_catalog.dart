@@ -45,11 +45,19 @@ class SimulationAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<bool> isEmailAvailable({required String email}) async {
+    final normalized = email.trim().toLowerCase();
+    final users = store.table('users').values.map((e) => unpackUser(asJson(e)));
+    return !users.any((u) => u.email.toLowerCase() == normalized);
+  }
+
+  @override
   Future<User> register({
     required String name,
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) => store.atomic(() {
     final users = store.table('users').values.map((e) => unpackUser(asJson(e)));
     if (users.any((u) => u.username.toLowerCase() == username.toLowerCase())) {
@@ -58,19 +66,32 @@ class SimulationAuthRepository implements AuthRepository {
     if (users.any((u) => u.email.toLowerCase() == email.toLowerCase())) {
       throw const AuthEmailTakenFailure();
     }
+    final userId = store.nextId('customer');
+    String? avatarUrl;
+    if (avatarBytes != null && avatarBytes.isNotEmpty) {
+      final validated = ImageSecurityValidator.validateAndPrepare(
+        bytes: avatarBytes,
+        actorId: userId,
+        category: MediaUploadCategory.profileAvatar,
+      );
+      avatarUrl =
+          'https://cdn.kantincerdas.ac.id/media/${validated.category.slug}/${validated.safeFileName}';
+    }
     final user = User(
-      id: store.nextId('customer'),
+      id: userId,
       username: username,
       email: email,
       name: name,
       role: UserRole.customer,
       isActive: true,
+      avatarUrl: avatarUrl,
     );
     store.table('users')[user.id] = packUser(user);
     store.table('passwords')[user.id] = password;
     store.table('userVersions')[user.id] = 1;
     return user;
   });
+
   @override
   Future<User?> restoreSession() async {
     final revision = ++_revision;

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kantin_cerdas/app/router/auth_destination.dart';
 import 'package:kantin_cerdas/app/router/routes.dart';
 import 'package:kantin_cerdas/core/config/app_feature_flags.dart';
+import 'package:kantin_cerdas/core/session/auth_repository.dart';
 import 'package:kantin_cerdas/core/widgets/kc_brand.dart';
 import 'package:kantin_cerdas/core/widgets/kc_button.dart';
 import 'package:kantin_cerdas/core/widgets/kc_logo.dart';
@@ -72,16 +73,6 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       return;
     }
 
-    ref
-        .read(registerDraftProvider.notifier)
-        .setDraft(
-          RegisterDraft(
-            name: _nameController.text.trim(),
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-          ),
-        );
-
     FocusScope.of(context).unfocus();
 
     setState(() {
@@ -89,6 +80,27 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
     });
 
     try {
+      final email = _emailController.text.trim();
+      final isAvailable = await _isEmailAvailable(email);
+      if (!mounted || isAvailable == null) {
+        return;
+      }
+
+      if (!isAvailable) {
+        _showReturnedFailure(const AuthEmailTakenFailure());
+        return;
+      }
+
+      final existingDraft = ref.read(registerDraftProvider);
+      ref.read(registerDraftProvider.notifier).setDraft(
+            RegisterDraft(
+              name: _nameController.text.trim(),
+              email: email,
+              password: _passwordController.text,
+              avatarPreviewBytes: existingDraft?.avatarPreviewBytes,
+            ),
+          );
+
       final failure = await context.push<AuthFailure>(
         continueAuthLocation(
           GoRouterState.of(context).uri,
@@ -109,6 +121,20 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
           _continuing = false;
         });
       }
+    }
+  }
+
+  Future<bool?> _isEmailAvailable(String email) async {
+    try {
+      final authRepository = ref.read(authRepositoryProvider);
+      return await authRepository.isEmailAvailable(email: email);
+    } on AuthNotConfiguredFailure {
+      return true;
+    } on AuthFailure catch (failure) {
+      if (mounted) {
+        _showReturnedFailure(failure);
+      }
+      return null;
     }
   }
 
@@ -255,6 +281,7 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
             KcButton(
               label: 'Lanjut',
               onPressed: _continuing ? null : _continue,
+              isLoading: _continuing,
             ),
             if (AppFeatureFlags.enableGoogleAuth) ...[
               const SizedBox(height: KcSpacing.lg),

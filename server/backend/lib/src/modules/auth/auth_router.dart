@@ -9,8 +9,7 @@ import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_validator.dart';
 
 /// Pesan netral untuk `POST /auth/password-reset` (anti-enumerasi akun).
-const String _passwordResetNeutralMessage =
-    'Jika email terdaftar, instruksi reset password telah dikirim.';
+const String _passwordResetNeutralMessage = 'Jika email terdaftar, instruksi reset password telah dikirim.';
 
 /// Router modul Autentikasi & Sesi.
 ///
@@ -21,6 +20,7 @@ const String _passwordResetNeutralMessage =
 ///
 /// Endpoint:
 /// - POST `/register`         publik
+/// - POST '/availability'     publik (check apakah email sudah terdaftar) 
 /// - POST `/login`            publik
 /// - POST `/refresh`          publik (memakai refresh_token di body)
 /// - POST `/logout`           publik-toleran (idempoten, token opsional)
@@ -36,12 +36,21 @@ Router buildAuthRouter(AuthService authService) {
   final guard = authGuard(authService);
 
   // --- Publik --------------------------------------------------------------
+  router.post('/availability', (Request request) async {
+    final body = await _readJsonObject(request);
+    final input = AuthValidator.validateAvailability(body);
+    final result = await authService.checkAvailability(
+      email: input.email,
+      username: input.username,
+    );
+    return _json(result);
+  });
 
   router.post('/register', (Request request) async {
     final body = await _readJsonObject(request);
     final input = AuthValidator.validateRegister(body);
-    final result = await authService.register(input);
-    return _json(result['user'], statusCode: 201);
+    final user = await authService.register(input);
+    return _json(user, statusCode: 201);
   });
 
   router.post('/login', (Request request) async {
@@ -75,7 +84,6 @@ Router buildAuthRouter(AuthService authService) {
   });
 
   // --- Terproteksi (authGuard) ---------------------------------------------
-
   router.get(
     '/me',
     guard((Request request) {
@@ -141,7 +149,6 @@ Response _json(Object? payload, {int statusCode = 200}) {
     body: jsonEncode(payload),
     headers: const {
       'content-type': 'application/json; charset=utf-8',
-      // Response auth memuat token/profil: jangan pernah di-cache.
       'cache-control': 'no-store',
     },
   );

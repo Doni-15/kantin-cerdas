@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:kantin_cerdas/core/errors/api_exception.dart';
 import 'package:kantin_cerdas/core/errors/data_parsing_exception.dart';
@@ -47,11 +48,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<bool> isEmailAvailable({required String email}) {
+    return _api<bool>(AuthApiOperation.register, () {
+      return _dataSource
+          .isEmailAvailable(email: email.trim())
+          .timeout(_requestLimit);
+    });
+  }
+
+  @override
   Future<User> register({
     required String name,
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) {
     return _api<User>(AuthApiOperation.register, () async {
       final model = await _dataSource
@@ -60,6 +71,7 @@ class AuthRepositoryImpl implements AuthRepository {
             username: username,
             email: email,
             password: password,
+            avatarBytes: avatarBytes,
           )
           .timeout(_requestLimit);
       return model.toEntity();

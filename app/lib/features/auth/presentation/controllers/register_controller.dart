@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
@@ -20,6 +22,7 @@ class RegisterController extends Notifier<AsyncValue<User?>> {
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) async {
     if (state.isLoading || state.asData?.value != null) {
       return;
@@ -36,6 +39,7 @@ class RegisterController extends Notifier<AsyncValue<User?>> {
         username: username,
         email: email,
         password: password,
+        avatarBytes: avatarBytes,
       );
     });
 
