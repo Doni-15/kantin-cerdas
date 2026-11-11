@@ -16,7 +16,6 @@ extension AuthRequestContext on Request {
   }
 
   /// Actor terautentikasi. Melempar [StateError] jika [authGuard] belum dipasang
-  /// pada route ini (kesalahan pemrograman, bukan kesalahan klien -> HTTP 500).
   AuthenticatedActor get authActor {
     final actor = authActorOrNull;
     if (actor == null) {
@@ -29,7 +28,6 @@ extension AuthRequestContext on Request {
 }
 
 /// Mengambil token dari header `Authorization: Bearer <token>`.
-///
 /// Mengembalikan `null` bila header tidak ada atau formatnya salah. Dipakai
 /// langsung oleh route yang sengaja toleran (mis. logout); route terproteksi
 /// cukup memakai [authGuard].
@@ -74,14 +72,6 @@ Middleware authGuard(AuthService authService) {
 ///
 /// Membandingkan `actor.role` dengan [allowedRoles] secara persis (case-sensitive).
 /// Jika tidak cocok -> 403 `FORBIDDEN`.
-///
-/// Contoh:
-/// ```dart
-/// const Pipeline()
-///     .addMiddleware(authGuard(authService))
-///     .addMiddleware(requireRoles({'admin'}))
-///     .addHandler(handler);
-/// ```
 Middleware requireRoles(Set<String> allowedRoles) {
   if (allowedRoles.isEmpty) {
     throw ArgumentError.value(

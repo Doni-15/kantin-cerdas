@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:supabase/supabase.dart';
@@ -33,6 +35,10 @@ Handler buildAppHandler({
       },
     );
   });
+
+  // Modul auth
+  final authService = AuthService(supabaseService);
+  router.mount('$prefix/auth/', buildAuthRouter(authService).call);
 
   // 2. Fallback 404 standar kontrak (wajib menyertakan field "code")
   router.all('/<ignored|.*>', (Request request) {

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kantin_cerdas/core/media/image_security_validator.dart';
 import 'package:kantin_cerdas/core/session/auth_failure.dart';
@@ -48,6 +50,7 @@ class RegisterUseCase {
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) async {
     final normalizedName = name.trim();
     final normalizedUsername = username.trim();
@@ -86,6 +89,7 @@ class RegisterUseCase {
       username: normalizedUsername,
       email: normalizedEmail,
       password: password,
+      avatarBytes: avatarBytes,
     );
   }
 }
