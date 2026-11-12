@@ -13,8 +13,14 @@ class CustomerHomePage extends StatelessWidget {
   const CustomerHomePage({super.key});
 
   @override
+<<<<<<< HEAD
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+=======
+  State<CustomerHomePage> createState() =>
+      _CustomerHomePageState();
+}
+>>>>>>> origin/rio/kantin-cerdas
 
     return Align(
       alignment: Alignment.topCenter,
@@ -70,6 +76,7 @@ class CustomerHomePage extends StatelessWidget {
                 ),
               ],
             ),
+<<<<<<< HEAD
             const SizedBox(height: KcSpacing.lg),
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
@@ -83,6 +90,12 @@ class CustomerHomePage extends StatelessWidget {
             const CustomerCatalogSection(),
           ],
         ),
+=======
+          ),
+
+          const CartSummaryBar(),
+        ],
+>>>>>>> origin/rio/kantin-cerdas
       ),
     );
   }

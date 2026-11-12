@@ -16,11 +16,69 @@ class CustomerShell extends StatelessWidget {
   CustomerTab get _currentTab =>
       CustomerTab.values[navigationShell.currentIndex];
 
+<<<<<<< HEAD
   void _selectTab(CustomerTab tab) {
     navigationShell.goBranch(
       tab.index,
       initialLocation: tab.index == navigationShell.currentIndex,
     );
+=======
+class _CustomerShellState
+    extends State<CustomerShell> {
+  CustomerTab _currentTab =
+      CustomerTab.home;
+
+  // =============================================================
+  // PINDAH TAB
+  // =============================================================
+
+  void _changeTab(CustomerTab tab) {
+    setState(() {
+      _currentTab = tab;
+    });
+  }
+
+  // =============================================================
+  // KEMBALI KE HOME
+  // =============================================================
+
+  void _backToHome() {
+    setState(() {
+      _currentTab = CustomerTab.home;
+    });
+  }
+
+  // =============================================================
+  // HALAMAN YANG DITAMPILKAN
+  // =============================================================
+
+  Widget get _currentPage {
+    return switch (_currentTab) {
+      // HOME
+      CustomerTab.home =>
+        const CustomerHomePage(),
+
+      // PESANAN
+      CustomerTab.orders =>
+        const CustomerOrdersPage(),
+
+      // CHAT AI
+      CustomerTab.ai =>
+        CustomerAiChatPage(
+          onBackToHome: _backToHome,
+        ),
+
+      // RIWAYAT
+      CustomerTab.history =>
+        const CustomerHistoryPage(),
+
+      // PROFIL
+      CustomerTab.profile =>
+        CustomerProfilePage(
+          user: widget.user,
+        ),
+    };
+>>>>>>> origin/rio/kantin-cerdas
   }
 
   @override
@@ -28,6 +86,7 @@ class CustomerShell extends StatelessWidget {
     final currentTab = _currentTab;
     final isAiChat = currentTab == CustomerTab.ai;
 
+<<<<<<< HEAD
     return PopScope<Object?>(
       canPop: !isAiChat,
       onPopInvokedWithResult: (didPop, result) {
@@ -45,6 +104,27 @@ class CustomerShell extends StatelessWidget {
               Expanded(child: navigationShell),
             ],
           ),
+=======
+      body: _currentPage,
+
+      // ===========================================================
+      // TOMBOL AI DI TENGAH
+      // ===========================================================
+
+      floatingActionButton:
+          FloatingActionButton(
+        shape: const CircleBorder(),
+        elevation: 6,
+
+        onPressed: () {
+          _changeTab(
+            CustomerTab.ai,
+          );
+        },
+
+        child: const Icon(
+          Icons.smart_toy_outlined,
+>>>>>>> origin/rio/kantin-cerdas
         ),
         floatingActionButton: isAiChat
             ? null
