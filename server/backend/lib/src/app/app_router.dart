@@ -12,6 +12,8 @@ import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_router.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart';
 
@@ -62,6 +64,15 @@ Handler buildAppHandler({
       authService: authService,
       mediaService: mediaService,
     ).call,
+  );
+
+  final customerOrdersService = CustomerOrdersService(supabaseService);
+  router.mount(
+    '$prefix/customer/orders/',
+    buildCustomerOrdersRouter(
+      authService: authService,
+      customerOrdersService: customerOrdersService,
+    ),
   );
 
   // 3. Fallback 404 standar kontrak (wajib menyertakan field "code")
