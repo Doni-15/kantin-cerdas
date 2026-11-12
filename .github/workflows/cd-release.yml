@@ -1,0 +1,242 @@
+name: CD — Android Release & Distribution
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "Production REST API Base URL (https://...)"
+        required: false
+        type: string
+      enable_google_auth:
+        description: "Enable Google Auth feature flag"
+        required: false
+        default: false
+        type: boolean
+      enable_profile_photo_upload:
+        description: "Enable Profile Photo Upload feature flag"
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  JAVA_VERSION: "17"
+  SUPABASE_PROJECT_REF: "diprwrdomyqrhllqlche"
+
+jobs:
+  # ============================================================================
+  # 1. PRE-RELEASE GATE — VERIFY SERVER BACKEND & SYNC SUPABASE CLOUD MIGRATIONS
+  # ============================================================================
+  verify-and-sync-server:
+    name: Verify Server (Dart Shelf) & Sync Supabase Migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Dart SDK (stable)
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Verify Backend (server/backend)
+        working-directory: server/backend
+        run: |
+          dart pub get
+          DART_FILES=$(find bin lib test -name '*.dart' 2>/dev/null || true)
+          if [ -n "$DART_FILES" ]; then
+            dart format --output=none --set-exit-if-changed $DART_FILES
+            dart analyze --fatal-infos --fatal-warnings
+          fi
+          TEST_FILES=$(find test -name '*_test.dart' 2>/dev/null || true)
+          if [ -n "$TEST_FILES" ]; then
+            dart test --reporter expanded
+          fi
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Sync Supabase Cloud Migrations (if secrets configured)
+        working-directory: server
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "::notice::SUPABASE_ACCESS_TOKEN or SUPABASE_DB_PASSWORD is not set in GitHub Secrets. Skipping remote migration push."
+            exit 0
+          fi
+          supabase link --project-ref "${{ env.SUPABASE_PROJECT_REF }}" --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --remote
+
+  # ============================================================================
+  # 2. ANDROID PRODUCTION RELEASE — VERIFY, SIGN, BUILD APK/AAB & PUBLISH
+  # ============================================================================
+  release-android:
+    name: Verify, Sign & Build Production Release
+    needs: verify-and-sync-server
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java (${{ env.JAVA_VERSION }})
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+
+      - name: Setup Flutter (stable)
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run quality gate (format, analyze, architecture audit & tests)
+        run: |
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze --no-pub --fatal-infos --fatal-warnings lib test
+          flutter test --no-pub --reporter expanded test/audit/architecture_boundary_test.dart
+          flutter test --no-pub --reporter expanded
+
+      - name: Validate release configuration & signing secrets
+        env:
+          INPUT_API_BASE_URL: ${{ inputs.api_base_url }}
+          SECRET_API_BASE_URL: ${{ secrets.PROD_API_BASE_URL }}
+          VAR_API_BASE_URL: ${{ vars.PROD_API_BASE_URL }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          LEGACY_KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          LEGACY_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          LEGACY_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          LEGACY_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          RESOLVED_API_URL="${INPUT_API_BASE_URL:-${SECRET_API_BASE_URL:-$VAR_API_BASE_URL}}"
+          if [ -z "$RESOLVED_API_URL" ]; then
+            echo "::error::API_BASE_URL produksi belum diatur. Isi input api_base_url atau set secret/variable PROD_API_BASE_URL."
+            exit 1
+          fi
+          case "$RESOLVED_API_URL" in
+            https://*) ;;
+            *)
+              echo "::error::API_BASE_URL produksi wajib menggunakan skema https://."
+              exit 1
+              ;;
+          esac
+          echo "RESOLVED_API_URL=$RESOLVED_API_URL" >> "$GITHUB_ENV"
+
+          if [[ "${GITHUB_REF_NAME}" == v* ]]; then
+            RESOLVED_APP_VERSION="${GITHUB_REF_NAME#v}"
+          else
+            RESOLVED_APP_VERSION=$(grep -E '^version:' pubspec.yaml | head -n1 | awk '{print $2}' | cut -d'+' -f1)
+          fi
+          echo "RESOLVED_APP_VERSION=$RESOLVED_APP_VERSION" >> "$GITHUB_ENV"
+
+          RESOLVED_KS_B64="${KEYSTORE_BASE64:-$LEGACY_KEYSTORE_BASE64}"
+          RESOLVED_KS_PASS="${KEYSTORE_PASSWORD:-$LEGACY_STORE_PASSWORD}"
+          RESOLVED_KEY_ALIAS="${KEY_ALIAS:-$LEGACY_KEY_ALIAS}"
+          RESOLVED_KEY_PASS="${KEY_PASSWORD:-$LEGACY_KEY_PASSWORD}"
+
+          if [ -z "$RESOLVED_KS_B64" ] || [ -z "$RESOLVED_KS_PASS" ] || [ -z "$RESOLVED_KEY_ALIAS" ] || [ -z "$RESOLVED_KEY_PASS" ]; then
+            echo "::error::Secret signing rilis Android belum lengkap. Atur ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, dan ANDROID_KEY_PASSWORD di GitHub Secrets."
+            exit 1
+          fi
+
+          KEYSTORE_PATH="$RUNNER_TEMP/kantin-cerdas-release.jks"
+          printf '%s' "$RESOLVED_KS_B64" | base64 --decode > "$KEYSTORE_PATH"
+
+          printf 'storePassword=%s\nkeyPassword=%s\nkeyAlias=%s\nstoreFile=%s\n' \
+            "$RESOLVED_KS_PASS" \
+            "$RESOLVED_KEY_PASS" \
+            "$RESOLVED_KEY_ALIAS" \
+            "$KEYSTORE_PATH" > android/key.properties
+
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+          fi
+
+      - name: Build Signed Production APK & App Bundle (AAB)
+        env:
+          ENABLE_GOOGLE_AUTH: ${{ inputs.enable_google_auth == true }}
+          ENABLE_PROFILE_PHOTO_UPLOAD: ${{ inputs.enable_profile_photo_upload != false }}
+        run: |
+          mkdir -p build/release-artifacts
+
+          DART_DEFINES=(
+            "--dart-define=API_BASE_URL=$RESOLVED_API_URL"
+            "--dart-define=APP_VERSION=$RESOLVED_APP_VERSION"
+            "--dart-define=ENABLE_GOOGLE_AUTH=$ENABLE_GOOGLE_AUTH"
+            "--dart-define=ENABLE_PROFILE_PHOTO_UPLOAD=$ENABLE_PROFILE_PHOTO_UPLOAD"
+          )
+
+          flutter build apk --release --no-pub -t lib/main.dart "${DART_DEFINES[@]}"
+          cp build/app/outputs/flutter-apk/app-release.apk \
+            build/release-artifacts/kantin-cerdas-release.apk
+
+          flutter build appbundle --release --no-pub -t lib/main.dart "${DART_DEFINES[@]}"
+          cp build/app/outputs/bundle/release/app-release.aab \
+            build/release-artifacts/kantin-cerdas-release.aab
+
+          flutter build apk --debug --no-pub -t test/support/main_simulation.dart \
+            "--dart-define=APP_VERSION=$RESOLVED_APP_VERSION"
+          cp build/app/outputs/flutter-apk/app-debug.apk \
+            build/release-artifacts/kantin-cerdas-simulation-debug.apk
+
+          cd build/release-artifacts
+          sha256sum kantin-cerdas-* > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Shred temporary keystore & signing properties
+        if: always()
+        run: |
+          rm -f android/key.properties
+          rm -f android/app/google-services.json
+          rm -f "$RUNNER_TEMP/kantin-cerdas-release.jks"
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kantin-cerdas-release-${{ github.ref_name }}-${{ github.sha }}
+          path: |
+            app/build/release-artifacts/kantin-cerdas-release.apk
+            app/build/release-artifacts/kantin-cerdas-release.aab
+            app/build/release-artifacts/kantin-cerdas-simulation-debug.apk
+            app/build/release-artifacts/SHA256SUMS.txt
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Publish GitHub Release (on tag push)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            app/build/release-artifacts/kantin-cerdas-release.apk
+            app/build/release-artifacts/kantin-cerdas-release.aab
+            app/build/release-artifacts/kantin-cerdas-simulation-debug.apk
+            app/build/release-artifacts/SHA256SUMS.txt

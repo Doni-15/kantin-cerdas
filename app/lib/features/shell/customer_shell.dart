@@ -1,128 +1,70 @@
+import 'package:kantin_cerdas/features/customer/presentation/widgets/orders/customer_cancellation_banner.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/checkout/customer_checkout_banner.dart';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
-
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_ai_chat_page.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_history_page.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_home_page.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_orders_page.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_profile_page.dart';
-
+import 'package:kantin_cerdas/app/router/routes.dart';
 import 'package:kantin_cerdas/features/customer/presentation/widgets/customer_bottom_navigation.dart';
 
-class CustomerShell extends StatefulWidget {
-  const CustomerShell({
-    super.key,
-    required this.user,
-  });
+class CustomerShell extends StatelessWidget {
+  const CustomerShell({super.key, required this.navigationShell});
 
-  final User user;
+  /// Urutan branch pada router harus sama dengan urutan [CustomerTab].
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<CustomerShell> createState() =>
-      _CustomerShellState();
-}
+  CustomerTab get _currentTab =>
+      CustomerTab.values[navigationShell.currentIndex];
 
-class _CustomerShellState
-    extends State<CustomerShell> {
-  CustomerTab _currentTab =
-      CustomerTab.home;
-
-  // =============================================================
-  // PINDAH TAB
-  // =============================================================
-
-  void _changeTab(CustomerTab tab) {
-    setState(() {
-      _currentTab = tab;
-    });
-  }
-
-  // =============================================================
-  // KEMBALI KE HOME
-  // =============================================================
-
-  void _backToHome() {
-    setState(() {
-      _currentTab = CustomerTab.home;
-    });
-  }
-
-  // =============================================================
-  // HALAMAN YANG DITAMPILKAN
-  // =============================================================
-
-  Widget get _currentPage {
-    return switch (_currentTab) {
-      // HOME
-      CustomerTab.home =>
-        const CustomerHomePage(),
-
-      // PESANAN
-      CustomerTab.orders =>
-        const CustomerOrdersPage(),
-
-      // CHAT AI
-      CustomerTab.ai =>
-        CustomerAiChatPage(
-          onBackToHome: _backToHome,
-        ),
-
-      // RIWAYAT
-      CustomerTab.history =>
-        const CustomerHistoryPage(),
-
-      // PROFIL
-      CustomerTab.profile =>
-        CustomerProfilePage(
-          user: widget.user,
-        ),
-    };
+  void _selectTab(CustomerTab tab) {
+    navigationShell.goBranch(
+      tab.index,
+      initialLocation: tab.index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // ===========================================================
-      // HALAMAN UTAMA
-      // ===========================================================
+    final currentTab = _currentTab;
+    final isAiChat = currentTab == CustomerTab.ai;
 
-      body: _currentPage,
-
-      // ===========================================================
-      // TOMBOL AI DI TENGAH
-      // ===========================================================
-
-      floatingActionButton:
-          FloatingActionButton(
-        shape: const CircleBorder(),
-        elevation: 6,
-
-        onPressed: () {
-          _changeTab(
-            CustomerTab.ai,
-          );
-        },
-        child: const Icon(
-          Icons.smart_toy_outlined,
+    return PopScope<Object?>(
+      canPop: !isAiChat,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && isAiChat) {
+          context.go(Routes.customerHome);
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              const CustomerCheckoutBanner(),
+              const CustomerCancellationBanner(),
+              Expanded(child: navigationShell),
+            ],
+          ),
         ),
-      ),
-
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation
-              .centerDocked,
-
-      // ===========================================================
-      // BOTTOM NAVIGATION
-      // ===========================================================
-
-      bottomNavigationBar:
-          CustomerBottomNavigation(
-        currentTab: _currentTab,
-
-        onTabSelected: (tab) {
-          _changeTab(tab);
-        },
+        floatingActionButton: isAiChat
+            ? null
+            : FloatingActionButton(
+                tooltip: 'Asisten AI',
+                shape: const CircleBorder(),
+                onPressed: () {
+                  _selectTab(CustomerTab.ai);
+                },
+                child: const Icon(Icons.smart_toy_outlined),
+              ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: isAiChat
+            ? null
+            : CustomerBottomNavigation(
+                currentTab: currentTab,
+                onTabSelected: (tab) {
+                  _selectTab(tab);
+                },
+              ),
       ),
     );
   }

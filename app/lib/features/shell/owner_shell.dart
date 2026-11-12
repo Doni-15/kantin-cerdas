@@ -1,51 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_canteen_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_dashboard_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_orders_page.dart';
-import 'package:kantin_cerdas/features/owner/presentation/pages/owner_profile_page.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_bottom_navigation.dart';
+import 'package:kantin_cerdas/features/owner/presentation/widgets/owner_recovery_banner.dart';
 
-class OwnerShell extends StatefulWidget {
-  const OwnerShell({
-    super.key,
-    required this.user,
-  });
+/// Layout dan navigasi utama untuk pemilik kantin.
+class OwnerShell extends StatelessWidget {
+  const OwnerShell({super.key, required this.navigationShell});
 
-  final User user;
+  /// Urutan branch pada router harus sama dengan urutan [OwnerTab].
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<OwnerShell> createState() => _OwnerShellState();
-}
+  OwnerTab get _currentTab => OwnerTab.values[navigationShell.currentIndex];
 
-class _OwnerShellState extends State<OwnerShell> {
-  OwnerTab _currentTab = OwnerTab.dashboard;
-
-  Widget get _currentPage {
-    return switch (_currentTab) {
-      OwnerTab.dashboard => OwnerDashboardPage(
-        ownerName: widget.user.name,
-      ),
-      OwnerTab.canteen => const OwnerCanteenPage(),
-      OwnerTab.orders => const OwnerOrdersPage(),
-      OwnerTab.profile => OwnerProfilePage(
-        user: widget.user,
-      ),
-    };
+  void _selectTab(OwnerTab tab) {
+    navigationShell.goBranch(
+      tab.index,
+      initialLocation: tab.index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentPage,
-
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            const OwnerRecoveryBanner(),
+            Expanded(child: navigationShell),
+          ],
+        ),
+      ),
       bottomNavigationBar: OwnerBottomNavigation(
         currentTab: _currentTab,
-        onTabSelected: (tab) {
-          setState(() {
-            _currentTab = tab;
-          });
-        },
+        onTabSelected: _selectTab,
       ),
     );
   }

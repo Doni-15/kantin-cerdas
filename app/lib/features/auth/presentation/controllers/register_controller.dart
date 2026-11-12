@@ -1,51 +1,49 @@
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
 import 'package:kantin_cerdas/features/auth/presentation/providers/auth_providers.dart';
 
-/// autoDispose: state (error/data) ter-reset setiap halaman registrasi ditutup.
 final registerControllerProvider =
-    AsyncNotifierProvider.autoDispose<RegisterController, User?>(
-  RegisterController.new,
-);
+    NotifierProvider.autoDispose<RegisterController, AsyncValue<User?>>(
+      RegisterController.new,
+    );
 
-class RegisterController extends AsyncNotifier<User?> {
-  bool _disposed = false;
-
+class RegisterController extends Notifier<AsyncValue<User?>> {
   @override
-  Future<User?> build() async {
-    _disposed = false;
-    ref.onDispose(() => _disposed = true);
-
-    return null;
+  AsyncValue<User?> build() {
+    return const AsyncData<User?>(null);
   }
 
-  Future<void> register({
+  /// Hasil registrasi disimpan pada state provider.
+  Future<void> submit({
     required String name,
     required String username,
     required String email,
     required String password,
+    Uint8List? avatarBytes,
   }) async {
-    state = const AsyncLoading();
-
-    try {
-      final user = await ref.read(registerUseCaseProvider).execute(
-            name: name,
-            username: username,
-            email: email,
-            password: password,
-          );
-
-      if (_disposed) {
-        return;
-      }
-
-      state = AsyncData(user);
-    } catch (error, stackTrace) {
-      if (_disposed) {
-        return;
-      }
-
-      state = AsyncError(error, stackTrace);
+    if (state.isLoading || state.asData?.value != null) {
+      return;
     }
+
+    final currentRef = ref;
+    state = const AsyncLoading<User?>();
+
+    final result = await AsyncValue.guard<User?>(() {
+      final registerUseCase = currentRef.read(registerUseCaseProvider);
+
+      return registerUseCase.execute(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+        avatarBytes: avatarBytes,
+      );
+    });
+
+    if (!currentRef.mounted) return;
+    state = result;
   }
 }

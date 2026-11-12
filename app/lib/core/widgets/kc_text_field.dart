@@ -1,92 +1,99 @@
 import 'package:flutter/material.dart';
-import 'package:kantin_cerdas/theme/kc_spacing.dart';
+import 'package:flutter/services.dart' as services;
 
 class KcTextField extends StatelessWidget {
   const KcTextField({
     super.key,
     required this.label,
-    required this.hint,
     required this.controller,
+    this.hint,
+    this.validator,
+    this.errorText,
     this.prefixIcon,
-    this.keyboardType,
-    this.obscureText = false,
     this.suffixIcon,
+    this.keyboardType,
     this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.autofillHints,
+    this.onChanged,
     this.onSubmitted,
     this.enabled = true,
-    this.autofocus = false,
+    this.obscureText = false,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
+    this.enableIMEPersonalizedLearning = true,
+    this.smartDashesType,
+    this.smartQuotesType,
     this.maxLines = 1,
-    this.errorText,
-    this.onChanged,
-  });
+    this.maxLength,
+  }) : assert(maxLines == null || maxLines > 0),
+       assert(maxLength == null || maxLength > 0),
+       assert(!obscureText || maxLines == 1);
 
   final String label;
-  final String hint;
+
+  /// Dibuat dan di-dispose oleh halaman atau form pemiliknya.
   final TextEditingController controller;
 
+  final String? hint;
+  final FormFieldValidator<String>? validator;
+
+  /// Pesan kesalahan dari controller yang sudah diterjemahkan oleh UI.
+  final String? errorText;
+
   final IconData? prefixIcon;
-  final TextInputType? keyboardType;
-  final bool obscureText;
   final Widget? suffixIcon;
 
+  final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
+  final Iterable<String>? autofillHints;
+
+  final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
 
   final bool enabled;
-  final bool autofocus;
-  
+  final bool obscureText;
+  final bool autocorrect;
+  final bool enableSuggestions;
+  final bool enableIMEPersonalizedLearning;
+
+  final services.SmartDashesType? smartDashesType;
+  final services.SmartQuotesType? smartQuotesType;
+
   final int? maxLines;
-  final String? errorText;
-  final ValueChanged<String>? onChanged;
+  final int? maxLength;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      textCapitalization: textCapitalization,
+      autofillHints: autofillHints,
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
+      enabled: enabled,
+      obscureText: obscureText,
+      autocorrect: autocorrect,
+      enableSuggestions: enableSuggestions,
+      enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+      smartDashesType: smartDashesType,
+      smartQuotesType: smartQuotesType,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      maxLengthEnforcement: services.MaxLengthEnforcement.enforced,
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Label Field
-        Text(
-          label,
-          style: theme.textTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-
-        const SizedBox(height: KcSpacing.xs),
-
-        // Input Field
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          textInputAction: textInputAction,
-          onSubmitted: onSubmitted,
-          enabled: enabled,
-          autofocus: autofocus,
-          maxLines: maxLines,
-          onChanged: onChanged,
-          
-          decoration: InputDecoration(
-            hintText: hint,
-            errorText: errorText,
-            suffixIcon: suffixIcon,
-            alignLabelWithHint: maxLines != null && maxLines! > 1,
-            
-            prefixIcon: prefixIcon == null
-                ? null
-                : maxLines != null && maxLines! > 1
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                          bottom: (maxLines! - 1) * 22.0, 
-                        ),
-                        child: Icon(prefixIcon),
-                      )
-                    : Icon(prefixIcon),
-          ),
-        ),
-      ],
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        errorText: errorText,
+        prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+        suffixIcon: suffixIcon,
+        alignLabelWithHint: maxLines != 1,
+      ),
     );
   }
 }

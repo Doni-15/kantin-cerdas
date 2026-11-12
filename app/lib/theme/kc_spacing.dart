@@ -3,6 +3,5 @@ abstract final class KcSpacing {
   static const double sm = 12;
   static const double md = 16;
   static const double lg = 24;
-
   static const double pageHorizontal = md;
 }

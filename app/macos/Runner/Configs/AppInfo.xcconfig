@@ -8,7 +8,7 @@
 PRODUCT_NAME = kantin_cerdas
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.kantin_cerdas
+PRODUCT_BUNDLE_IDENTIFIER = com.kantincerdas.app
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2026 KantinCerdas. All rights reserved.

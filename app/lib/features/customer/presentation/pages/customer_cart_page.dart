@@ -1,608 +1,380 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kantin_cerdas/features/customer/presentation/pages/customer_order_confirmation_page.dart';
-import 'package:kantin_cerdas/features/customer/domain/entities/cart_item.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kantin_cerdas/app/router/routes.dart';
+import 'package:kantin_cerdas/core/widgets/kc_role_session_dialog.dart';
+import 'package:kantin_cerdas/core/widgets/kc_snack_bar.dart';
+import 'package:kantin_cerdas/core/widgets/kc_text_field.dart';
+import 'package:kantin_cerdas/features/auth/domain/enums/user_role.dart';
+import 'package:kantin_cerdas/features/auth/presentation/pages/session_restore_page.dart';
+import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
+import 'package:kantin_cerdas/features/customer/domain/validation/customer_input_limits.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/cart_catalog_reconciliation_provider.dart';
 import 'package:kantin_cerdas/features/customer/presentation/providers/cart_provider.dart';
-import 'package:kantin_cerdas/features/customer/presentation/utils/rupiah_formatter.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/customer_catalog_provider.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/customer_checkout_journal_provider.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/cart/cart_footer.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/cart/cart_item_card.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/cart/cart_notice.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/cart/empty_cart.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/checkout/customer_checkout_panel.dart';
+import 'package:kantin_cerdas/features/customer/presentation/widgets/checkout/listen_customer_checkout_result.dart';
+import 'package:kantin_cerdas/theme/kc_spacing.dart';
 
-class CustomerCartPage extends ConsumerWidget {
-  const CustomerCartPage({
-    super.key,
-  });
-
-  @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final cart = ref.watch(cartProvider);
-    final theme = Theme.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Keranjang',
-        ),
-        actions: [
-          if (cart.isNotEmpty)
-            TextButton(
-              onPressed: () {
-                _showClearCartDialog(
-                  context,
-                  ref,
-                );
-              },
-              child: const Text(
-                'Kosongkan',
-              ),
-            ),
-        ],
-      ),
-
-      body: cart.isEmpty
-          ? const _EmptyCart()
-          : ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                // NAMA STAN
-                Text(
-                  cart.stallName ?? '',
-                  style: theme.textTheme.titleLarge,
-                ),
-
-                const SizedBox(height: 4),
-
-                // LOKASI STAN
-                Text(
-                  '${cart.block ?? ''} · Ambil langsung di stan',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // ITEM KERANJANG
-                ...cart.items.map(
-                  (item) {
-                    return _CartMenuItem(
-                      key: ValueKey(item.menu.id),
-                      item: item,
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 20),
-
-                // INFORMASI PEMBAYARAN
-                Row(
-                  children: [
-                    Icon(
-                      Icons.payments_outlined,
-                      size: 20,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    Text(
-                      'Bayar tunai saat mengambil',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-              ],
-            ),
-
-      // BAGIAN BAWAH
-      bottomNavigationBar: cart.isEmpty
-          ? null
-          : SafeArea(
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  border: Border(
-                    top: BorderSide(
-                      color: theme.colorScheme.outlineVariant,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    // TOTAL
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${cart.totalQuantity} porsi',
-                            style: theme.textTheme.bodySmall,
-                          ),
-
-                          const SizedBox(height: 2),
-
-                          Text(
-                            formatRupiah(
-                              cart.totalPrice,
-                            ),
-                            style: theme.textTheme.titleLarge,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // LANJUT KONFIRMASI
-                    FilledButton(
-                      onPressed: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                    
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const CustomerOrderConfirmationPage();
-                            },
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Lanjut konfirmasi',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-    );
-  }
-
-  Future<void> _showClearCartDialog(
-    BuildContext context,
-    WidgetRef ref,
-  ) async {
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    final cart = ref.read(cartProvider);
-
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text(
-            'Kosongkan keranjang?',
-          ),
-          content: Text(
-            '${cart.totalQuantity} porsi dari '
-            '${cart.stallName} akan dihapus.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  false,
-                );
-              },
-              child: const Text(
-                'Batal',
-              ),
-            ),
-
-            FilledButton(
-              onPressed: () {
-                Navigator.pop(
-                  dialogContext,
-                  true,
-                );
-              },
-              child: const Text(
-                'Kosongkan',
-              ),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result == true) {
-      ref
-          .read(cartProvider.notifier)
-          .clearCart();
-    }
-  }
-}
-
-// ================================================================
-// ITEM MENU DI KERANJANG
-// ================================================================
-
-class _CartMenuItem extends ConsumerStatefulWidget {
-  const _CartMenuItem({
-    super.key,
-    required this.item,
-  });
-
-  final CartItem item;
+/// Pilihan keranjang lokal pengguna yang direkonsiliasi terhadap katalog aktif.
+class CustomerCartPage extends ConsumerStatefulWidget {
+  const CustomerCartPage({super.key});
 
   @override
-  ConsumerState<_CartMenuItem> createState() =>
-      _CartMenuItemState();
+  ConsumerState<CustomerCartPage> createState() => _CustomerCartPageState();
 }
 
-class _CartMenuItemState
-    extends ConsumerState<_CartMenuItem> {
-  late final TextEditingController _noteController;
-
-  bool isEditingNote = false;
+class _CustomerCartPageState extends ConsumerState<CustomerCartPage> {
+  final _orderNoteController = TextEditingController();
+  bool _clearing = false;
 
   @override
   void initState() {
     super.initState();
 
-    _noteController = TextEditingController(
-      text: widget.item.note,
-    );
-  }
-
-  @override
-  void didUpdateWidget(
-    covariant _CartMenuItem oldWidget,
-  ) {
-    super.didUpdateWidget(oldWidget);
-
-    if (!isEditingNote &&
-        oldWidget.item.note != widget.item.note) {
-      _noteController.text = widget.item.note;
-    }
+    ref.listenManual<String>(cartProvider.select((cart) => cart.orderNote), (
+      _,
+      note,
+    ) {
+      if (_orderNoteController.text != note) {
+        _orderNoteController.value = TextEditingValue(
+          text: note,
+          selection: TextSelection.collapsed(offset: note.length),
+        );
+      }
+    }, fireImmediately: true);
   }
 
   @override
   void dispose() {
-    _noteController.dispose();
+    _orderNoteController.dispose();
     super.dispose();
   }
 
+  void _goBack() {
+    FocusScope.of(context).unfocus();
+
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(Routes.customerHome);
+    }
+  }
+
+  Future<void> _clearCart() async {
+    if (_clearing) {
+      return;
+    }
+
+    final customerId = ref.read(authStateProvider).activeCustomerId;
+    if (customerId == null) {
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
+    final expectedCart = ref.read(cartProvider);
+    if (expectedCart.isEmpty) {
+      return;
+    }
+
+    setState(() => _clearing = true);
+
+    try {
+      final confirmed = await showKcRoleDialog<bool>(
+        context: context,
+        ref: ref,
+        role: UserRole.customer,
+        builder: (dialogContext) {
+          return AlertDialog(
+            scrollable: true,
+            title: const Text('Kosongkan keranjang?'),
+            content: Text(
+              '${expectedCart.totalQuantity} item dari '
+              '${expectedCart.stallName} beserta catatannya '
+              'akan dihapus dari keranjang.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(false),
+                child: const Text('Batal'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(dialogContext).pop(true),
+                child: const Text('Kosongkan'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (!mounted || confirmed != true) {
+        return;
+      }
+
+      if (ref.read(authStateProvider).activeCustomerId != customerId) {
+        return;
+      }
+
+      final cleared = ref
+          .read(cartProvider.notifier)
+          .clearCart(expectedCart: expectedCart);
+
+      if (!cleared) {
+        KcSnackBar.info(
+          context,
+          'Keranjang telah berubah. Periksa kembali sebelum mengosongkan.',
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _clearing = false);
+      }
+    }
+  }
+
+  void _continueToConfirmation() {
+    if (_clearing ||
+        ref.read(authStateProvider).activeCustomerId == null ||
+        ref.read(cartProvider).isEmpty) {
+      return;
+    }
+
+    final reconciliation = ref.read(cartCatalogReconciliationProvider);
+    if (!reconciliation.canProceedToCheckout) {
+      KcSnackBar.info(
+        context,
+        'Periksa kembali ketersediaan menu sebelum melanjutkan.',
+      );
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    context.push(Routes.customerOrderConfirmation);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final item = widget.item;
-    final theme = Theme.of(context);
+    final customerId = ref.watch(
+      authStateProvider.select((auth) => auth.activeCustomerId),
+    );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 14,
-      ),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outlineVariant,
+    if (customerId == null) {
+      return const SessionRestorePage();
+    }
+
+    listenCustomerCheckoutResult(context, ref);
+    final checkoutLocked = ref.watch(customerCheckoutLockedProvider);
+    if (checkoutLocked) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: BackButton(onPressed: _goBack),
+          title: const Text('Keranjang'),
+        ),
+        body: SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: const SingleChildScrollView(
+                padding: EdgeInsets.all(KcSpacing.pageHorizontal),
+                child: CustomerCheckoutPanel(),
+              ),
+            ),
           ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // INFORMASI MENU
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // GAMBAR SEMENTARA
-              Container(
-                width: 58,
-                height: 58,
-                decoration: BoxDecoration(
-                  color: theme
-                      .colorScheme
-                      .surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  Icons.restaurant,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
+      );
+    }
+    final cart = ref.watch(cartProvider);
+    final theme = Theme.of(context);
+
+    final appBar = AppBar(
+      leading: BackButton(onPressed: _goBack),
+      title: const Text('Keranjang'),
+      actions: [
+        if (cart.isNotEmpty)
+          IconButton(
+            tooltip: 'Kosongkan keranjang',
+            icon: const Icon(Icons.delete_sweep_outlined),
+            onPressed: _clearing ? null : _clearCart,
+          ),
+      ],
+    );
+
+    if (cart.isEmpty) {
+      return Scaffold(
+        appBar: appBar,
+        body: SafeArea(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: const EmptyCart(),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final reconciliation = ref.watch(cartCatalogReconciliationProvider);
+    final canContinue = !_clearing && reconciliation.canProceedToCheckout;
+    final stallName = cart.stallName;
+    final block = cart.block;
+
+    return Scaffold(
+      appBar: appBar,
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: ListView.builder(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.symmetric(
+                horizontal: KcSpacing.pageHorizontal,
+                vertical: KcSpacing.lg,
               ),
+              itemCount: cart.items.length + 2,
+              findChildIndexCallback: (key) {
+                if (key == ValueKey('header:$customerId')) {
+                  return 0;
+                }
 
-              const SizedBox(width: 12),
+                if (key == ValueKey('order-note:$customerId')) {
+                  return cart.items.length + 1;
+                }
 
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // NAMA MENU
-                    Text(
-                      item.menu.name,
-                      style: theme.textTheme.titleSmall,
-                    ),
+                for (var i = 0; i < cart.items.length; i++) {
+                  if (key ==
+                      ValueKey('item:$customerId:${cart.items[i].menu.id}')) {
+                    return i + 1;
+                  }
+                }
 
-                    const SizedBox(height: 4),
-
-                    // HARGA
-                    Text(
-                      '${formatRupiah(item.menu.price)} / porsi',
-                      style: theme.textTheme.bodyMedium,
-                    ),
-
-                    // CATATAN YANG SUDAH TERSIMPAN
-                    if (item.note.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 4,
-                        ),
-                        child: Text(
-                          item.note,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color:
-                                theme.colorScheme.onSurfaceVariant,
+                return null;
+              },
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
+                    key: ValueKey('header:$customerId'),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (stallName != null)
+                        Semantics(
+                          header: true,
+                          child: Text(
+                            stallName,
+                            style: theme.textTheme.titleLarge,
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
+                      if (block != null && block.trim().isNotEmpty) ...[
+                        const SizedBox(height: KcSpacing.xs),
+                        Text(
+                          block,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: KcSpacing.md),
+                      if (reconciliation.isLoadingCatalog)
+                        const CartNotice(
+                          message: 'Memperbarui informasi menu...',
+                          loading: true,
+                        )
+                      else if (reconciliation.hasCatalogError)
+                        CartNotice(
+                          message:
+                              'Informasi menu belum dapat diperbarui. '
+                              'Muat ulang untuk melanjutkan.',
+                          onRetry: () =>
+                              ref.invalidate(customerCatalogProvider),
+                        )
+                      else if (reconciliation.currentStall == null)
+                        CartNotice(
+                          message:
+                              'Stan tidak ditemukan dalam katalog yang dimuat.',
+                          onRetry: () =>
+                              ref.invalidate(customerCatalogProvider),
+                        )
+                      else if (!reconciliation.isStallOpen)
+                        const CartNotice(
+                          message:
+                              'Stan sedang tutup. Kamu masih bisa '
+                              'mengurangi jumlah atau menghapus pilihan.',
+                        )
+                      else if (reconciliation.hasUnavailableItems)
+                        const CartNotice(
+                          message:
+                              'Ada menu yang belum tersedia untuk dipesan. '
+                              'Sesuaikan isi keranjang untuk melanjutkan.',
+                        ),
+                      if (reconciliation.hasPriceChanges)
+                        const CartNotice(
+                          message:
+                              'Sebagian harga menu berubah. '
+                              'Periksa harga terbaru pada tahap konfirmasi.',
+                        ),
+                      const SizedBox(height: KcSpacing.sm),
+                    ],
+                  );
+                }
+
+                if (index == cart.items.length + 1) {
+                  return Padding(
+                    key: ValueKey('order-note:$customerId'),
+                    padding: const EdgeInsets.only(top: KcSpacing.sm),
+                    child: KcTextField(
+                      label: 'Catatan pesanan (opsional)',
+                      hint: 'Tulis permintaan tambahan',
+                      controller: _orderNoteController,
+                      maxLength: CustomerInputLimits.maxNoteLength,
+                      enabled: !_clearing,
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      textCapitalization: TextCapitalization.sentences,
+                      maxLines: 3,
+                      onChanged: (note) {
+                        ref.read(cartProvider.notifier).updateOrderNote(note);
+                      },
+                    ),
+                  );
+                }
+
+                final item = cart.items[index - 1];
+                final latestMenu = reconciliation.currentMenus[item.menu.id];
+
+                return CartItemCard(
+                  key: ValueKey('item:$customerId:${item.menu.id}'),
+                  item: item,
+                  latestMenu: latestMenu,
+                  enabled: !_clearing,
+                  canAdd:
+                      !_clearing &&
+                      reconciliation.isStallOpen &&
+                      latestMenu?.available == true,
+                  unavailable:
+                      reconciliation.catalogReady &&
+                      (!reconciliation.isStallOpen ||
+                          latestMenu == null ||
+                          !latestMenu.available),
+                );
+              },
+            ),
           ),
-
-          const SizedBox(height: 10),
-
-          // ======================================================
-          // FORM CATATAN MENU
-          // ======================================================
-
-          Offstage(
-            offstage: !isEditingNote,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Catatan',
-                  style: theme.textTheme.titleSmall,
-                ),
-
-                const SizedBox(height: 8),
-
-                TextField(
-                  controller: _noteController,
-                  maxLines: 2,
-                  decoration: const InputDecoration(
-                    hintText: 'Contoh: Sambal dipisah',
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-
-                        _noteController.text =
-                            widget.item.note;
-
-                        setState(() {
-                          isEditingNote = false;
-                        });
-                      },
-                      child: const Text(
-                        'Batal',
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    FilledButton(
-                      onPressed: () {
-                        final note =
-                            _noteController.text.trim();
-
-                        FocusManager.instance.primaryFocus?.unfocus();
-
-                        ref
-                            .read(cartProvider.notifier)
-                            .updateItemNote(
-                              item.menu.id,
-                              note,
-                            );
-
-                        setState(() {
-                          isEditingNote = false;
-                        });
-                      },
-                      child: const Text(
-                        'Simpan catatan',
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-
-          // ======================================================
-          // ACTION MENU
-          // ======================================================
-
-          Row(
-            children: [
-              // CATATAN / UBAH CATATAN
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    isEditingNote = true;
-                  });
-                },
-                child: Text(
-                  item.note.isEmpty
-                      ? 'Catatan'
-                      : 'Ubah catatan',
-                ),
-              ),
-
-              // HAPUS
-              IconButton(
-                onPressed: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
-
-                  ref
-                      .read(cartProvider.notifier)
-                      .removeItem(
-                        item.menu.id,
-                      );
-                },
-                icon: const Icon(
-                  Icons.delete_outline,
-                ),
-              ),
-
-              const Spacer(),
-
-              // JUMLAH PESANAN
-              Container(
-                height: 42,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color:
-                        theme.colorScheme.outlineVariant,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // KURANG
-                    IconButton(
-                      constraints: const BoxConstraints(
-                        minWidth: 36,
-                        minHeight: 36,
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-
-                        ref
-                            .read(cartProvider.notifier)
-                            .decreaseItem(
-                              item.menu.id,
-                            );
-                      },
-                      icon: const Icon(
-                        Icons.remove,
-                        size: 18,
-                      ),
-                    ),
-
-                    // JUMLAH
-                    SizedBox(
-                      width: 22,
-                      child: Text(
-                        '${item.quantity}',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-
-                    // TAMBAH
-                    IconButton(
-                      constraints: const BoxConstraints(
-                        minWidth: 36,
-                        minHeight: 36,
-                      ),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-
-                        ref
-                            .read(cartProvider.notifier)
-                            .addItem(
-                              item.menu,
-                            );
-                      },
-                      icon: const Icon(
-                        Icons.add,
-                        size: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ================================================================
-// KERANJANG KOSONG
-// ================================================================
-
-class _EmptyCart extends StatelessWidget {
-  const _EmptyCart();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            Text(
-              'Keranjangmu masih kosong',
-              style: theme.textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              'Pilih menu dari stan yang kamu inginkan.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Cari menu',
-                ),
-              ),
-            ),
-          ],
         ),
       ),
+      bottomNavigationBar: MediaQuery.viewInsetsOf(context).bottom > 0
+          ? null
+          : CartFooter(
+              cart: cart,
+              reconciledTotalPriceIdr: reconciliation.reconciledTotalPriceIdr,
+              onContinue: canContinue ? _continueToConfirmation : null,
+            ),
     );
   }
 }
