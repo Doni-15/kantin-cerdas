@@ -29,14 +29,16 @@ final class MediaService {
     final bucket = config.storage.bucketName;
     final sha256Hex = sha256.convert(input.bytes).toString();
 
-    // 1. Replay: mutation_id yang sudah selesai mengembalikan hasil lama.
+    // 1. Replay: request_id yang sudah selesai ('applied') mengembalikan hasil lama.
+    //    Kolom di tabel public.mutation_receipts (002_tables.sql):
+    //    family, request_id, actor_id, outcome, request_snapshot, response_snapshot
     final Map<String, dynamic>? existingReceipt;
     try {
       existingReceipt = await supabase.adminClient
           .from('mutation_receipts')
-          .select('status, response_body')
+          .select('outcome, request_snapshot, response_snapshot')
           .eq('family', 'media-images')
-          .eq('mutation_id', input.mutationId)
+          .eq('request_id', input.mutationId)
           .eq('actor_id', actor.id)
           .maybeSingle();
     } on PostgrestException catch (e) {
@@ -48,28 +50,26 @@ final class MediaService {
     }
 
     if (existingReceipt != null &&
-        existingReceipt['status'] == 'COMPLETED' &&
-        existingReceipt['response_body'] is Map) {
-      final prior = JsonMap.from(existingReceipt['response_body'] as Map);
+        existingReceipt['outcome'] == 'applied' &&
+        existingReceipt['response_snapshot'] is Map) {
+      final priorResponse =
+          JsonMap.from(existingReceipt['response_snapshot'] as Map);
+      final reqSnap = existingReceipt['request_snapshot'];
+      final priorHash = reqSnap is Map ? reqSnap['sha256_hex'] : null;
 
-      // Best-effort: bila respons lama menyimpan hash, key yang dipakai ulang
-      // untuk file berbeda ditolak (bukan diam-diam mengembalikan hasil lama).
-      final priorHash = prior['sha256_hex'] ?? prior['sha256'];
       if (priorHash is String && priorHash.toLowerCase() != sha256Hex) {
         throw ApiException.conflict(
           code: 'IDEMPOTENCY_KEY_REUSED',
           message: 'Idempotency-Key ini sudah dipakai untuk file yang berbeda.',
         );
       }
-      return prior;
+      return priorResponse;
     }
 
     // 2. Pra-cek kuota (hemat bandwidth). Otoritas akhir tetap RPC di database.
     await _assertWithinQuota(actor.id);
 
     // 3. Unggah. upsert:false => tidak pernah menimpa file milik asset lain.
-    //    Path berasal dari Idempotency-Key, jadi "sudah ada" berarti retry
-    //    dari request yang sama.
     var uploadedByThisRequest = false;
     try {
       await supabase.adminClient.storage.from(bucket).uploadBinary(
@@ -119,8 +119,6 @@ final class MediaService {
         '[ERROR] rpc_register_media_asset ditolak DB: code=${e.code} '
         'message=${e.message} details=${e.details} hint=${e.hint}',
       );
-      // Hanya hapus file yang DIUNGGAH OLEH REQUEST INI. File yang sudah ada
-      // sebelumnya (retry) mungkin sudah terdaftar dan dipakai.
       if (uploadedByThisRequest) {
         try {
           await supabase.adminClient.storage
@@ -136,7 +134,6 @@ final class MediaService {
     }
 
     if (rpcResult is! Map) {
-      // Row kemungkinan sudah tercatat, jadi file TIDAK dihapus.
       stderr.writeln(
         '[ERROR] rpc_register_media_asset mengembalikan tipe tak terduga: '
         '${rpcResult.runtimeType}',
@@ -157,8 +154,6 @@ final class MediaService {
         message.contains('duplicate');
   }
 
-  /// Retry dengan key sama: pastikan objek yang sudah ada identik dengan
-  /// kiriman ini. Berbeda => Idempotency-Key dipakai ulang untuk file lain.
   Future<void> _assertExistingObjectMatches(
     String bucket,
     String objectPath,
@@ -183,8 +178,6 @@ final class MediaService {
     }
   }
 
-  /// Pra-cek kuota via daftar objek berawalan `<actor>_`. Gagal membaca
-  /// daftar tidak memblokir upload (fail-open); RPC tetap menegakkan kuota.
   Future<void> _assertWithinQuota(String actorId) async {
     final max = config.storage.maxFilesPerUser;
     final prefix = '${MediaPaths.sanitizeActorId(actorId)}_';

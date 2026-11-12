@@ -9,7 +9,13 @@ import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 /// deterministik dari `Idempotency-Key`, sehingga retry dengan key yang sama
 /// selalu menghasilkan path yang sama (tidak ada file yatim).
 abstract final class MediaPaths {
-  /// Membersihkan `actorId` menjadi `[a-z0-9_-]` maksimal 32 karakter.
+  /// Batas prefix actorId adalah 12 karakter agar total panjang stem nama file:
+  /// 12 (actor) + 16 ('_profile_avatar_') + 36 (UUIDv4) = 64 karakter,
+  /// selaras 100% dengan `fn_is_safe_image_url` (`[a-z0-9_-]{1,64}`) di `002_tables.sql`
+  /// dan `rpc_register_media_asset` (`[a-z0-9_-]{1,32}`) di `010_storage.sql`.
+  static const int maxActorPrefixLength = 12;
+
+  /// Membersihkan `actorId` menjadi `[a-z0-9_-]` maksimal 12 karakter.
   static String sanitizeActorId(String rawActorId) {
     final cleaned = rawActorId
         .trim()
@@ -22,7 +28,10 @@ abstract final class MediaPaths {
         code: 'INVALID_INPUT',
       );
     }
-    return cleaned.length > 32 ? cleaned.substring(0, 32) : cleaned;
+    final truncated = cleaned.length > maxActorPrefixLength
+        ? cleaned.substring(0, maxActorPrefixLength)
+        : cleaned;
+    return truncated.replaceAll(SecurityConstants.actorEdgeTrimPattern, '');
   }
 
   /// Menurunkan UUID v4 dari 48 karakter hex `mutationId`.

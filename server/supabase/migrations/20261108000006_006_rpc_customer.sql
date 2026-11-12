@@ -683,8 +683,9 @@ $$;
 
 -- ----------------------------------------------------------------------------
 -- 5. RPC 12: PUT /v1/auth/profile/avatar (rpc_update_profile_avatar — MED-20)
---    Memperbarui avatar_url, menaikkan users.version agar CAS Admin konsisten,
---    dan mencatat audit_events serta mutation_receipts (bila p_mutation_id disertakan).
+--    Memperbarui avatar_url, memverifikasi kepemilikan aset media berkategori
+--    profile_avatar di public.media_assets, menaikkan users.version agar CAS
+--    Admin konsisten, serta mencatat audit_events dan mutation_receipts.
 -- ----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION public.rpc_update_profile_avatar(
   p_actor_id TEXT,
@@ -700,6 +701,7 @@ AS $$
 DECLARE
   v_user public.users%ROWTYPE;
   v_before_version INTEGER;
+  v_old_avatar_url TEXT;
   v_clean_url TEXT;
   v_req_snapshot JSONB;
   v_decision JSONB;
@@ -752,6 +754,33 @@ BEGIN
   END IF;
 
   v_before_version := v_user.version;
+  v_old_avatar_url := v_user.avatar_url;
+
+  -- Wajib pastikan v_clean_url terdaftar di public.media_assets milik p_actor_id
+  -- dengan kategori 'profile_avatar' (Urutan Lock: advisory -> users -> media_assets)
+  IF v_clean_url IS NOT NULL THEN
+    UPDATE public.media_assets
+    SET is_referenced = TRUE,
+        updated_at = pg_catalog.timezone('utc', pg_catalog.now())
+    WHERE owner_id = p_actor_id
+      AND category = 'profile_avatar'
+      AND public_url = v_clean_url;
+
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'INVALID_IMAGE_URL: Foto profil belum terdaftar di media_assets milik pengguna ini atau bukan berkategori profile_avatar.'
+        USING ERRCODE = 'KC010', HINT = 'Unggah gambar melalui POST /v1/media/images dengan kategori profile_avatar terlebih dahulu.';
+    END IF;
+  END IF;
+
+  -- Lepas penanda referensi pada avatar lama bila diganti atau dihapus
+  IF v_old_avatar_url IS NOT NULL AND v_old_avatar_url IS DISTINCT FROM v_clean_url THEN
+    UPDATE public.media_assets
+    SET is_referenced = FALSE,
+        updated_at = pg_catalog.timezone('utc', pg_catalog.now())
+    WHERE owner_id = p_actor_id
+      AND category = 'profile_avatar'
+      AND public_url = v_old_avatar_url;
+  END IF;
 
   UPDATE public.users
   SET avatar_url = v_clean_url,
@@ -759,14 +788,6 @@ BEGIN
       updated_at = pg_catalog.timezone('utc', pg_catalog.now())
   WHERE id = p_actor_id
   RETURNING * INTO v_user;
-
-  -- Tandai aset media sebagai direferensikan bila ada di tabel media_assets
-  IF v_clean_url IS NOT NULL THEN
-    UPDATE public.media_assets
-    SET is_referenced = TRUE,
-        updated_at = pg_catalog.timezone('utc', pg_catalog.now())
-    WHERE owner_id = p_actor_id AND public_url = v_clean_url;
-  END IF;
 
   v_response := public.fn_user_json(v_user);
 

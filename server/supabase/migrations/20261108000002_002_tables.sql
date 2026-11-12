@@ -97,8 +97,9 @@ BEGIN
   END IF;
 
   -- Wajib skema https:// menuju path resmi /storage/v1/object/public/kantin-media/<safe_file_name>
-  -- Nama file wajib aman atau mengikuti pola generator {actor}_{category}_{uuid}.{jpg|png|webp}
-  IF p_url !~ '^https://[a-zA-Z0-9.-]+(:[0-9]{1,5})?/storage/v1/object/public/kantin-media/[a-z0-9_-]{1,64}\.(jpg|jpeg|png|webp)$' THEN
+  -- Nama file wajib mengikuti pola kanonis {actor}_{category}_{uuid-v4}.{jpg|jpeg|png|webp}
+  -- selaras dengan chk_media_assets_object_path_safe (baris 491) dan 010_storage.sql
+  IF p_url !~ '^https://[a-zA-Z0-9.-]+(:[0-9]{1,5})?/storage/v1/object/public/kantin-media/[a-z0-9_-]{1,32}_(profile_avatar|menu_photo|stall_photo)_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|jpeg|png|webp)$' THEN
     RETURN FALSE;
   END IF;
 
