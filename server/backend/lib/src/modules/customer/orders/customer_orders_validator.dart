@@ -1,6 +1,15 @@
 import 'package:kantin_cerdas_backend/src/core/constants/security_constants.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 
+typedef ValidatedListQuery = ({
+  bool history,
+  int limit,
+  DateTime? cursorTs,
+  String? cursorId,
+});
+
+typedef ValidatedCancelInput = ({String mutationId, int expectedVersion});
+
 final class CustomerOrdersValidator {
   const CustomerOrdersValidator._();
 
@@ -9,8 +18,7 @@ final class CustomerOrdersValidator {
     r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$',
   );
 
-  static ({bool history, int limit, DateTime? cursorTs, String? cursorId})
-  validateListQuery(Map<String, String> query) {
+  static ValidatedListQuery validateListQuery(Map<String, String> query) {
     final rawHistory = query['history']?.trim().toLowerCase();
     final bool history;
     if (rawHistory == 'true') {
@@ -106,7 +114,7 @@ final class CustomerOrdersValidator {
     return normalizedId;
   }
 
-  static ({String mutationId, int expectedVersion}) validateCancelBody(
+  static ValidatedCancelInput validateCancelBody(
     Map<String, dynamic> body, {
     String? idempotencyKeyHeader,
   }) {
