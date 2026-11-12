@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:supabase/supabase.dart';
 
+import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
+import 'package:kantin_cerdas_backend/src/core/security/media_paths.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_validator.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/authenticated_actor.dart';
@@ -14,7 +16,8 @@ typedef JsonMap = Map<String, Object?>;
 /// Layanan bisnis domain Autentikasi & Sesi (`/v1/auth/*`).
 final class AuthService {
   final SupabaseService _supabase;
-  const AuthService(this._supabase);
+  final AppConfig _config;
+  const AuthService(this._supabase, this._config);
 
   static const String _userColumns =
       'id, auth_uid, username, email, name, role, is_active, session_epoch, version, avatar_url';

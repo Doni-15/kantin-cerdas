@@ -236,6 +236,16 @@ final class ApiException implements Exception {
       );
     }
 
+    if (code == 'weak_password' ||
+      lower.contains('weak password') ||
+      lower.contains('password should be')) {
+      return ApiException.unprocessable(
+        'Password terlalu lemah. Gunakan kombinasi yang lebih kuat.',
+        code: 'WEAK_PASSWORD',
+        fieldErrors: const {'password': 'Password terlalu lemah.'},
+      );
+    }
+
     if (code == 'over_request_rate_limit' || error.statusCode == '429') {
       return ApiException.rateLimited();
     }

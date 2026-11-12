@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:shelf/shelf.dart';
 import 'dart:math' as math;
 
 import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
+import 'package:kantin_cerdas_backend/src/core/constants/security_constants.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 
 Middleware allowedHostsMiddleware(AppConfig config) {
@@ -49,6 +51,7 @@ Middleware rateLimitMiddleware(AppConfig config) {
   final prefix = config.server.apiPrefix;
   final healthPath = '$prefix/health';
   final authPath = '$prefix/auth';
+  final uploadPath = '$prefix/media/images';
 
   final general = _FixedWindowLimiter(
     Duration(seconds: cfg.windowSeconds),
@@ -58,6 +61,11 @@ Middleware rateLimitMiddleware(AppConfig config) {
     Duration(seconds: cfg.authWindowSeconds),
     cfg.authMaxRequests,
   );
+  // Upload & register mahal (CPU + Storage + 2 MB body): limiter tersendiri.
+  final upload = _FixedWindowLimiter(
+    Duration(seconds: cfg.uploadWindowSeconds),
+    cfg.uploadMaxRequests,
+  );
 
   return (Handler inner) {
     return (Request request) {
@@ -65,25 +73,39 @@ Middleware rateLimitMiddleware(AppConfig config) {
       if (path == healthPath) return inner(request);
 
       final isAuth = path == authPath || path.startsWith('$authPath/');
-      final limiter = isAuth ? auth : general;
       final ip = _clientIp(request, cfg.trustProxy);
-      final retryAfter = limiter.hit(ip);
 
-      if (retryAfter > 0) {
-        return ApiException.rateLimited()
-            .toResponse()
-            .change(headers: {'retry-after': '$retryAfter'});
+      final isHeavy = request.method == 'POST' &&
+          (path == uploadPath || path == '$authPath/register');
+      if (isHeavy) {
+        final heavyRetry = upload.hit(ip);
+        if (heavyRetry > 0) return _tooMany(heavyRetry);
       }
+
+      final retryAfter = (isAuth ? auth : general).hit(ip);
+      if (retryAfter > 0) return _tooMany(retryAfter);
+
       return inner(request);
     };
   };
 }
 
+Response _tooMany(int retryAfter) {
+  return ApiException.rateLimited()
+      .toResponse()
+      .change(headers: {'retry-after': '$retryAfter'});
+}
+
+/// IP client. Dengan `trustProxy` dipakai entri TERAKHIR `X-Forwarded-For`
+/// (yang ditambahkan proxy tepercaya kita). Entri pertama dikontrol client
+/// dan bisa dipalsukan untuk menghindari rate limit.
+/// Jika ada lebih dari satu proxy tepercaya di depan server, sesuaikan indeksnya.
 String _clientIp(Request request, bool trustProxy) {
   if (trustProxy) {
     final forwarded = request.headers['x-forwarded-for'];
     if (forwarded != null && forwarded.trim().isNotEmpty) {
-      return forwarded.split(',').first.trim();
+      final last = forwarded.split(',').last.trim();
+      if (last.isNotEmpty) return last;
     }
   }
 
@@ -133,6 +155,8 @@ final class _FixedWindowLimiter {
   }
 }
 
+/// Batas body: kecil untuk JSON biasa, besar hanya untuk register (avatar
+/// Base64) dan upload media. Batas konfigurasi tetap menjadi plafon.
 Middleware bodyLimitMiddleware(AppConfig config) {
   final defaultMax = config.server.maxRequestBodyBytes;
   final mediaMax = math.max(defaultMax, 4 * 1024 * 1024); // 4 MB untuk Base64/Multipart 2 MB
@@ -175,18 +199,36 @@ ApiException _payloadTooLarge(int max) {
   );
 }
 
+/// Dart tidak bisa membatalkan Future handler yang sudah berjalan: setelah 504
+/// operasi (mis. register) mungkin tetap selesai di server. Untuk method yang
+/// mengubah data, respons ditandai agar client tahu hasilnya BELUM PASTI dan
+/// memverifikasi (cek ulang / retry dengan Idempotency-Key yang sama) alih-alih
+/// langsung mengulang sebagai operasi baru.
 Middleware requestTimeoutMiddleware(AppConfig config) {
   final timeout = Duration(seconds: config.server.requestTimeoutSeconds);
+  const mutating = {'POST', 'PUT', 'PATCH', 'DELETE'};
 
   return (Handler inner) {
     return (Request request) async {
       return Future.sync(() => inner(request)).timeout(
         timeout,
-        onTimeout: () => const ApiException(
-          statusCode: 504,
-          code: 'REQUEST_TIMEOUT',
-          message: 'Permintaan memakan waktu terlalu lama. Silakan coba lagi.',
-        ).toResponse(),
+        onTimeout: () {
+          final isMutation = mutating.contains(request.method);
+          final response = ApiException(
+            statusCode: 504,
+            code: 'REQUEST_TIMEOUT',
+            message: isMutation
+                ? 'Permintaan memakan waktu terlalu lama dan hasilnya belum pasti. '
+                    'Periksa data Anda sebelum mencoba lagi.'
+                : 'Permintaan memakan waktu terlalu lama. Silakan coba lagi.',
+            details: isMutation
+                ? const <String, Object?>{'outcome_unknown': true}
+                : null,
+          ).toResponse();
+          return isMutation
+              ? response.change(headers: {'x-outcome-unknown': 'true'})
+              : response;
+        },
       );
     };
   };

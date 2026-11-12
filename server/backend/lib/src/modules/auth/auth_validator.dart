@@ -3,7 +3,11 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:characters/characters.dart';
+import 'package:kantin_cerdas_backend/src/core/constants/security_constants.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
+import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
+import 'package:kantin_cerdas_backend/src/core/security/image_guard.dart';
+import 'package:kantin_cerdas_backend/src/core/security/media_paths.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_validated_input.dart';
 
 export 'package:kantin_cerdas_backend/src/modules/auth/auth_validated_input.dart';
@@ -86,7 +90,10 @@ final class AuthValidator {
   }
 
   /// Memvalidasi body JSON `POST /v1/auth/register`.
-  static ValidatedRegisterInput validateRegister(Map<String, Object?> body) {
+  static ValidatedRegisterInput validateRegister(
+    Map<String, Object?> body,
+    StorageConfig storage,
+  ) {
     final fieldErrors = <String, String>{};
 
     final rawName = _readString(body['name']).trim();
@@ -339,7 +346,7 @@ final class AuthValidator {
     }
 
     final isEmail = rawIdentifier.contains('@');
-    if (isEmail && !_emailPattern.hasMatch(rawIdentifier)) {
+    if (isEmail && !SecurityConstants.emailPattern.hasMatch(rawIdentifier)) {
       throw ApiException.unprocessable(
         'Format alamat email tidak valid.',
         code: 'INVALID_INPUT',
@@ -439,9 +446,18 @@ final class AuthValidator {
   }
 
   /// Memvalidasi header `Idempotency-Key` dan body JSON `PUT /v1/auth/profile/avatar`.
+  ///
+  /// - `Idempotency-Key` WAJIB (kunci acak otomatis membuat retry menjadi
+  ///   mutasi baru).
+  /// - Key `avatar_url` WAJIB ada: `null` = hapus foto, string = URL baru.
+  ///   Body `{}` atau salah ketik nama key ditolak, bukan menghapus avatar.
+  /// - URL harus berada di bawah `STORAGE_PUBLIC_BASE_URL` dan merupakan
+  ///   avatar milik actor yang sedang login.
   static ValidatedAvatarUpdateInput validateAvatarUpdate({
     required String? idempotencyKeyHeader,
     required Map<String, Object?> body,
+    required String actorId,
+    required String publicBaseUrl,
   }) {
     var mutationId = (idempotencyKeyHeader ??
             _readString(body['mutation_id'] ?? body['mutationId']))
@@ -469,9 +485,9 @@ final class AuthValidator {
       }
       final trimmed = rawUrlObj.trim();
       if (trimmed.isNotEmpty) {
-        if (!_isSafeImageUrl(trimmed)) {
+        if (!_isOwnedAvatarUrl(trimmed, publicBaseUrl, actorId)) {
           throw ApiException.unprocessable(
-            'URL foto profil tidak valid atau bukan berasal dari bucket resmi kantin-media.',
+            'URL foto profil tidak valid atau bukan foto profil milik akun ini.',
             code: 'INVALID_IMAGE_URL',
             fieldErrors: const {
               'avatar_url': 'URL foto profil tidak valid.',
@@ -512,7 +528,7 @@ final class AuthValidator {
 
   static bool _isSafeImageUrl(String url) {
     if (url.isEmpty || url.length > 512) return false;
-    if (_unsafeUrlChars.hasMatch(url)) return false;
+    if (SecurityConstants.unsafeUrlChars.hasMatch(url)) return false;
 
     final lower = url.toLowerCase();
     if (lower.contains('..') ||
@@ -521,7 +537,11 @@ final class AuthValidator {
       return false;
     }
 
-    return _safeStorageUrlPattern.hasMatch(url);
+    return MediaPaths.isOwnedAvatarUrl(
+      url,
+      publicBaseUrl: publicBaseUrl,
+      actorId: actorId,
+    );
   }
 
   static String _readString(Object? value) {

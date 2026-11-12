@@ -27,7 +27,9 @@ Handler buildAppHandler({
         'service': config.app.name,
         'version': config.app.version,
         'environment': config.app.env.name,
-        'project_ref': config.supabase.projectRef,
+        // Identitas proyek Supabase tidak perlu terlihat publik di production.
+        if (config.app.env.isDevelopment)
+          'project_ref': config.supabase.projectRef,
       }),
       headers: const {
         'content-type': 'application/json; charset=utf-8',
@@ -65,28 +67,55 @@ Handler buildAppHandler({
 }
 
 Middleware _corsAndSecurityMiddleware(AppConfig config) {
-  final headers = <String, String>{};
+  final cors = config.cors;
+  final allowAny = cors.allowedOrigins.contains('*');
+  final explicitOrigins = cors.allowedOrigins
+      .where((o) => o != '*')
+      .map((o) => o.toLowerCase())
+      .toSet();
 
-  if (config.cors.enabled) {
-    headers['access-control-allow-origin'] = config.cors.allowedOrigins.join(', ');
-    headers['access-control-allow-methods'] = config.cors.allowedMethods.join(', ');
-    headers['access-control-allow-headers'] = config.cors.allowedHeaders.join(', ');
-    headers['access-control-max-age'] = '${config.cors.maxAgeSeconds}';
-
-    if (config.cors.allowCredentials) {
-      headers['access-control-allow-credentials'] = 'true';
-    }
+  final securityHeaders = <String, String>{};
+  if (config.security.enableSecurityHeaders) {
+    securityHeaders['x-content-type-options'] = 'nosniff';
+    securityHeaders['x-frame-options'] = 'DENY';
+    securityHeaders['referrer-policy'] = 'no-referrer';
   }
 
-  if (config.security.enableSecurityHeaders) {
-    headers['x-content-type-options'] = 'nosniff';
-    headers['x-frame-options'] = 'DENY';
-    headers['referrer-policy'] = 'no-referrer';
+  // `Access-Control-Allow-Origin` hanya boleh berisi SATU origin (atau `*`).
+  // Daftar dipisah koma tidak valid dan ditolak browser, jadi origin request
+  // dicocokkan dengan daftar lalu di-echo, disertai `Vary: Origin`.
+  Map<String, String> corsHeaders(Request request) {
+    if (!cors.enabled) return const {};
+
+    final headers = <String, String>{
+      'access-control-allow-methods': cors.allowedMethods.join(', '),
+      'access-control-allow-headers': cors.allowedHeaders.join(', '),
+      'access-control-max-age': '${cors.maxAgeSeconds}',
+    };
+
+    final origin = request.headers['origin'];
+    if (allowAny) {
+      // `*` tidak boleh dikombinasikan dengan credentials.
+      if (!cors.allowCredentials) {
+        headers['access-control-allow-origin'] = '*';
+      }
+    } else {
+      headers['vary'] = 'Origin';
+      if (origin != null && explicitOrigins.contains(origin.toLowerCase())) {
+        headers['access-control-allow-origin'] = origin;
+        if (cors.allowCredentials) {
+          headers['access-control-allow-credentials'] = 'true';
+        }
+      }
+    }
+    return headers;
   }
 
   return (Handler innerHandler) {
     return (Request request) async {
-      if (config.cors.enabled && request.method == 'OPTIONS') {
+      final headers = {...corsHeaders(request), ...securityHeaders};
+
+      if (cors.enabled && request.method == 'OPTIONS') {
         return Response.ok('', headers: headers);
       }
 
@@ -97,6 +126,12 @@ Middleware _corsAndSecurityMiddleware(AppConfig config) {
 }
 
 Middleware _errorBoundaryMiddleware(AppConfig config) {
+  void logError(Request request, Object e, StackTrace st, {String? extra}) {
+    final where = '${request.method} /${request.url.path}';
+    stderr.writeln('[ERROR] ${extra ?? 'Unhandled exception'} on $where: $e');
+    if (config.logging.includeStackTrace) stderr.writeln(st);
+  }
+
   return (Handler innerHandler) {
     return (Request request) async {
       try {
@@ -105,17 +140,21 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
       on ApiException catch (e) {
         return e.toResponse();
       } 
-      on PostgrestException catch (e) {
-        return ApiException.fromPostgrest(e).toResponse();
+      on PostgrestException catch (e, st) {
+        final mapped = ApiException.fromPostgrest(e);
+        // Error DB yang tidak terpetakan (500) wajib terlihat di log server.
+        if (mapped.statusCode >= 500) {
+          logError(
+            request,
+            'code=${e.code} message=${e.message} details=${e.details} hint=${e.hint}',
+            st,
+            extra: 'PostgrestException',
+          );
+        }
+        return mapped.toResponse();
       } 
       on AuthException catch (e) {
         return ApiException.fromSupabaseAuth(e).toResponse();
-      } 
-      on FormatException catch (_) {
-        return ApiException.badRequest(
-          'Format body JSON tidak valid.',
-          code: 'INVALID_JSON',
-        ).toResponse();
       } 
       on TimeoutException catch (_) {
         return const ApiException(
@@ -125,17 +164,10 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
         ).toResponse();
       } 
       catch (e, st) {
-        if (config.logging.includeStackTrace) {
-          stderr.writeln(
-            '[ERROR] Unhandled exception on ${request.method} /${request.url.path}: $e\n$st',
-          );
-        } 
-        else {
-          stderr.writeln(
-            '[ERROR] Unhandled exception on ${request.method} /${request.url.path}: $e',
-          );
-        }
-
+        // FormatException TIDAK lagi dipetakan menjadi "JSON tidak valid" di
+        // sini: JSON rusak ditangani di router (INVALID_JSON), sehingga bug
+        // server tidak tersamar sebagai kesalahan client.
+        logError(request, e, st);
         return const ApiException(
           statusCode: 500,
           code: 'INTERNAL_SERVER_ERROR',
