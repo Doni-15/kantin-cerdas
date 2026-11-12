@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
-
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:supabase/supabase.dart';
@@ -23,7 +22,7 @@ final class AuthService {
   static const String _userColumns =
       'id, auth_uid, username, email, name, role, is_active, session_epoch, version, avatar_url';
 
-  
+  static final RegExp _nonSafeActorChars = RegExp(r'[^a-z0-9_-]');
 
   /// 0. POST `/v1/auth/availability` — Cek ketersediaan email / username (Langkah 1 Registrasi).
   Future<JsonMap> checkAvailability({
@@ -126,33 +125,68 @@ final class AuthService {
       rethrow;
     }
 
-    // Foto profil opsional (Langkah 2). Kegagalan di sini TIDAK menggagalkan
-    // registrasi, tetapi dilaporkan lewat `avatar_saved: false` agar client
-    // bisa menawarkan unggah ulang lewat POST /media/images + PUT /profile/avatar.
+    // Jika pengguna memilih foto profil pada Langkah 2 registrasi,
+    // unggah ke bucket 'kantin-media', daftarkan ke media_assets, dan perbarui avatar_url.
     final avatarBytes = input.avatarBytes;
     final avatarMime = input.avatarMimeType;
     final avatarExt = input.avatarExtension;
     final userId = userJson['id']?.toString() ?? '';
 
-    bool? avatarSaved;
     if (avatarBytes != null &&
         avatarMime != null &&
         avatarExt != null &&
         userId.isNotEmpty) {
-      final updated = await _saveInitialAvatar(
-        userId: userId,
-        bytes: avatarBytes,
-        mimeType: avatarMime,
-        extension: avatarExt,
-      );
-      avatarSaved = updated != null;
-      if (updated != null) userJson = updated;
+      try {
+        final sanitizedActor = _sanitizeActorId(userId);
+        final objectPath =
+            '${sanitizedActor}_profile_avatar_${_generateUuidV4()}.$avatarExt';
+        final sha256Hex = sha256.convert(avatarBytes).toString();
+
+        await _supabase.adminClient.storage.from('kantin-media').uploadBinary(
+              objectPath,
+              avatarBytes,
+              fileOptions: FileOptions(
+                contentType: avatarMime,
+                upsert: false,
+              ),
+            );
+
+        final publicUrl = _supabase.adminClient.storage
+            .from('kantin-media')
+            .getPublicUrl(objectPath);
+
+        await _supabase.adminClient.rpc<dynamic>(
+          'rpc_register_media_asset',
+          params: {
+            'p_actor_id': userId,
+            'p_mutation_id': AuthValidator.generateSecureMutationId48(),
+            'p_category': 'profile_avatar',
+            'p_object_path': objectPath,
+            'p_public_url': publicUrl,
+            'p_mime_type': avatarMime,
+            'p_size_bytes': avatarBytes.length,
+            'p_sha256_hex': sha256Hex,
+          },
+        );
+
+        final updatedUser = await _supabase.adminClient.rpc<dynamic>(
+          'rpc_update_profile_avatar',
+          params: {
+            'p_actor_id': userId,
+            'p_mutation_id': AuthValidator.generateSecureMutationId48(),
+            'p_avatar_url': publicUrl,
+            'p_expected_version': 1,
+          },
+        );
+        userJson = JsonMap.from(updatedUser as Map);
+      } catch (e) {
+        stderr.writeln(
+          '[WARN] Gagal menyimpan foto profil awal saat registrasi ($userId): $e',
+        );
+      }
     }
 
-    return <String, Object?>{
-      ...userJson,
-      if (avatarSaved != null) 'avatar_saved': avatarSaved,
-    };
+    return userJson;
   }
 
   /// 2. POST `/v1/auth/login` — Login menggunakan Username ATAU Email.
@@ -458,85 +492,27 @@ final class AuthService {
     };
   }
 
-  /// Unggah avatar awal saat registrasi. Mengembalikan profil terbaru, atau
-  /// `null` bila gagal. File yang baru diunggah dibersihkan jika DB menolak
-  /// pendaftaran asetnya.
-  Future<JsonMap?> _saveInitialAvatar({
-    required String userId,
-    required Uint8List bytes,
-    required String mimeType,
-    required String extension,
-  }) async {
-    final bucket = _config.storage.bucketName;
-    final mutationId = MediaPaths.generateMutationId48();
-    var uploaded = false;
-    var registered = false;
-    String? objectPath;
+  static String _sanitizeActorId(String rawActorId) {
+    final cleaned = rawActorId
+        .trim()
+        .toLowerCase()
+        .replaceAll(_nonSafeActorChars, '')
+        .replaceAll(RegExp(r'^[-_]+|[-_]+$'), '');
+    if (cleaned.isEmpty) return 'user';
+    return cleaned.length > 32 ? cleaned.substring(0, 32) : cleaned;
+  }
 
-    try {
-      objectPath = MediaPaths.buildObjectPath(
-        actorId: userId,
-        category: 'profile_avatar',
-        mutationId: mutationId,
-        extension: extension,
-      );
+  static String _generateUuidV4() {
+    final random = Random.secure();
+    final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+    bytes[6] = (bytes[6] & 0x0F) | 0x40;
+    bytes[8] = (bytes[8] & 0x3F) | 0x80;
 
-      await _supabase.adminClient.storage.from(bucket).uploadBinary(
-            objectPath,
-            bytes,
-            fileOptions: FileOptions(contentType: mimeType, upsert: false),
-          );
-      uploaded = true;
+    String hex(int start, int end) => bytes
+        .sublist(start, end)
+        .map((b) => b.toRadixString(16).padLeft(2, '0'))
+        .join();
 
-      final publicUrl =
-          _supabase.adminClient.storage.from(bucket).getPublicUrl(objectPath);
-
-      await _supabase.adminClient.rpc<dynamic>(
-        'rpc_register_media_asset',
-        params: {
-          'p_actor_id': userId,
-          'p_mutation_id': mutationId,
-          'p_category': 'profile_avatar',
-          'p_object_path': objectPath,
-          'p_public_url': publicUrl,
-          'p_mime_type': mimeType,
-          'p_size_bytes': bytes.length,
-          'p_sha256_hex': sha256.convert(bytes).toString(),
-        },
-      );
-      registered = true;
-
-      final updatedUser = await _supabase.adminClient.rpc<dynamic>(
-        'rpc_update_profile_avatar',
-        params: {
-          'p_actor_id': userId,
-          'p_mutation_id': MediaPaths.generateMutationId48(),
-          'p_avatar_url': publicUrl,
-          'p_expected_version': 1,
-        },
-      );
-      return JsonMap.from(updatedUser as Map);
-    } on PostgrestException catch (e) {
-      stderr.writeln(
-        '[WARN] Foto profil awal ditolak DB ($userId): '
-        'code=${e.code} message=${e.message}',
-      );
-      // DB menolak secara eksplisit sebelum aset tercatat => file yatim.
-      if (uploaded && !registered && objectPath != null) {
-        try {
-          await _supabase.adminClient.storage
-              .from(bucket)
-              .remove(<String>[objectPath]);
-        } catch (err) {
-          stderr.writeln('[WARN] Cleanup avatar yatim gagal ($objectPath): $err');
-        }
-      }
-      return null;
-    } catch (e) {
-      stderr.writeln(
-        '[WARN] Gagal menyimpan foto profil awal saat registrasi ($userId): $e',
-      );
-      return null;
-    }
+    return '${hex(0, 4)}-${hex(4, 6)}-${hex(6, 8)}-${hex(8, 10)}-${hex(10, 16)}';
   }
 }

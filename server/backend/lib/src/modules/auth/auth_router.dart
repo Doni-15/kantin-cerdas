@@ -49,7 +49,7 @@ Router buildAuthRouter(AuthService authService, StorageConfig storage) {
 
   router.post('/register', (Request request) async {
     final body = await _readJsonObject(request);
-    final input = AuthValidator.validateRegister(body, storage);
+    final input = AuthValidator.validateRegister(body);
     final user = await authService.register(input);
     return _json(user, statusCode: 201);
   });
