@@ -1,0 +1,66 @@
+# Just for me to make server hot reload
+dev.sh 
+
+# Flutter / Dart / Gradle build & tool artifacts
+.dart_tool/
+.packages
+build/
+coverage/
+.gradle/
+.kotlin/
+.idea/
+.vscode/
+.DS_Store
+*.iml
+*.ipr
+*.iws
+*.hprof
+*.log
+local.properties
+
+# Android signing & rahasia rilis
+key.properties
+**/*.keystore
+**/*.jks
+**/*.p12
+**/*.pfx
+
+# Kredensial Cloud & Environment Backend (Jangan pernah di-commit ke Git)
+**/google-services.json
+**/service-account*.json
+**/firebase-adminsdk*.json
+.env
+.env.*
+!.env.example
+.firebase/
+.supabase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.branches
+.temp
+.env.keys
+.env.local
+.env.*.local
+
+# Backend Dart & Environment Secrets
+**/backend/.dart_tool/
+**/backend/build/
+**/backend/.env
+*.env
+!*.env.example
+
+# Dokumen referensi eksternal & skrip utilitas sementara
+Modul_Pemrograman_Mobile.pdf
+tahap*.bash
+fase*.bash
+hasil.txt
+
+# Backend Dart & Supabase Local
+backend/.dart_tool/
+backend/build/
+backend/.env
+backend/.env.*
+!backend/.env.example
+supabase/.temp/
+supabase/.branches/

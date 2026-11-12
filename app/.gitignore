@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Kredensial penandatanganan rilis Android
+**/android/key.properties
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.pfx
+
+# JVM Heap Dump & berkas sementara
+**/*.hprof
+/hasil.txt

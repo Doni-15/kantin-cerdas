@@ -1,32 +1,57 @@
-/// Error yang dipahami Controller/UI untuk pengajuan kantin.
-/// Teks untuk user ada di Presentation (canteen_application_error_message.dart).
 sealed class CanteenApplicationFailure implements Exception {
   const CanteenApplicationFailure();
 
+  /// Adapter hanya boleh memakai kategori definitif bila tidak ada commit dan
+  /// request terlambat dengan ID yang sama tidak dapat melakukan commit.
+  bool get definitelyNotSubmitted => switch (this) {
+    CanteenApplicationNotConfiguredFailure() ||
+    CanteenApplicationForbiddenFailure() ||
+    CanteenApplicationRejectedFailure() ||
+    CanteenApplicationConflictFailure() ||
+    CanteenApplicationPreSendFailure() => true,
+    CanteenApplicationUnconfirmedFailure() ||
+    CanteenApplicationStorageFailure() => false,
+  };
+
   @override
-  String toString() => runtimeType.toString();
+  bool operator ==(Object other) => runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  String toString() => '$runtimeType()';
 }
 
-/// Input tidak valid. Key = nama field (name, description, address).
-final class CanteenApplicationValidationFailure
+final class CanteenApplicationNotConfiguredFailure
     extends CanteenApplicationFailure {
-  const CanteenApplicationValidationFailure(this.fieldErrors);
-
-  final Map<String, String> fieldErrors;
+  const CanteenApplicationNotConfiguredFailure();
 }
 
-/// Belum login atau sesi tidak berlaku.
-final class CanteenApplicationUnauthorizedFailure
+final class CanteenApplicationForbiddenFailure
     extends CanteenApplicationFailure {
-  const CanteenApplicationUnauthorizedFailure();
+  const CanteenApplicationForbiddenFailure();
 }
 
-/// Tidak ada koneksi atau timeout.
-final class CanteenApplicationNetworkFailure extends CanteenApplicationFailure {
-  const CanteenApplicationNetworkFailure();
+final class CanteenApplicationRejectedFailure
+    extends CanteenApplicationFailure {
+  const CanteenApplicationRejectedFailure();
 }
 
-/// Server error atau response tidak sesuai kontrak.
-final class CanteenApplicationUnknownFailure extends CanteenApplicationFailure {
-  const CanteenApplicationUnknownFailure();
+final class CanteenApplicationConflictFailure
+    extends CanteenApplicationFailure {
+  const CanteenApplicationConflictFailure();
+}
+
+final class CanteenApplicationPreSendFailure extends CanteenApplicationFailure {
+  const CanteenApplicationPreSendFailure();
+}
+
+final class CanteenApplicationUnconfirmedFailure
+    extends CanteenApplicationFailure {
+  const CanteenApplicationUnconfirmedFailure();
+}
+
+final class CanteenApplicationStorageFailure extends CanteenApplicationFailure {
+  const CanteenApplicationStorageFailure();
 }

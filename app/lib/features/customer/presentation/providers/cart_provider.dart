@@ -1,148 +1,93 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
+import 'package:kantin_cerdas/features/auth/presentation/providers/auth_state_provider.dart';
 import 'package:kantin_cerdas/features/customer/domain/entities/cart_item.dart';
+import 'package:kantin_cerdas/features/customer/domain/entities/cart_state.dart';
 import 'package:kantin_cerdas/features/customer/domain/entities/menu_item.dart';
+import 'package:kantin_cerdas/features/customer/domain/validation/customer_input_limits.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/customer_catalog_provider.dart';
+import 'package:kantin_cerdas/features/customer/presentation/providers/customer_checkout_journal_provider.dart';
 
-final cartProvider =
-    NotifierProvider<CartController, CartState>(
+/// Keranjang bertahan di memori saat pengguna berpindah halaman.
+final cartProvider = NotifierProvider<CartController, CartState>(
   CartController.new,
 );
 
-class CartState {
-  const CartState({
-    this.items = const [],
-    this.orderNote = '',
-  });
-
-  final List<CartItem> items;
-  final String orderNote;
-
-  bool get isEmpty {
-    return items.isEmpty;
-  }
-
-  bool get isNotEmpty {
-    return items.isNotEmpty;
-  }
-
-  int get totalQuantity {
-    return items.fold(
-      0,
-      (total, item) {
-        return total + item.quantity;
-      },
-    );
-  }
-
-  int get totalPrice {
-    return items.fold(
-      0,
-      (total, item) {
-        return total + item.subtotal;
-      },
-    );
-  }
-
-  String? get stallId {
-    if (items.isEmpty) {
-      return null;
-    }
-
-    return items.first.menu.stallId;
-  }
-
-  String? get stallName {
-    if (items.isEmpty) {
-      return null;
-    }
-
-    return items.first.menu.stallName;
-  }
-
-  String? get block {
-    if (items.isEmpty) {
-      return null;
-    }
-
-    return items.first.menu.block;
-  }
-
-  int quantityOf(String menuId) {
-    for (final item in items) {
-      if (item.menu.id == menuId) {
-        return item.quantity;
-      }
-    }
-
-    return 0;
-  }
-
-  CartState copyWith({
-    List<CartItem>? items,
-    String? orderNote,
-  }) {
-    return CartState(
-      items: items ?? this.items,
-      orderNote: orderNote ?? this.orderNote,
-    );
-  }
-}
-
+/// Mengelola pilihan keranjang lokal milik pelanggan aktif.
 class CartController extends Notifier<CartState> {
+  String? _customerId;
+
   @override
   CartState build() {
-    return const CartState();
+    _customerId = ref.read(authStateProvider).activeCustomerId;
+
+    ref.listen<AsyncValue<User?>>(authStateProvider, (_, next) {
+      if (!ref.mounted || next.isLoading || next.asData == null) {
+        return;
+      }
+
+      final nextCustomerId = next.activeCustomerId;
+
+      if (nextCustomerId != _customerId) {
+        _customerId = nextCustomerId;
+        state = CartState();
+      }
+    });
+
+    return CartState();
   }
 
-  bool addItem(MenuItem menu) {
-    // Keranjang hanya boleh berisi satu stan.
-    if (state.isNotEmpty &&
-        state.stallId != menu.stallId) {
+  bool get _canMutate {
+    if (!ref.mounted || _customerId == null) {
       return false;
     }
 
-    final index = state.items.indexWhere(
-      (item) {
-        return item.menu.id == menu.id;
-      },
-    );
+    return ref.read(authStateProvider).activeCustomerId == _customerId &&
+        !ref.read(customerCheckoutLockedProvider);
+  }
 
-    // Menu belum ada.
-    if (index == -1) {
-      state = state.copyWith(
-        items: [
-          ...state.items,
-          CartItem(
-            menu: menu,
-          ),
-        ],
-      );
-
-      return true;
+  /// Mengembalikan false jika sesi tidak valid, menu tidak tersedia,
+  /// atau keranjang berisi pilihan dari stan berbeda.
+  bool addItem(MenuItem requestedMenu) {
+    if (!_canMutate) {
+      return false;
+    }
+    final menu = _orderableMenu(requestedMenu);
+    if (menu == null ||
+        state.quantityOf(menu.id) >= CustomerInputLimits.maxQuantity) {
+      return false;
     }
 
-    // Menu sudah ada, tambah quantity.
+    if (state.isNotEmpty && state.stallId != menu.stallId) {
+      return false;
+    }
+
     final newItems = [...state.items];
+    final index = newItems.indexWhere((item) => item.menu.id == menu.id);
 
-    final currentItem = newItems[index];
+    if (index == -1) {
+      newItems.add(CartItem(menu: menu));
+    } else {
+      final currentItem = newItems[index];
 
-    newItems[index] = currentItem.copyWith(
-      quantity: currentItem.quantity + 1,
-    );
+      // Gunakan snapshot katalog terbaru saat aksi dilakukan.
+      newItems[index] = CartItem(
+        menu: menu,
+        quantity: currentItem.quantity + 1,
+        note: currentItem.note,
+      );
+    }
 
-    state = state.copyWith(
-      items: newItems,
-    );
-
+    state = state.copyWith(items: newItems);
     return true;
   }
 
   void decreaseItem(String menuId) {
-    final index = state.items.indexWhere(
-      (item) {
-        return item.menu.id == menuId;
-      },
-    );
+    if (!_canMutate) {
+      return;
+    }
+
+    final index = state.items.indexWhere((item) => item.menu.id == menuId);
 
     if (index == -1) {
       return;
@@ -151,7 +96,7 @@ class CartController extends Notifier<CartState> {
     final newItems = [...state.items];
     final currentItem = newItems[index];
 
-    if (currentItem.quantity <= 1) {
+    if (currentItem.quantity == 1) {
       newItems.removeAt(index);
     } else {
       newItems[index] = currentItem.copyWith(
@@ -159,71 +104,119 @@ class CartController extends Notifier<CartState> {
       );
     }
 
-    if (newItems.isEmpty) {
-      state = const CartState();
-      return;
-    }
-
-    state = state.copyWith(
-      items: newItems,
-    );
+    state = newItems.isEmpty ? CartState() : state.copyWith(items: newItems);
   }
 
   void removeItem(String menuId) {
-    final newItems = state.items.where(
-      (item) {
-        return item.menu.id != menuId;
-      },
-    ).toList();
-
-    if (newItems.isEmpty) {
-      state = const CartState();
+    if (!_canMutate) {
       return;
     }
 
-    state = state.copyWith(
-      items: newItems,
-    );
+    final index = state.items.indexWhere((item) => item.menu.id == menuId);
+
+    if (index == -1) {
+      return;
+    }
+
+    final newItems = [...state.items]..removeAt(index);
+
+    state = newItems.isEmpty ? CartState() : state.copyWith(items: newItems);
   }
 
-  void updateItemNote(
-    String menuId,
-    String note,
-  ) {
-    final newItems = state.items.map(
-      (item) {
-        if (item.menu.id == menuId) {
-          return item.copyWith(
-            note: note,
-          );
-        }
+  void updateItemNote(String menuId, String note) {
+    if (!_canMutate || !CustomerInputLimits.validNote(note)) {
+      return;
+    }
 
-        return item;
-      },
-    ).toList();
+    final index = state.items.indexWhere((item) => item.menu.id == menuId);
 
-    state = state.copyWith(
-      items: newItems,
-    );
+    if (index == -1 || state.items[index].note == note) {
+      return;
+    }
+
+    final newItems = [...state.items];
+    newItems[index] = newItems[index].copyWith(note: note);
+
+    state = state.copyWith(items: newItems);
   }
 
   void updateOrderNote(String note) {
-    state = state.copyWith(
-      orderNote: note,
-    );
+    if (!_canMutate ||
+        !CustomerInputLimits.validNote(note) ||
+        state.isEmpty ||
+        state.orderNote == note) {
+      return;
+    }
+
+    state = state.copyWith(orderNote: note);
   }
 
-  void replaceCart(MenuItem menu) {
-    state = CartState(
-      items: [
-        CartItem(
-          menu: menu,
-        ),
-      ],
-    );
+  /// Mengganti keranjang setelah pengguna menyetujui konfirmasi.
+  ///
+  /// expectedCart adalah snapshot sebelum dialog dibuka. Konfirmasi lama
+  /// ditolak jika isi keranjang atau pemilik sesi sudah berubah.
+  bool replaceCart(MenuItem requestedMenu, {required CartState expectedCart}) {
+    if (!_canMutate || state != expectedCart) {
+      return false;
+    }
+
+    final menu = _orderableMenu(requestedMenu);
+    if (menu == null) {
+      return false;
+    }
+    state = CartState(items: [CartItem(menu: menu)]);
+
+    return true;
   }
 
-  void clearCart() {
-    state = const CartState();
+  MenuItem? _orderableMenu(MenuItem requested) {
+    final loaded = ref.read(customerCatalogProvider);
+    if (loaded.isLoading || loaded.hasError) {
+      return null;
+    }
+    final catalog = loaded.asData?.value;
+    final current = catalog?.menuById(requested.id);
+    if (catalog == null ||
+        current == null ||
+        current.stallId != requested.stallId ||
+        !catalog.canOrder(current.id)) {
+      return null;
+    }
+    return current;
+  }
+
+  /// Hanya controller checkout setelah layanan mengonfirmasi pesanan.
+  /// Bypass lock biasa wajib mencocokkan akun, submission, dan snapshot.
+  bool completeSubmission({
+    required String submissionId,
+    required CartState expectedCart,
+  }) {
+    if (!ref.mounted ||
+        _customerId == null ||
+        state != expectedCart ||
+        ref.read(authStateProvider).activeCustomerId != _customerId) {
+      return false;
+    }
+    final persisted = ref.read(customerCheckoutJournalProvider(_customerId!));
+    if (persisted.isLoading ||
+        persisted.hasError ||
+        persisted.asData?.value?.submissionId != submissionId) {
+      return false;
+    }
+    state = CartState();
+    return true;
+  }
+
+  /// Mengosongkan pilihan lokal jika snapshot masih sesuai.
+  ///
+  /// Gunakan snapshot sebelum dialog konfirmasi atau operasi checkout
+  /// agar hasil operasi lama tidak menghapus pilihan yang lebih baru.
+  bool clearCart({required CartState expectedCart}) {
+    if (!_canMutate || state != expectedCart) {
+      return false;
+    }
+
+    state = CartState();
+    return true;
   }
 }

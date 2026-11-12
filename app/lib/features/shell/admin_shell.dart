@@ -1,47 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kantin_cerdas/features/admin/presentation/widgets/admin_bottom_navigation.dart';
-import 'package:kantin_cerdas/features/auth/domain/entities/user.dart';
+import 'package:kantin_cerdas/features/admin/presentation/widgets/admin_recovery_banner.dart';
 
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_profile_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_users_page.dart';
-import 'package:kantin_cerdas/features/admin/presentation/pages/admin_dashboard_page.dart';
+/// Layout dan navigasi utama untuk admin.
+class AdminShell extends StatelessWidget {
+  const AdminShell({super.key, required this.navigationShell});
 
-class AdminShell extends StatefulWidget {
-  const AdminShell({
-    super.key,
-    required this.user,
-  });
+  /// Urutan branch pada router harus sama dengan urutan [AdminTab].
+  final StatefulNavigationShell navigationShell;
 
-  final User user;
+  AdminTab get _currentTab => AdminTab.values[navigationShell.currentIndex];
 
-  @override
-  State<AdminShell> createState() => _AdminShellState();
-}
-
-class _AdminShellState extends State<AdminShell> {
-  AdminTab _currentTab = AdminTab.dashboard;
-
-  Widget get _currentPage {
-    return switch (_currentTab) {
-      AdminTab.dashboard => const AdminDashboardPage(),
-      AdminTab.users => const AdminUsersPage(),
-      AdminTab.profile => AdminProfilePage(
-        user: widget.user,
-      ),
-    };
+  void _selectTab(AdminTab tab) {
+    navigationShell.goBranch(
+      tab.index,
+      initialLocation: tab.index == navigationShell.currentIndex,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _currentPage,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            const AdminRecoveryBanner(),
+            Expanded(child: navigationShell),
+          ],
+        ),
+      ),
       bottomNavigationBar: AdminBottomNavigation(
         currentTab: _currentTab,
-        onTabSelected: (tab) {
-          setState(() {
-            _currentTab = tab;
-          });
-        },
+        onTabSelected: _selectTab,
       ),
     );
   }

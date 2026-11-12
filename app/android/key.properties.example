@@ -1,0 +1,6 @@
+# Salin berkas ini menjadi `app/android/key.properties` pada mesin CI/CD atau
+# mesin rilis produksi Anda. JANGAN pernah melakukan commit `key.properties` ke Git.
+storePassword=GANTI_DENGAN_STORE_PASSWORD_PRODUKSI
+keyPassword=GANTI_DENGAN_KEY_PASSWORD_PRODUKSI
+keyAlias=kantin_cerdas_release
+storeFile=/jalur/absolut/menuju/kantin-cerdas-release.jks
