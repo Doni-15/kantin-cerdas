@@ -135,25 +135,26 @@ class _RegisterProfileFormState extends ConsumerState<RegisterProfileForm> {
 
     FocusScope.of(context).unfocus();
 
-    await ref.read(registerControllerProvider.notifier).submit(
-      name: draft.name,
-      username: username,
-      email: draft.email,
-      password: draft.password,
-      avatarBytes: draft.avatarPreviewBytes,
-    );
+    await ref
+        .read(registerControllerProvider.notifier)
+        .submit(
+          name: draft.name,
+          username: username,
+          email: draft.email,
+          password: draft.password,
+          avatarBytes: draft.avatarPreviewBytes,
+        );
   }
 
   void _handleFailure(Object error) {
     final belongsToFirstStep =
-      error is AuthEmailTakenFailure ||
-      (error is AuthValidationFailure &&
-          const [
-            'name',
-            'email',
-            'password',
-          ].any(error.fieldErrors.containsKey)
-      );
+        error is AuthEmailTakenFailure ||
+        (error is AuthValidationFailure &&
+            const [
+              'name',
+              'email',
+              'password',
+            ].any(error.fieldErrors.containsKey));
 
     if (error is AuthFailure && belongsToFirstStep) {
       FocusScope.of(context).unfocus();

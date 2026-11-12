@@ -26,8 +26,8 @@ class RegisterDraft {
       email: email ?? this.email,
       password: password ?? this.password,
       avatarPreviewBytes: clearAvatar
-        ? null
-        : (avatarPreviewBytes ?? this.avatarPreviewBytes),
+          ? null
+          : (avatarPreviewBytes ?? this.avatarPreviewBytes),
     );
   }
 }

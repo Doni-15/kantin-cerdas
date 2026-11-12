@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:shelf/shelf.dart';
-import 'dart:math' as math;
 
 import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/constants/security_constants.dart';
@@ -158,8 +157,11 @@ final class _FixedWindowLimiter {
 /// Batas body: kecil untuk JSON biasa, besar hanya untuk register (avatar
 /// Base64) dan upload media. Batas konfigurasi tetap menjadi plafon.
 Middleware bodyLimitMiddleware(AppConfig config) {
-  final defaultMax = config.server.maxRequestBodyBytes;
-  final mediaMax = math.max(defaultMax, 4 * 1024 * 1024); // 4 MB untuk Base64/Multipart 2 MB
+  final configured = config.server.maxRequestBodyBytes;
+  final jsonMax = configured < SecurityConstants.maxJsonBodyBytes
+      ? configured
+      : SecurityConstants.maxJsonBodyBytes;
+  final mediaMax = SecurityConstants.maxMediaRequestBytes;
   final prefix = config.server.apiPrefix;
 
   return (Handler inner) {
@@ -167,7 +169,7 @@ Middleware bodyLimitMiddleware(AppConfig config) {
       final path = '/${request.url.path}';
       final isMediaOrRegister =
           path == '$prefix/auth/register' || path == '$prefix/media/images';
-      final max = isMediaOrRegister ? mediaMax : defaultMax;
+      final max = isMediaOrRegister ? mediaMax : jsonMax;
 
       final declared = request.contentLength;
       if (declared != null && declared > max) {

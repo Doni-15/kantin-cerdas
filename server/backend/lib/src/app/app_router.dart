@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
-import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:supabase/supabase.dart';
 
 import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
+import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/media/media_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart';
 
 Handler buildAppHandler({
   required AppConfig config,
@@ -27,7 +30,6 @@ Handler buildAppHandler({
         'service': config.app.name,
         'version': config.app.version,
         'environment': config.app.env.name,
-        // Identitas proyek Supabase tidak perlu terlihat publik di production.
         if (config.app.env.isDevelopment)
           'project_ref': config.supabase.projectRef,
       }),
@@ -38,11 +40,31 @@ Handler buildAppHandler({
     );
   });
 
-  // Modul auth
-  final authService = AuthService(supabaseService);
-  router.mount('$prefix/auth/', buildAuthRouter(authService).call);
+  // 2. Inisialisasi service dengan Dependency Injection bersih (MediaService -> AuthService)
+  final mediaService = MediaService(
+    supabase: supabaseService,
+    config: config,
+  );
+  
+  final authService = AuthService(
+    supabaseService,
+    mediaService: mediaService,
+  );
 
-  // 2. Fallback 404 standar kontrak (wajib menyertakan field "code")
+  router.mount(
+    '$prefix/auth/',
+    buildAuthRouter(authService, config.storage).call,
+  );
+
+  router.mount(
+    '$prefix/media/',
+    buildMediaRouter(
+      authService: authService,
+      mediaService: mediaService,
+    ).call,
+  );
+
+  // 3. Fallback 404 standar kontrak (wajib menyertakan field "code")
   router.all('/<ignored|.*>', (Request request) {
     return ApiException.notFound(
       'Endpoint ${request.method} /${request.url.path} tidak ditemukan.',
@@ -50,20 +72,20 @@ Handler buildAppHandler({
     ).toResponse();
   });
 
-  // 3. Rangkaian Middleware: Request Logger -> CORS & Security Headers -> Error Boundary
+  // 4. Rangkaian Middleware: Request Logger -> CORS & Security Headers -> Error Boundary
   var pipeline = const Pipeline();
   if (config.logging.requestEnabled) {
     pipeline = pipeline.addMiddleware(logRequests());
   }
 
   return pipeline
-    .addMiddleware(_corsAndSecurityMiddleware(config))
-    .addMiddleware(_errorBoundaryMiddleware(config))
-    .addMiddleware(allowedHostsMiddleware(config))
-    .addMiddleware(rateLimitMiddleware(config))
-    .addMiddleware(bodyLimitMiddleware(config))
-    .addMiddleware(requestTimeoutMiddleware(config))
-    .addHandler(router.call);
+      .addMiddleware(_corsAndSecurityMiddleware(config))
+      .addMiddleware(_errorBoundaryMiddleware(config))
+      .addMiddleware(allowedHostsMiddleware(config))
+      .addMiddleware(rateLimitMiddleware(config))
+      .addMiddleware(bodyLimitMiddleware(config))
+      .addMiddleware(requestTimeoutMiddleware(config))
+      .addHandler(router.call);
 }
 
 Middleware _corsAndSecurityMiddleware(AppConfig config) {
@@ -81,9 +103,6 @@ Middleware _corsAndSecurityMiddleware(AppConfig config) {
     securityHeaders['referrer-policy'] = 'no-referrer';
   }
 
-  // `Access-Control-Allow-Origin` hanya boleh berisi SATU origin (atau `*`).
-  // Daftar dipisah koma tidak valid dan ditolak browser, jadi origin request
-  // dicocokkan dengan daftar lalu di-echo, disertai `Vary: Origin`.
   Map<String, String> corsHeaders(Request request) {
     if (!cors.enabled) return const {};
 
@@ -95,7 +114,6 @@ Middleware _corsAndSecurityMiddleware(AppConfig config) {
 
     final origin = request.headers['origin'];
     if (allowAny) {
-      // `*` tidak boleh dikombinasikan dengan credentials.
       if (!cors.allowCredentials) {
         headers['access-control-allow-origin'] = '*';
       }
@@ -136,13 +154,10 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
     return (Request request) async {
       try {
         return await innerHandler(request);
-      } 
-      on ApiException catch (e) {
+      } on ApiException catch (e) {
         return e.toResponse();
-      } 
-      on PostgrestException catch (e, st) {
+      } on PostgrestException catch (e, st) {
         final mapped = ApiException.fromPostgrest(e);
-        // Error DB yang tidak terpetakan (500) wajib terlihat di log server.
         if (mapped.statusCode >= 500) {
           logError(
             request,
@@ -152,21 +167,15 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
           );
         }
         return mapped.toResponse();
-      } 
-      on AuthException catch (e) {
+      } on AuthException catch (e) {
         return ApiException.fromSupabaseAuth(e).toResponse();
-      } 
-      on TimeoutException catch (_) {
+      } on TimeoutException catch (_) {
         return const ApiException(
           statusCode: 504,
           code: 'UPSTREAM_TIMEOUT',
           message: 'Layanan sedang lambat merespons. Silakan coba lagi.',
         ).toResponse();
-      } 
-      catch (e, st) {
-        // FormatException TIDAK lagi dipetakan menjadi "JSON tidak valid" di
-        // sini: JSON rusak ditangani di router (INVALID_JSON), sehingga bug
-        // server tidak tersamar sebagai kesalahan client.
+      } catch (e, st) {
         logError(request, e, st);
         return const ApiException(
           statusCode: 500,
