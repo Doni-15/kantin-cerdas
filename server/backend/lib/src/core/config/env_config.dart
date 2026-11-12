@@ -120,7 +120,7 @@ final class EnvConfig {
       secretKey: parser.requiredString('SUPABASE_SECRET_KEY'),
       projectRef: parser.optionalString(
         'SUPABASE_PROJECT_REF',
-        defaultValue: 'diprwrdomyqrhllqlche',
+        defaultValue: Uri.parse(supabaseUrl).host.split('.').first,
       ),
 
       requestTimeoutSeconds: parser.intValue(
@@ -259,7 +259,20 @@ final class EnvConfig {
 
       authMaxRequests: parser.intValue(
         'AUTH_RATE_LIMIT_MAX_REQUESTS',
-        defaultValue: 15,
+        defaultValue: 60,
+        min: 1,
+        max: 1000,
+      ),
+      uploadWindowSeconds: parser.intValue(
+        'UPLOAD_RATE_LIMIT_WINDOW_SECONDS',
+        defaultValue: 60,
+        min: 1,
+        max: 3600,
+      ),
+
+      uploadMaxRequests: parser.intValue(
+        'UPLOAD_RATE_LIMIT_MAX_REQUESTS',
+        defaultValue: 20,
         min: 1,
         max: 1000,
       ),

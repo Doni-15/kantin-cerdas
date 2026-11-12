@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 
+import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/middleware/auth_guard.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
@@ -31,7 +32,7 @@ const String _passwordResetNeutralMessage = 'Jika email terdaftar, instruksi res
 ///
 /// Semua [ApiException] dari validator/service ditangani error boundary di
 /// `app_router.dart`, sehingga handler di sini tidak perlu try/catch.
-Router buildAuthRouter(AuthService authService) {
+Router buildAuthRouter(AuthService authService, StorageConfig storage) {
   final router = Router();
   final guard = authGuard(authService);
 
@@ -48,7 +49,7 @@ Router buildAuthRouter(AuthService authService) {
 
   router.post('/register', (Request request) async {
     final body = await _readJsonObject(request);
-    final input = AuthValidator.validateRegister(body);
+    final input = AuthValidator.validateRegister(body, storage);
     final user = await authService.register(input);
     return _json(user, statusCode: 201);
   });
@@ -107,6 +108,8 @@ Router buildAuthRouter(AuthService authService) {
       final body = await _readJsonObject(request);
       final input = AuthValidator.validateAvatarUpdate(
         idempotencyKeyHeader: request.headers['idempotency-key'],
+        actorId: request.authActor.id,
+        publicBaseUrl: storage.publicBaseUrl,
         body: body,
       );
       final result = await authService.updateProfileAvatar(
@@ -125,7 +128,15 @@ Router buildAuthRouter(AuthService authService) {
 /// JSON rusak melempar [FormatException] -> dipetakan error boundary menjadi
 /// 400 `INVALID_JSON`. Body kosong atau bukan objek ditolak di sini.
 Future<Map<String, Object?>> _readJsonObject(Request request) async {
-  final raw = await request.readAsString();
+  final String raw;
+  try {
+    raw = await request.readAsString();
+  } on FormatException {
+    throw ApiException.badRequest(
+      'Body harus berupa teks UTF-8 yang valid.',
+      code: 'INVALID_JSON',
+    );
+  }
   if (raw.trim().isEmpty) {
     throw ApiException.badRequest(
       'Body JSON wajib diisi.',
@@ -133,7 +144,15 @@ Future<Map<String, Object?>> _readJsonObject(Request request) async {
     );
   }
 
-  final Object? decoded = jsonDecode(raw);
+  final Object? decoded;
+  try {
+    decoded = jsonDecode(raw);
+  } on FormatException {
+    throw ApiException.badRequest(
+      'Format body JSON tidak valid.',
+      code: 'INVALID_JSON',
+    );
+  }
   if (decoded is! Map) {
     throw ApiException.badRequest(
       'Body harus berupa objek JSON.',

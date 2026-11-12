@@ -92,7 +92,9 @@ class _RegisterFormState extends ConsumerState<RegisterForm> {
       }
 
       final existingDraft = ref.read(registerDraftProvider);
-      ref.read(registerDraftProvider.notifier).setDraft(
+      ref
+          .read(registerDraftProvider.notifier)
+          .setDraft(
             RegisterDraft(
               name: _nameController.text.trim(),
               email: email,

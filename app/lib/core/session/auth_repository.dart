@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kantin_cerdas/core/session/auth_tokens.dart';
 import 'package:kantin_cerdas/core/session/session_user.dart';
 
-typedef SessionTokenRefresher = Future<AuthTokens?> Function(String refreshToken);
+typedef SessionTokenRefresher =
+    Future<AuthTokens?> Function(String refreshToken);
 
 abstract interface class AuthRepository {
   Future<User> login({required String identifier, required String password});

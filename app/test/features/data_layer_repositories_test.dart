@@ -30,14 +30,12 @@ import 'package:kantin_cerdas/features/admin/data/mappers/admin_failure_mapper.d
 import 'package:kantin_cerdas/features/admin/data/models/admin_models.dart';
 import 'package:kantin_cerdas/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:kantin_cerdas/features/admin/domain/failures/admin_failure.dart';
-import 'package:kantin_cerdas/features/auth/data/datasources/auth_datasource.dart';
 import 'package:kantin_cerdas/features/auth/data/mappers/auth_failure_mapper.dart';
 import 'package:kantin_cerdas/features/auth/data/models/login_response_model.dart';
 import 'package:kantin_cerdas/features/auth/data/models/user_model.dart';
 import 'package:kantin_cerdas/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:kantin_cerdas/features/auth/data/storage/auth_tokens.dart';
 import 'package:kantin_cerdas/features/auth/data/storage/secure_token_storage.dart';
-import 'package:kantin_cerdas/features/auth/data/storage/token_storage.dart';
 import 'package:kantin_cerdas/features/auth/domain/enums/user_role.dart';
 import 'package:kantin_cerdas/features/auth/domain/failures/auth_failure.dart';
 import 'package:kantin_cerdas/features/auth/domain/usecases/update_profile_avatar_usecase.dart';
@@ -79,96 +77,7 @@ import 'package:kantin_cerdas/features/owner/data/repositories/owner_repository_
 import 'package:kantin_cerdas/features/owner/domain/entities/owner_mutation_lookup.dart';
 import 'package:kantin_cerdas/features/owner/domain/failures/owner_failure.dart';
 
-class _MemoryTokenStorage implements TokenStorage {
-  _MemoryTokenStorage([this.stored]);
-
-  AuthTokens? stored;
-  int clearCount = 0;
-
-  @override
-  Future<AuthTokens?> read() async => stored;
-
-  @override
-  Future<void> save(AuthTokens tokens) async {
-    stored = tokens;
-  }
-
-  @override
-  Future<void> clear() async {
-    clearCount++;
-    stored = null;
-  }
-}
-
-class _StubAuthDataSource implements AuthDataSource {
-  const _StubAuthDataSource({
-    this.onLogin,
-    this.onRefreshSession,
-    this.onChangePassword,
-    this.onUpdateProfileAvatar,
-    this.onLogout,
-  });
-
-  final Future<LoginResponseModel> Function(String identifier, String password)?
-  onLogin;
-  final Future<LoginResponseModel> Function(String refreshToken)?
-  onRefreshSession;
-  final Future<void> Function(
-    String accessToken,
-    String currentPassword,
-    String newPassword,
-  )?
-  onChangePassword;
-  final Future<UserModel> Function(String accessToken, String? avatarUrl)?
-  onUpdateProfileAvatar;
-  final Future<void> Function(String accessToken, String? refreshToken)?
-  onLogout;
-
-  @override
-  Future<LoginResponseModel> login({
-    required String identifier,
-    required String password,
-  }) => onLogin!(identifier, password);
-
-  @override
-  Future<UserModel> register({
-    required String name,
-    required String username,
-    required String email,
-    required String password,
-  }) => throw UnimplementedError();
-
-  @override
-  Future<void> requestPasswordReset({required String email}) =>
-      throw UnimplementedError();
-
-  @override
-  Future<UserModel> getCurrentUser({required String accessToken}) =>
-      throw UnimplementedError();
-
-  @override
-  Future<LoginResponseModel> refreshSession({required String refreshToken}) =>
-      onRefreshSession!(refreshToken);
-
-  @override
-  Future<void> changePassword({
-    required String accessToken,
-    required String currentPassword,
-    required String newPassword,
-  }) => onChangePassword!(accessToken, currentPassword, newPassword);
-
-  @override
-  Future<UserModel> updateProfileAvatar({
-    required String accessToken,
-    required String? avatarUrl,
-  }) => onUpdateProfileAvatar!(accessToken, avatarUrl);
-
-  @override
-  Future<void> logout({required String accessToken, String? refreshToken}) =>
-      onLogout != null
-      ? onLogout!(accessToken, refreshToken)
-      : Future<void>.value();
-}
+import '../support/auth_test_doubles.dart';
 
 class _StubCatalogDataSource implements CustomerCatalogDataSource {
   const _StubCatalogDataSource(this.loader);
@@ -288,11 +197,11 @@ void main() {
     test(
       'login menyimpan pasangan token ke TokenStorage dan mengembalikan User',
       () async {
-        final tokenStorage = _MemoryTokenStorage();
+        final tokenStorage = MemoryTokenStorage();
         final expiry = DateTime.now().toUtc().add(const Duration(hours: 1));
         final repo = AuthRepositoryImpl(
           tokenStorage: tokenStorage,
-          dataSource: _StubAuthDataSource(
+          dataSource: StubAuthDataSource(
             onLogin: (identifier, password) async => LoginResponseModel(
               user: sampleUserModel,
               accessToken: 'acc-123',
@@ -316,7 +225,7 @@ void main() {
     test(
       'restoreSession memperbarui token kedaluwarsa via refreshSession dan mengembalikan User',
       () async {
-        final tokenStorage = _MemoryTokenStorage(
+        final tokenStorage = MemoryTokenStorage(
           AuthTokens(
             accessToken: 'expired-acc',
             refreshToken: 'valid-ref',
@@ -330,7 +239,7 @@ void main() {
         );
         final repo = AuthRepositoryImpl(
           tokenStorage: tokenStorage,
-          dataSource: _StubAuthDataSource(
+          dataSource: StubAuthDataSource(
             onRefreshSession: (refreshToken) async {
               expect(refreshToken, 'valid-ref');
               return LoginResponseModel(
@@ -353,7 +262,7 @@ void main() {
     test(
       'restoreSession membersihkan TokenStorage dan mengembalikan null ketika refresh gagal 401',
       () async {
-        final tokenStorage = _MemoryTokenStorage(
+        final tokenStorage = MemoryTokenStorage(
           AuthTokens(
             accessToken: 'expired-acc',
             refreshToken: 'revoked-ref',
@@ -364,7 +273,7 @@ void main() {
         );
         final repo = AuthRepositoryImpl(
           tokenStorage: tokenStorage,
-          dataSource: _StubAuthDataSource(
+          dataSource: StubAuthDataSource(
             onRefreshSession: (_) async => throw ApiException(
               type: ApiExceptionType.response,
               statusCode: 401,
@@ -383,12 +292,12 @@ void main() {
     test(
       'logout selalu menghapus sesi lokal meskipun pencabutan token jarak jauh gagal',
       () async {
-        final tokenStorage = _MemoryTokenStorage(
+        final tokenStorage = MemoryTokenStorage(
           const AuthTokens(accessToken: 'acc-active', refreshToken: 'ref-1'),
         );
         final repo = AuthRepositoryImpl(
           tokenStorage: tokenStorage,
-          dataSource: _StubAuthDataSource(
+          dataSource: StubAuthDataSource(
             onLogout: (accessToken, refreshToken) async {
               throw ApiException(type: ApiExceptionType.connection);
             },
@@ -404,7 +313,7 @@ void main() {
     test(
       'single-flight refresh mencegah duplikasi POST /v1/auth/refresh dan changePassword/updateProfileAvatar me-refresh saat menerima 401 TOKEN_EXPIRED',
       () async {
-        final tokenStorage = _MemoryTokenStorage(
+        final tokenStorage = MemoryTokenStorage(
           const AuthTokens(
             accessToken: 'stale-acc',
             refreshToken: 'ref-shared',
@@ -419,7 +328,7 @@ void main() {
 
         final repo = AuthRepositoryImpl(
           tokenStorage: tokenStorage,
-          dataSource: _StubAuthDataSource(
+          dataSource: StubAuthDataSource(
             onRefreshSession: (refreshToken) {
               refreshCalls++;
               expect(refreshToken, 'ref-shared');

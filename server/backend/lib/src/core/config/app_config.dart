@@ -133,6 +133,8 @@ final class RateLimitConfig {
   final int maxRequests;
   final int authWindowSeconds;
   final int authMaxRequests;
+  final int uploadWindowSeconds;
+  final int uploadMaxRequests;
   final bool trustProxy;
 
   const RateLimitConfig({
@@ -141,6 +143,8 @@ final class RateLimitConfig {
     required this.maxRequests,
     required this.authWindowSeconds,
     required this.authMaxRequests,
+    required this.uploadWindowSeconds,
+    required this.uploadMaxRequests,
     required this.trustProxy,
   });
 }
