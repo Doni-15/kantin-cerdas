@@ -207,6 +207,12 @@ final class AuthValidator {
         'INVALID_TOKEN',
       );
     }
+    if (token.length > SecurityConstants.maxRefreshTokenLength) {
+      throw ApiException.unauthenticated(
+        'Refresh token tidak valid.',
+        'INVALID_TOKEN',
+      );
+    }
     return token;
   }
 

@@ -14,6 +14,11 @@ abstract final class SecurityConstants {
   /// Body JSON biasa (login, change-password, dll.).
   static const int maxJsonBodyBytes = 64 * 1024;
 
+  /// Panjang maksimum `refresh_token` pada `POST /v1/auth/refresh`.
+  /// Token Supabase berupa string opak pendek; nilai yang lebih panjang pasti
+  /// tidak valid dan ditolak sebelum diteruskan ke layanan autentikasi.
+  static const int maxRefreshTokenLength = 2048;
+
   /// Register (avatar Base64 <= 2 MB -> ~2,8 MB) dan upload multipart.
   static const int maxMediaRequestBytes = 4 * 1024 * 1024;
 
