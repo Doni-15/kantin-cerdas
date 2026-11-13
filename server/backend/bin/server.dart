@@ -12,12 +12,10 @@ Future<void> main() async {
   final AppConfig config;
   try {
     config = EnvConfig.load();
-  } 
-  on EnvConfigException catch (e) {
+  } on EnvConfigException catch (e) {
     stderr.writeln('[FATAL] Konfigurasi tidak valid: $e');
     exit(1);
-  } 
-  catch (e) {
+  } catch (e) {
     stderr.writeln('[FATAL] Gagal memuat konfigurasi: $e');
     exit(1);
   }
@@ -39,8 +37,7 @@ Future<void> main() async {
       config.server.host,
       config.server.port,
     );
-  } 
-  on SocketException catch (e) {
+  } on SocketException catch (e) {
     stderr.writeln(
       '[FATAL] Gagal membuka ${config.server.host}:${config.server.port}: ${e.message}',
     );
@@ -59,16 +56,16 @@ Future<void> main() async {
     if (shuttingDown) return;
     shuttingDown = true;
 
-    stdout.writeln('[INFO] Menerima sinyal $signal, menutup server dengan aman...');
+    stdout.writeln(
+      '[INFO] Menerima sinyal $signal, menutup server dengan aman...',
+    );
     try {
       await server.close().timeout(
         Duration(seconds: config.server.shutdownTimeoutSeconds),
       );
-    } 
-    on TimeoutException {
+    } on TimeoutException {
       await server.close(force: true);
-    } 
-    finally {
+    } finally {
       await supabaseService.dispose();
     }
     exit(0);

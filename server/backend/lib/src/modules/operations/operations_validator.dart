@@ -47,10 +47,7 @@ final class OperationsValidator {
       );
     }
 
-    return ValidatedOperationLookupInput(
-      family: family,
-      requestId: requestId,
-    );
+    return ValidatedOperationLookupInput(family: family, requestId: requestId);
   }
 
   static String _decodePathParam(String? raw) {

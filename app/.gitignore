@@ -12,9 +12,6 @@
 .swiftpm/
 migrate_working_dir/
 
-# Sementara
-/test/
-
 # IntelliJ related
 *.iml
 *.ipr

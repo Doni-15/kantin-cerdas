@@ -33,6 +33,7 @@ abstract final class SecurityConstants {
   static final RegExp nonSafeActorChars = RegExp(r'[^a-z0-9_-]');
 
   static final RegExp actorEdgeTrimPattern = RegExp(r'^[-_]+|[-_]+$');
+
   /// Sisa nama objek setelah prefix `<actor>_<kategori>_`: `<uuid-v4>.<ext>`.
   static final RegExp uuidV4WithExtensionPattern = RegExp(
     r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|jpeg|png|webp)$',

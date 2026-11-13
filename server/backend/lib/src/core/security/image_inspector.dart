@@ -57,8 +57,16 @@ abstract final class ImageInspector {
             bytes[15] == 0x52;
         if (!hasIhdr) return false;
 
-        final width = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
-        final height = (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23];
+        final width =
+            (bytes[16] << 24) |
+            (bytes[17] << 16) |
+            (bytes[18] << 8) |
+            bytes[19];
+        final height =
+            (bytes[20] << 24) |
+            (bytes[21] << 16) |
+            (bytes[22] << 8) |
+            bytes[23];
 
         if (width < 1 ||
             width > SecurityConstants.maxDimensionPx ||
@@ -145,7 +153,9 @@ abstract final class ImageInspector {
         i++;
         continue;
       }
-      if (marker == 0x00 || marker == 0x01 || (marker >= 0xD0 && marker <= 0xD8)) {
+      if (marker == 0x00 ||
+          marker == 0x01 ||
+          (marker >= 0xD0 && marker <= 0xD8)) {
         i += 2;
         continue;
       }
@@ -153,7 +163,8 @@ abstract final class ImageInspector {
       final len = (b[i + 2] << 8) | b[i + 3];
       if (len < 2) return null;
 
-      final isSof = marker >= 0xC0 &&
+      final isSof =
+          marker >= 0xC0 &&
           marker <= 0xCF &&
           marker != 0xC4 &&
           marker != 0xC8 &&
