@@ -73,6 +73,13 @@ Handler buildAppHandler({
     ).call,
   );
 
+  final customerOrdersService = CustomerOrdersService(supabaseService);
+  router.mount(
+    '$prefix/customer/orders/',
+    buildCustomerOrdersRouter(
+      authService: authService,
+      customerOrdersService: customerOrdersService,
+    ),
   router.mount(
     '$prefix/admin/',
     buildAdminRouter(
