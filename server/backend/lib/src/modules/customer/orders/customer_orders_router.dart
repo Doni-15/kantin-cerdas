@@ -56,6 +56,7 @@ Handler buildCustomerOrdersRouter({
 
   return const Pipeline()
       .addMiddleware(authGuard(authService))
+      .addMiddleware(requireRoles(const <String>{'customer', 'owner'}))
       .addHandler(router.call);
 }
 
