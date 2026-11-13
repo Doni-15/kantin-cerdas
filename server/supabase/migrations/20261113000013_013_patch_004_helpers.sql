@@ -6,6 +6,7 @@
 -- public.fn_require_actor(..., FALSE) (dari Migrasi 004), 
 -- yang menjalankan SELECT ... FOR SHARE. Di PostgreSQL, 
 -- klausa FOR SHARE mengambil row-level lock sehingga ditolak di dalam transaksi READ ONLY (25006).
+BEGIN;
 
 CREATE OR REPLACE FUNCTION public.fn_require_actor(
   p_actor_id TEXT,
@@ -66,3 +67,5 @@ BEGIN
   RETURN v_user;
 END;
 $$;
+
+COMMIT;
