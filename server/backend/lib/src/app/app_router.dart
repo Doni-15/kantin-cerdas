@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:http/http.dart' as http;
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:supabase/supabase.dart';
@@ -87,8 +89,10 @@ Handler buildAppHandler({
     ).toResponse();
   });
 
-  // 4. Rangkaian Middleware: Request Logger -> CORS & Security Headers -> Error Boundary
-  var pipeline = const Pipeline();
+  // 4. Rangkaian Middleware (terluar -> terdalam):
+  //    Request ID -> Request Logger -> CORS & Security Headers -> Error Boundary
+  //    -> Allowed Hosts -> Rate Limit -> Body Limit -> Timeout -> Router
+  var pipeline = const Pipeline().addMiddleware(_requestIdMiddleware());
   if (config.logging.requestEnabled) {
     pipeline = pipeline.addMiddleware(logRequests());
   }
@@ -101,6 +105,37 @@ Handler buildAppHandler({
       .addMiddleware(bodyLimitMiddleware(config))
       .addMiddleware(requestTimeoutMiddleware(config))
       .addHandler(router.call);
+}
+
+/// Memberi setiap request ID korelasi (`x-request-id`). ID dari klien dipakai
+/// hanya bila formatnya aman (mencegah log injection); selain itu dibuat acak.
+/// ID dikembalikan di header respons dan field `request_id` pada respons error.
+Middleware _requestIdMiddleware() {
+  final random = Random.secure();
+
+  String generate() => List<String>.generate(
+        16,
+        (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+      ).join();
+
+  return (Handler innerHandler) {
+    return (Request request) async {
+      final inbound = request.headers['x-request-id']?.trim();
+      final id = (inbound != null && _safeRequestIdPattern.hasMatch(inbound))
+          ? inbound
+          : generate();
+
+      final response = await innerHandler(
+        request.change(context: {requestIdContextKey: id}),
+      );
+      return response.change(headers: {'x-request-id': id});
+    };
+  };
+}
+
+String? _requestIdOf(Request request) {
+  final value = request.context[requestIdContextKey];
+  return value is String ? value : null;
 }
 
 Middleware _corsAndSecurityMiddleware(AppConfig config) {
@@ -161,16 +196,21 @@ Middleware _corsAndSecurityMiddleware(AppConfig config) {
 Middleware _errorBoundaryMiddleware(AppConfig config) {
   void logError(Request request, Object e, StackTrace st, {String? extra}) {
     final where = '${request.method} /${request.url.path}';
-    stderr.writeln('[ERROR] ${extra ?? 'Unhandled exception'} on $where: $e');
+    final rid = _requestIdOf(request);
+    stderr.writeln(
+      '[ERROR]${rid == null ? '' : ' [$rid]'} '
+      '${extra ?? 'Unhandled exception'} on $where: $e',
+    );
     if (config.logging.includeStackTrace) stderr.writeln(st);
   }
 
   return (Handler innerHandler) {
     return (Request request) async {
+      final rid = _requestIdOf(request);
       try {
         return await innerHandler(request);
       } on ApiException catch (e) {
-        return e.toResponse();
+        return e.toResponse(requestId: rid);
       } on PostgrestException catch (e, st) {
         final mapped = ApiException.fromPostgrest(e);
         if (mapped.statusCode >= 500) {
@@ -181,22 +221,45 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
             extra: 'PostgrestException',
           );
         }
-        return mapped.toResponse();
-      } on AuthException catch (e) {
-        return ApiException.fromSupabaseAuth(e).toResponse();
+        return mapped.toResponse(requestId: rid);
+      } on AuthException catch (e, st) {
+        final mapped = ApiException.fromSupabaseAuth(e);
+        if (mapped.statusCode >= 500) {
+          logError(
+            request,
+            'status=${e.statusCode} code=${e.code} message=${e.message}',
+            st,
+            extra: 'AuthException',
+          );
+        }
+        return mapped.toResponse(requestId: rid);
       } on TimeoutException catch (_) {
         return const ApiException(
           statusCode: 504,
           code: 'UPSTREAM_TIMEOUT',
           message: 'Layanan sedang lambat merespons. Silakan coba lagi.',
-        ).toResponse();
+        ).toResponse(requestId: rid);
+      } on SocketException catch (e, st) {
+        logError(request, e, st, extra: 'Upstream unreachable');
+        return const ApiException(
+          statusCode: 503,
+          code: 'UPSTREAM_UNAVAILABLE',
+          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+        ).toResponse(requestId: rid);
+      } on http.ClientException catch (e, st) {
+        logError(request, e, st, extra: 'Upstream unreachable');
+        return const ApiException(
+          statusCode: 503,
+          code: 'UPSTREAM_UNAVAILABLE',
+          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+        ).toResponse(requestId: rid);
       } catch (e, st) {
         logError(request, e, st);
         return const ApiException(
           statusCode: 500,
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Terjadi kesalahan internal pada server.',
-        ).toResponse();
+        ).toResponse(requestId: rid);
       }
     };
   };

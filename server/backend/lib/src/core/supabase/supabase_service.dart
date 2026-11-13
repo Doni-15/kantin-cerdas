@@ -29,16 +29,14 @@ final class SupabaseService {
     );
   }
 
-  SupabaseClient createStatelessAuthClient({String? accessToken}) {
-    final headers = <String, String>{
-      if (accessToken != null && accessToken.trim().isNotEmpty)
-        'Authorization': 'Bearer ${accessToken.trim()}',
-    };
-
+  /// Client berbasis publishable key untuk alur Auth atas nama pengguna
+  /// (sign-in, refresh, reset password). Seluruh akses data memakai
+  /// [adminClient] (service role) dengan otorisasi eksplisit di backend + RPC;
+  /// tidak ada jalur PostgREST atas nama pengguna (RLS tidak memiliki policy).
+  SupabaseClient createStatelessAuthClient() {
     return SupabaseClient(
       config.url,
       config.publishableKey,
-      headers: headers,
       authOptions: const AuthClientOptions(
         autoRefreshToken: false,
       ),
@@ -48,19 +46,6 @@ final class SupabaseService {
         config.maxRetries,
       ),
     );
-  }
-
-  Future<T> withUserClient<T>(
-    String accessToken,
-    Future<T> Function(SupabaseClient client) action,
-  ) 
-  async {
-    final client = createStatelessAuthClient(accessToken: accessToken);
-    try {
-      return await action(client);
-    } finally {
-      await client.dispose();
-    }
   }
 
   Future<void> dispose() async {
