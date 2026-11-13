@@ -10,7 +10,8 @@ import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_validator.dart';
 
 /// Pesan netral untuk `POST /auth/password-reset` (anti-enumerasi akun).
-const String _passwordResetNeutralMessage = 'Jika email terdaftar, instruksi reset password telah dikirim.';
+const String _passwordResetNeutralMessage =
+    'Jika email terdaftar, instruksi reset password telah dikirim.';
 
 /// Router modul Autentikasi & Sesi.
 ///
@@ -21,7 +22,7 @@ const String _passwordResetNeutralMessage = 'Jika email terdaftar, instruksi res
 ///
 /// Endpoint:
 /// - POST `/register`         publik
-/// - POST '/availability'     publik (check apakah email sudah terdaftar) 
+/// - POST '/availability'     publik (check apakah email sudah terdaftar)
 /// - POST `/login`            publik
 /// - POST `/refresh`          publik (memakai refresh_token di body)
 /// - POST `/logout`           publik-toleran (idempoten, token opsional)

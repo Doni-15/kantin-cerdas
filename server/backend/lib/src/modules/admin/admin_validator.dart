@@ -22,20 +22,25 @@ final class AdminValidator {
   static final RegExp _applicationIdPattern = RegExp(r'^app_[a-f0-9]{32}$');
 
   static const Set<String> _allowedApplicationStatuses = <String>{
-    'submitted', 'reviewing', 'approved', 'rejected',
+    'submitted',
+    'reviewing',
+    'approved',
+    'rejected',
   };
 
   static const Set<String> _allowedReviewDecisions = <String>{
-    'approved', 'rejected',
+    'approved',
+    'rejected',
   };
 
   /// 1. Validasi query `GET /v1/admin/users?search=...&cursor=...&limit=...`.
   static ValidatedListAdminUsersInput validateListUsers(
     Map<String, String> queryParams,
-  ){
+  ) {
     final rawSearch = (queryParams['search'] ?? '').trim();
 
-    if (rawSearch.characters.length > _maxSearchGraphemes || rawSearch.length > _maxSearchCodePoints) {
+    if (rawSearch.characters.length > _maxSearchGraphemes ||
+        rawSearch.length > _maxSearchCodePoints) {
       throw ApiException.unprocessable(
         'Kata kunci pencarian maksimal 120 karakter.',
         code: 'INVALID_INPUT',
@@ -94,30 +99,31 @@ final class AdminValidator {
     );
 
     final fieldErrors = <String, String>{};
-    final rawExpectedVersion = body['expected_version'] ?? body['expectedVersion'];
+    final rawExpectedVersion =
+        body['expected_version'] ?? body['expectedVersion'];
 
     int? expectedVersion;
     if (rawExpectedVersion is int && rawExpectedVersion >= 1) {
       expectedVersion = rawExpectedVersion;
-    } 
-    else {
-      fieldErrors['expected_version'] = 'Field expected_version wajib berupa bilangan bulat >= 1.';
+    } else {
+      fieldErrors['expected_version'] =
+          'Field expected_version wajib berupa bilangan bulat >= 1.';
     }
 
     final rawIsActive = body['is_active'] ?? body['isActive'];
     bool? isActive;
     if (rawIsActive is bool) {
       isActive = rawIsActive;
-    } 
-    else {
-      fieldErrors['is_active'] = 'Field is_active wajib berupa boolean (true atau false).';
+    } else {
+      fieldErrors['is_active'] =
+          'Field is_active wajib berupa boolean (true atau false).';
     }
 
     final rawReason = _readString(body['reason']).trim();
     if (rawReason.isEmpty) {
       fieldErrors['reason'] = 'Alasan perubahan akses wajib diisi.';
-    } 
-    else if (rawReason.characters.length > _maxReasonGraphemes || rawReason.length > _maxReasonCodePoints) {
+    } else if (rawReason.characters.length > _maxReasonGraphemes ||
+        rawReason.length > _maxReasonCodePoints) {
       fieldErrors['reason'] = 'Alasan perubahan akses maksimal 300 karakter.';
     }
 
@@ -125,8 +131,8 @@ final class AdminValidator {
       throw ApiException.unprocessable(
         fieldErrors.values.first,
         code: fieldErrors.containsKey('reason')
-          ? 'INVALID_REASON'
-          : 'INVALID_INPUT',
+            ? 'INVALID_REASON'
+            : 'INVALID_INPUT',
         fieldErrors: fieldErrors,
       );
     }
@@ -197,15 +203,14 @@ final class AdminValidator {
       bodyValue: body['mutation_id'] ?? body['mutationId'],
     );
 
-    final rawExpectedVersion = body['expected_version'] ?? body['expectedVersion'];
+    final rawExpectedVersion =
+        body['expected_version'] ?? body['expectedVersion'];
 
     if (rawExpectedVersion is! int || rawExpectedVersion < 1) {
       throw ApiException.unprocessable(
         'Field expected_version wajib berupa bilangan bulat >= 1.',
         code: 'INVALID_INPUT',
-        fieldErrors: const {
-          'expected_version': 'Versi pengajuan tidak valid.',
-        },
+        fieldErrors: const {'expected_version': 'Versi pengajuan tidak valid.'},
       );
     }
 
@@ -216,9 +221,7 @@ final class AdminValidator {
       throw ApiException.unprocessable(
         'Keputusan pengajuan hanya boleh approved atau rejected.',
         code: 'INVALID_DECISION',
-        fieldErrors: const {
-          'status': 'Pilih approved atau rejected.',
-        },
+        fieldErrors: const {'status': 'Pilih approved atau rejected.'},
       );
     }
 
@@ -247,14 +250,11 @@ final class AdminValidator {
         throw ApiException.unprocessable(
           'Penolakan pengajuan wajib menyertakan alasan.',
           code: 'INVALID_REASON',
-          fieldErrors: const {
-            'reason': 'Alasan penolakan wajib diisi.',
-          },
+          fieldErrors: const {'reason': 'Alasan penolakan wajib diisi.'},
         );
       }
-      if (trimmedReason.characters.length > _maxReasonGraphemes 
-        || trimmedReason.length > _maxReasonCodePoints
-      ) {
+      if (trimmedReason.characters.length > _maxReasonGraphemes ||
+          trimmedReason.length > _maxReasonCodePoints) {
         throw ApiException.unprocessable(
           'Alasan penolakan maksimal 300 karakter.',
           code: 'INVALID_REASON',
@@ -309,17 +309,16 @@ final class AdminValidator {
     final idPart = trimmed.substring(sepIndex + 1).trim();
 
     final parsedTs = DateTime.tryParse(tsPart);
-    if (parsedTs == null || !tsPart.endsWith('Z') || !idPattern.hasMatch(idPart)) {
+    if (parsedTs == null ||
+        !tsPart.endsWith('Z') ||
+        !idPattern.hasMatch(idPart)) {
       throw ApiException.unprocessable(
         'Token kursor paginasi rusak atau kedaluwarsa.',
         code: 'INVALID_CURSOR',
       );
     }
 
-    return ValidatedKeysetCursor(
-      cursorTsIso: tsPart,
-      cursorId: idPart,
-    );
+    return ValidatedKeysetCursor(cursorTsIso: tsPart, cursorId: idPart);
   }
 
   static String _resolveMutationId({
@@ -351,8 +350,7 @@ final class AdminValidator {
     if (trimmed.isEmpty) return '';
     try {
       return Uri.decodeComponent(trimmed).trim();
-    } 
-    on ArgumentError {
+    } on ArgumentError {
       throw ApiException.badRequest(
         'Parameter URL mengandung encoding yang tidak valid.',
         code: 'INVALID_INPUT',

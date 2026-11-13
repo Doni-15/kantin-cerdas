@@ -16,10 +16,7 @@ final class MediaService {
   final SupabaseService supabase;
   final AppConfig config;
 
-  const MediaService({
-    required this.supabase,
-    required this.config,
-  });
+  const MediaService({required this.supabase, required this.config});
 
   Future<JsonMap> uploadAndRegisterImage({
     required AuthenticatedActor actor,
@@ -51,8 +48,9 @@ final class MediaService {
     if (existingReceipt != null &&
         existingReceipt['outcome'] == 'applied' &&
         existingReceipt['response_snapshot'] is Map) {
-      final priorResponse =
-          JsonMap.from(existingReceipt['response_snapshot'] as Map);
+      final priorResponse = JsonMap.from(
+        existingReceipt['response_snapshot'] as Map,
+      );
       final reqSnap = existingReceipt['request_snapshot'];
       final priorHash = reqSnap is Map ? reqSnap['sha256_hex'] : null;
 
@@ -71,7 +69,9 @@ final class MediaService {
     // 3. Unggah. upsert:false => tidak pernah menimpa file milik asset lain.
     var uploadedByThisRequest = false;
     try {
-      await supabase.adminClient.storage.from(bucket).uploadBinary(
+      await supabase.adminClient.storage
+          .from(bucket)
+          .uploadBinary(
             input.objectPath,
             input.bytes,
             fileOptions: FileOptions(
@@ -120,9 +120,9 @@ final class MediaService {
       );
       if (uploadedByThisRequest) {
         try {
-          await supabase.adminClient.storage
-              .from(bucket)
-              .remove(<String>[input.objectPath]);
+          await supabase.adminClient.storage.from(bucket).remove(<String>[
+            input.objectPath,
+          ]);
         } catch (err) {
           stderr.writeln(
             '[WARN] Cleanup orphan gagal untuk ${input.objectPath}: $err',
@@ -159,8 +159,9 @@ final class MediaService {
     String expectedSha256Hex,
   ) async {
     try {
-      final existing =
-          await supabase.adminClient.storage.from(bucket).download(objectPath);
+      final existing = await supabase.adminClient.storage
+          .from(bucket)
+          .download(objectPath);
       if (sha256.convert(existing).toString() != expectedSha256Hex) {
         throw ApiException.conflict(
           code: 'IDEMPOTENCY_KEY_REUSED',
@@ -183,7 +184,9 @@ final class MediaService {
     try {
       final files = await supabase.adminClient.storage
           .from(config.storage.bucketName)
-          .list(searchOptions: SearchOptions(limit: max + 1, search: prefix));
+          .list(
+            searchOptions: SearchOptions(limit: max + 1, search: prefix),
+          );
       final count = files.where((f) => f.name.startsWith(prefix)).length;
       if (count >= max) {
         throw ApiException.conflict(

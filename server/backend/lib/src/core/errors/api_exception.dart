@@ -40,7 +40,8 @@ final class ApiException implements Exception {
   );
 
   factory ApiException.unauthenticated([
-    String message = 'Sesi tidak valid atau telah berakhir. Silakan login kembali.',
+    String message =
+        'Sesi tidak valid atau telah berakhir. Silakan login kembali.',
     String code = 'UNAUTHENTICATED',
   ]) => ApiException(statusCode: 401, code: code, message: message);
 
@@ -66,26 +67,21 @@ final class ApiException implements Exception {
   );
 
   factory ApiException.rateLimited([
-    String message = 'Terlalu banyak permintaan. Silakan coba beberapa saat lagi.',
-  ]) => ApiException(
-    statusCode: 429,
-    code: 'RATE_LIMITED',
-    message: message,
-  );
+    String message =
+        'Terlalu banyak permintaan. Silakan coba beberapa saat lagi.',
+  ]) => ApiException(statusCode: 429, code: 'RATE_LIMITED', message: message);
 
   /// Mengubah exception menjadi HTTP [Response] Shelf berformat JSON kontrak.
   Response toResponse({String? requestId}) {
     final payload = <String, Object?>{
       'code': code,
       'message': message,
-      if (requestId != null && requestId.isNotEmpty) 
-        'request_id': requestId,
+      if (requestId != null && requestId.isNotEmpty) 'request_id': requestId,
 
       if (fieldErrors != null && fieldErrors!.isNotEmpty)
         'field_errors': fieldErrors,
 
-      if (details != null && details!.isNotEmpty) 
-        'details': details,
+      if (details != null && details!.isNotEmpty) 'details': details,
     };
 
     return Response(
@@ -155,8 +151,14 @@ final class ApiException implements Exception {
           message: cleanMessage,
         );
 
-      case 'KC004': case 'KC005': case 'KC006': case 'KC007': 
-      case 'KC008': case 'KC009': case 'KC010': case 'KC011':
+      case 'KC004':
+      case 'KC005':
+      case 'KC006':
+      case 'KC007':
+      case 'KC008':
+      case 'KC009':
+      case 'KC010':
+      case 'KC011':
         return ApiException(
           statusCode: 422,
           code: extractedCode.isNotEmpty ? extractedCode : 'INVALID_INPUT',
@@ -198,7 +200,12 @@ final class ApiException implements Exception {
           message: cleanMessage,
         );
 
-      case 'KC017': case 'KC018': case 'KC019': case 'KC020': case 'KC021': case 'KC022':
+      case 'KC017':
+      case 'KC018':
+      case 'KC019':
+      case 'KC020':
+      case 'KC021':
+      case 'KC022':
         return ApiException(
           statusCode: 409,
           code: extractedCode.isNotEmpty ? extractedCode : 'VERSION_CONFLICT',
@@ -218,7 +225,8 @@ final class ApiException implements Exception {
     final lower = error.message.toLowerCase();
     final code = (error.code ?? '').toLowerCase();
 
-    if (code == 'invalid_credentials' || lower.contains('invalid login credentials')) {
+    if (code == 'invalid_credentials' ||
+        lower.contains('invalid login credentials')) {
       return const ApiException(
         statusCode: 401,
         code: 'INVALID_CREDENTIALS',
@@ -226,9 +234,10 @@ final class ApiException implements Exception {
       );
     }
 
-    if (code == 'user_already_exists' || code == 'email_exists' ||
-      lower.contains('already registered') || lower.contains('already been registered')
-    ) {
+    if (code == 'user_already_exists' ||
+        code == 'email_exists' ||
+        lower.contains('already registered') ||
+        lower.contains('already been registered')) {
       return ApiException.conflict(
         code: 'EMAIL_TAKEN',
         message: 'Email sudah digunakan.',
@@ -237,8 +246,8 @@ final class ApiException implements Exception {
     }
 
     if (code == 'weak_password' ||
-      lower.contains('weak password') ||
-      lower.contains('password should be')) {
+        lower.contains('weak password') ||
+        lower.contains('password should be')) {
       return ApiException.unprocessable(
         'Password terlalu lemah. Gunakan kombinasi yang lebih kuat.',
         code: 'WEAK_PASSWORD',
@@ -265,7 +274,8 @@ final class ApiException implements Exception {
       return const ApiException(
         statusCode: 503,
         code: 'AUTH_UNAVAILABLE',
-        message: 'Layanan autentikasi sedang tidak tersedia. Silakan coba lagi.',
+        message:
+            'Layanan autentikasi sedang tidak tersedia. Silakan coba lagi.',
       );
     }
 

@@ -16,7 +16,9 @@ final class AuthValidator {
   const AuthValidator._();
 
   /// Memvalidasi body JSON `POST /v1/auth/availability`.
-  static ({String? email, String? username}) validateAvailability(Map<String, Object?> body) {
+  static ({String? email, String? username}) validateAvailability(
+    Map<String, Object?> body,
+  ) {
     final rawEmail = _readString(body['email']).trim().toLowerCase();
     final rawUsername = _readString(body['username']).trim().toLowerCase();
 
@@ -28,7 +30,9 @@ final class AuthValidator {
     }
 
     if (rawEmail.isNotEmpty &&
-        (rawEmail.length < 3 || rawEmail.length > 254 || !SecurityConstants.emailPattern.hasMatch(rawEmail))) {
+        (rawEmail.length < 3 ||
+            rawEmail.length > 254 ||
+            !SecurityConstants.emailPattern.hasMatch(rawEmail))) {
       throw ApiException.unprocessable(
         'Format alamat email tidak valid.',
         code: 'INVALID_INPUT',
@@ -285,7 +289,9 @@ final class AuthValidator {
   }) {
     var mutationId = (idempotencyKeyHeader ?? '').trim();
     if (mutationId.isEmpty) {
-      mutationId = _readString(body['mutation_id'] ?? body['mutationId']).trim();
+      mutationId = _readString(
+        body['mutation_id'] ?? body['mutationId'],
+      ).trim();
     }
     if (!SecurityConstants.idempotencyKeyPattern.hasMatch(mutationId)) {
       throw ApiException.unprocessable(
@@ -321,9 +327,7 @@ final class AuthValidator {
           throw ApiException.unprocessable(
             'URL foto profil tidak valid atau bukan foto profil milik akun ini.',
             code: 'INVALID_IMAGE_URL',
-            fieldErrors: const {
-              'avatar_url': 'URL foto profil tidak valid.',
-            },
+            fieldErrors: const {'avatar_url': 'URL foto profil tidak valid.'},
           );
         }
         cleanUrl = trimmed;
@@ -350,7 +354,11 @@ final class AuthValidator {
     );
   }
 
-  static bool _isOwnedAvatarUrl(String url, String publicBaseUrl, String actorId) {
+  static bool _isOwnedAvatarUrl(
+    String url,
+    String publicBaseUrl,
+    String actorId,
+  ) {
     if (url.isEmpty || url.length > 512) return false;
     if (SecurityConstants.unsafeUrlChars.hasMatch(url)) return false;
 

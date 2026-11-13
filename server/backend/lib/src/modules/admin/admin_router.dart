@@ -7,8 +7,7 @@ import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/middleware/auth_guard.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_validator.dart';
-import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart'
-    hide JsonMap;
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
 
 /// Router modul Administrasi (`/v1/admin/*`).
 ///
@@ -20,9 +19,9 @@ Router buildAdminRouter({
 }) {
   final router = Router();
   final adminGuard = Pipeline()
-    .addMiddleware(authGuard(authService))
-    .addMiddleware(requireRoles(const <String>{'admin'}))
-    .addHandler;
+      .addMiddleware(authGuard(authService))
+      .addMiddleware(requireRoles(const <String>{'admin'}))
+      .addHandler;
 
   // 1. Ringkasan Dashboard Admin
   router.get(
@@ -60,10 +59,7 @@ Router buildAdminRouter({
         targetUserId: targetUserId,
       );
       if (result == null) {
-        throw ApiException.notFound(
-          'Pengguna tidak ditemukan.',
-          'NOT_FOUND',
-        );
+        throw ApiException.notFound('Pengguna tidak ditemukan.', 'NOT_FOUND');
       }
       return _json(result);
     }),
@@ -149,8 +145,7 @@ Future<JsonMap> _readJsonObject(Request request) async {
   final String raw;
   try {
     raw = await request.readAsString();
-  } 
-  on FormatException {
+  } on FormatException {
     throw ApiException.badRequest(
       'Body harus berupa teks UTF-8 yang valid.',
       code: 'INVALID_JSON',
@@ -166,8 +161,7 @@ Future<JsonMap> _readJsonObject(Request request) async {
   final Object? decoded;
   try {
     decoded = jsonDecode(raw);
-  } 
-  on FormatException {
+  } on FormatException {
     throw ApiException.badRequest(
       'Format body JSON tidak valid.',
       code: 'INVALID_JSON',

@@ -9,9 +9,7 @@ import 'package:kantin_cerdas_backend/src/modules/operations/operations_validato
 final class OperationsService {
   final SupabaseService supabase;
 
-  const OperationsService({
-    required this.supabase,
-  });
+  const OperationsService({required this.supabase});
 
   Future<JsonMap> lookupOrSeal({
     required AuthenticatedActor actor,

@@ -20,19 +20,13 @@ final class AuthService {
   final SupabaseService _supabase;
   final MediaService mediaService;
 
-  const AuthService(
-    this._supabase, {
-    required this.mediaService,
-  });
+  const AuthService(this._supabase, {required this.mediaService});
 
   static const String _userColumns =
       'id, auth_uid, username, email, name, role, is_active, session_epoch, version, avatar_url';
 
   /// 0. POST `/v1/auth/availability` — Cek ketersediaan email / username (Langkah 1 Registrasi).
-  Future<JsonMap> checkAvailability({
-    String? email,
-    String? username,
-  }) async {
+  Future<JsonMap> checkAvailability({String? email, String? username}) async {
     var emailAvailable = true;
     var usernameAvailable = true;
 
@@ -195,7 +189,8 @@ final class AuthService {
     } on AuthException catch (e) {
       final code = (e.code ?? '').toLowerCase();
       final lower = e.message.toLowerCase();
-      final isAlreadyExists = code == 'user_already_exists' ||
+      final isAlreadyExists =
+          code == 'user_already_exists' ||
           code == 'email_exists' ||
           lower.contains('already registered') ||
           lower.contains('already been registered');
@@ -216,9 +211,11 @@ final class AuthService {
 
       final targetEmail = input.email.toLowerCase();
       User? existing;
-      for (var page = 1;
-          page <= _orphanScanMaxPages && existing == null;
-          page++) {
+      for (
+        var page = 1;
+        page <= _orphanScanMaxPages && existing == null;
+        page++
+      ) {
         final users = await _supabase.adminClient.auth.admin.listUsers(
           page: page,
           perPage: _orphanScanPageSize,
@@ -484,7 +481,6 @@ final class AuthService {
       }
     }
   }
-
 
   /// 7. POST `/v1/auth/password-reset`
   Future<void> requestPasswordReset(String email) async {

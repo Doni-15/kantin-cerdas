@@ -12,17 +12,13 @@ typedef JsonMap = Map<String, Object?>;
 final class AdminService {
   final SupabaseService supabase;
 
-  const AdminService({
-    required this.supabase,
-  });
+  const AdminService({required this.supabase});
 
   /// 1. `GET /v1/admin/summary` -> `public.rpc_get_admin_summary`
   Future<JsonMap> getSummary(AuthenticatedActor actor) async {
     final rpcResult = await supabase.adminClient.rpc<dynamic>(
       'rpc_get_admin_summary',
-      params: <String, Object?>{
-        'p_actor_id': actor.id,
-      },
+      params: <String, Object?>{'p_actor_id': actor.id},
     );
 
     if (rpcResult is! Map) {
@@ -119,10 +115,7 @@ final class AdminService {
     }
 
     final map = JsonMap.from(rpcResult);
-    return <String, Object?>{
-      'user': map['user'],
-      'version': map['version'],
-    };
+    return <String, Object?>{'user': map['user'], 'version': map['version']};
   }
 
   /// 5. `GET /v1/admin/applications` -> `public.rpc_list_admin_applications`

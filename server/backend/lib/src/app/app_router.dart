@@ -13,11 +13,21 @@ import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/admin/admin_service.dart' hide JsonMap;
+import 'package:kantin_cerdas_backend/src/modules/admin/admin_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart' hide JsonMap;
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart' hide JsonMap;
+import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/operations/operations_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/operations/operations_service.dart';
+
+/// Kunci context Shelf untuk menyimpan ID korelasi request (`x-request-id`).
+const String requestIdContextKey = 'kantin_cerdas.request_id';
+
+/// Pola karakter aman untuk `x-request-id` dari klien (mencegah log/header injection).
+final RegExp _safeRequestIdPattern = RegExp(r'^[A-Za-z0-9._:-]{8,128}$');
 
 Handler buildAppHandler({
   required AppConfig config,
@@ -34,10 +44,9 @@ Handler buildAppHandler({
         'service': config.app.name,
         'version': config.app.version,
         'environment': config.app.env.name,
-
-        if (config.app.env.isDevelopment) 'project_ref': config.supabase.projectRef,
+        if (config.app.env.isDevelopment)
+          'project_ref': config.supabase.projectRef,
       }),
-
       headers: const {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
@@ -46,19 +55,11 @@ Handler buildAppHandler({
   });
 
   // 2. Inisialisasi service dengan Dependency Injection bersih
-  final mediaService = MediaService(
-    supabase: supabaseService,
-    config: config,
-  );
-
-  final authService = AuthService(
-    supabaseService,
-    mediaService: mediaService,
-  );
-
-  final adminService = AdminService(
-    supabase: supabaseService,
-  );
+  final mediaService = MediaService(supabase: supabaseService, config: config);
+  final authService = AuthService(supabaseService, mediaService: mediaService);
+  final adminService = AdminService(supabase: supabaseService);
+  final customerOrdersService = CustomerOrdersService(supabaseService);
+  final operationsService = OperationsService(supabase: supabaseService);
 
   router.mount(
     '$prefix/auth/',
@@ -67,25 +68,28 @@ Handler buildAppHandler({
 
   router.mount(
     '$prefix/media/',
-    buildMediaRouter(
-      authService: authService,
-      mediaService: mediaService,
-    ).call,
+    buildMediaRouter(authService: authService, mediaService: mediaService).call,
   );
 
-  final customerOrdersService = CustomerOrdersService(supabaseService);
   router.mount(
     '$prefix/customer/orders/',
     buildCustomerOrdersRouter(
       authService: authService,
       customerOrdersService: customerOrdersService,
     ),
+  );
+
   router.mount(
     '$prefix/admin/',
-    buildAdminRouter(
+    buildAdminRouter(authService: authService, adminService: adminService).call,
+  );
+
+  router.mount(
+    '$prefix/operations/',
+    buildOperationsRouter(
       authService: authService,
-      adminService: adminService,
-    ).call,
+      operationsService: operationsService,
+    ),
   );
 
   // 3. Fallback 404 standar kontrak (wajib menyertakan field "code")
@@ -121,9 +125,8 @@ Middleware _requestIdMiddleware() {
   final random = Random.secure();
 
   String generate() => List<String>.generate(
-        16,
-        (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
-      ).join();
+    16, (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+  ).join();
 
   return (Handler innerHandler) {
     return (Request request) async {
