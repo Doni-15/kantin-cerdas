@@ -1,7 +1,9 @@
+import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
-import 'package:kantin_cerdas_backend/src/core/utils/json_types.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_validated_input.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/authenticated_actor.dart';
+
+typedef JsonMap = Map<String, Object?>;
 
 /// Layanan bisnis domain Administrasi (`/v1/admin/*`).
 ///
@@ -22,7 +24,15 @@ final class AdminService {
         'p_actor_id': actor.id,
       },
     );
-    return asDatabaseMap(rpcResult, 'ringkasan admin');
+
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Format ringkasan admin dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 
   /// 2. `GET /v1/admin/users` -> `public.rpc_list_admin_users`
@@ -40,7 +50,15 @@ final class AdminService {
         'p_limit': input.limit,
       },
     );
-    return asDatabaseMap(rpcResult, 'daftar pengguna');
+
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Format daftar pengguna dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 
   /// 3. `GET /v1/admin/users/<userId>` -> `public.rpc_get_admin_user`
@@ -56,10 +74,18 @@ final class AdminService {
         'p_target_user_id': targetUserId,
       },
     );
+
     if (rpcResult == null) {
       return null;
     }
-    return asDatabaseMap(rpcResult, 'detail pengguna');
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Format detail pengguna dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 
   /// 4. `POST /v1/admin/users/<userId>/access` -> `public.rpc_admin_set_user_access`
@@ -84,7 +110,15 @@ final class AdminService {
       },
     );
 
-    final map = asDatabaseMap(rpcResult, 'respons perubahan akses pengguna');
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Respons perubahan akses pengguna dari database tidak valid.',
+      );
+    }
+
+    final map = JsonMap.from(rpcResult);
     return <String, Object?>{
       'user': map['user'],
       'version': map['version'],
@@ -106,7 +140,15 @@ final class AdminService {
         'p_limit': input.limit,
       },
     );
-    return asDatabaseMap(rpcResult, 'daftar pengajuan stan');
+
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Format daftar pengajuan stan dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 
   /// 6. `GET /v1/admin/applications/<applicationId>` -> `public.rpc_get_admin_application`
@@ -122,10 +164,18 @@ final class AdminService {
         'p_application_id': applicationId,
       },
     );
+
     if (rpcResult == null) {
       return null;
     }
-    return asDatabaseMap(rpcResult, 'detail pengajuan stan');
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Format detail pengajuan stan dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 
   /// 7. `POST /v1/admin/applications/<applicationId>/review` -> `public.rpc_admin_review_application`
@@ -144,6 +194,14 @@ final class AdminService {
         'p_reason': input.reason,
       },
     );
-    return asDatabaseMap(rpcResult, 'respons peninjauan pengajuan stan');
+
+    if (rpcResult is! Map) {
+      throw const ApiException(
+        statusCode: 500,
+        code: 'DATABASE_ERROR',
+        message: 'Respons peninjauan pengajuan stan dari database tidak valid.',
+      );
+    }
+    return JsonMap.from(rpcResult);
   }
 }
