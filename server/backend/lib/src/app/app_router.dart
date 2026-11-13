@@ -10,10 +10,12 @@ import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/middleware/requests_guard.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/admin/admin_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/admin/admin_service.dart' hide JsonMap;
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart' hide JsonMap;
 import 'package:kantin_cerdas_backend/src/modules/media/media_router.dart';
-import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart' hide JsonMap;
 
 Handler buildAppHandler({
   required AppConfig config,
@@ -30,9 +32,10 @@ Handler buildAppHandler({
         'service': config.app.name,
         'version': config.app.version,
         'environment': config.app.env.name,
-        if (config.app.env.isDevelopment)
-          'project_ref': config.supabase.projectRef,
+
+        if (config.app.env.isDevelopment) 'project_ref': config.supabase.projectRef,
       }),
+
       headers: const {
         'content-type': 'application/json; charset=utf-8',
         'cache-control': 'no-store',
@@ -40,15 +43,19 @@ Handler buildAppHandler({
     );
   });
 
-  // 2. Inisialisasi service dengan Dependency Injection bersih (MediaService -> AuthService)
+  // 2. Inisialisasi service dengan Dependency Injection bersih
   final mediaService = MediaService(
     supabase: supabaseService,
     config: config,
   );
-  
+
   final authService = AuthService(
     supabaseService,
     mediaService: mediaService,
+  );
+
+  final adminService = AdminService(
+    supabase: supabaseService,
   );
 
   router.mount(
@@ -61,6 +68,14 @@ Handler buildAppHandler({
     buildMediaRouter(
       authService: authService,
       mediaService: mediaService,
+    ).call,
+  );
+
+  router.mount(
+    '$prefix/admin/',
+    buildAdminRouter(
+      authService: authService,
+      adminService: adminService,
     ).call,
   );
 
