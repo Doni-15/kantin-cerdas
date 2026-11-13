@@ -6,12 +6,11 @@ import 'package:supabase/supabase.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/security/media_paths.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
+import 'package:kantin_cerdas_backend/src/core/utils/json_types.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_validator.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/authenticated_actor.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_validated_input.dart';
-
-typedef JsonMap = Map<String, Object?>;
 
 /// Layanan bisnis domain Autentikasi & Sesi (`/v1/auth/*`).
 ///
@@ -115,9 +114,16 @@ final class AuthService {
       );
       userJson = JsonMap.from(rpcResult as Map);
     } catch (e) {
+      // Rollback kredensial Auth agar tidak tersisa akun tanpa profil.
+      // Kegagalan rollback dicatat (bukan disenyapkan); akun yatim yang tersisa
+      // dibersihkan oleh _createOrReclaimOrphanAuthUser pada registrasi berikutnya.
       try {
         await _supabase.adminClient.auth.admin.deleteUser(authUid);
-      } catch (_) {}
+      } catch (rollbackError) {
+        stderr.writeln(
+          '[WARN] Rollback registrasi gagal menghapus akun Auth $authUid: $rollbackError',
+        );
+      }
       rethrow;
     }
 
@@ -161,10 +167,19 @@ final class AuthService {
     };
   }
 
+  /// Umur minimum akun Auth tanpa profil sebelum boleh dianggap sisa registrasi
+  /// yang gagal. Mencegah penghapusan akun yang registrasinya sedang berjalan
+  /// (jeda antara `createUser` dan `rpc_register_user_profile`).
+  static const Duration _orphanMinAge = Duration(minutes: 10);
+  static const int _orphanScanPageSize = 200;
+  static const int _orphanScanMaxPages = 25;
+
   /// Membuat akun di Supabase Auth. Apabila `public.users` sudah terbukti tidak
-  /// memiliki email tersebut tetapi `auth.users` masih menyimpan akun yatim
-  /// (mis. sisa penghapusan tabel manual saat pengujian), akun yatim tersebut
-  /// dibersihkan otomatis di Dart lalu dibuat ulang.
+  /// memiliki email tersebut tetapi `auth.users` masih menyimpan akun yatim,
+  /// akun yatim dibersihkan lalu dibuat ulang HANYA bila terbukti sisa
+  /// registrasi backend yang gagal (lihat [_isReclaimableOrphan]). Akun lain
+  /// (mis. admin/owner yang dibuat manual lewat Dashboard sebelum bootstrap
+  /// profil) tidak pernah dihapus oleh endpoint publik ini.
   Future<UserResponse> _createOrReclaimOrphanAuthUser(
     ValidatedRegisterInput input,
   ) async {
@@ -199,19 +214,53 @@ final class AuthService {
         );
       }
 
-      final users = await _supabase.adminClient.auth.admin.listUsers(
-        page: 1,
-        perPage: 1000,
-      );
       final targetEmail = input.email.toLowerCase();
-      for (final u in users) {
-        if ((u.email ?? '').toLowerCase() == targetEmail) {
-          await _supabase.adminClient.auth.admin.deleteUser(u.id);
+      User? existing;
+      for (var page = 1;
+          page <= _orphanScanMaxPages && existing == null;
+          page++) {
+        final users = await _supabase.adminClient.auth.admin.listUsers(
+          page: page,
+          perPage: _orphanScanPageSize,
+        );
+        for (final u in users) {
+          if ((u.email ?? '').toLowerCase() == targetEmail) {
+            existing = u;
+            break;
+          }
         }
+        if (users.length < _orphanScanPageSize) break;
       }
+
+      if (existing == null || !_isReclaimableOrphan(existing)) {
+        throw ApiException.conflict(
+          code: 'EMAIL_TAKEN',
+          message: 'Email sudah digunakan.',
+          fieldErrors: const {'email': 'Email sudah digunakan.'},
+        );
+      }
+
+      stderr.writeln(
+        '[WARN] Membersihkan akun Auth yatim ${existing.id} (tanpa profil, '
+        'tanpa login, dibuat ${existing.createdAt}) pada registrasi ulang.',
+      );
+      await _supabase.adminClient.auth.admin.deleteUser(existing.id);
 
       return await _supabase.adminClient.auth.admin.createUser(attributes);
     }
+  }
+
+  /// Akun Auth dianggap sisa registrasi gagal hanya bila SEMUA terpenuhi:
+  /// dibuat oleh endpoint register (metadata `username` ada), belum pernah
+  /// login, dan sudah lebih tua dari [_orphanMinAge].
+  bool _isReclaimableOrphan(User user) {
+    final metadata = user.userMetadata;
+    if (metadata == null || metadata['username'] is! String) return false;
+    if (user.lastSignInAt != null) return false;
+
+    final created = DateTime.tryParse(user.createdAt);
+    if (created == null) return false;
+    return DateTime.now().toUtc().difference(created.toUtc()) >= _orphanMinAge;
   }
 
   /// 2. POST `/v1/auth/login` — Login menggunakan Username ATAU Email.
@@ -389,10 +438,15 @@ final class AuthService {
   }
 
   /// 6. POST `/v1/auth/change-password`
+  ///
+  /// Setelah password diganti, seluruh sesi LAIN milik pengguna dicabut
+  /// ([accessToken] = sesi saat ini, yang dipertahankan). Tanpa ini, refresh
+  /// token yang sudah dicuri tetap berlaku walau korban mengganti password.
   Future<void> changePassword(
     AuthenticatedActor actor,
-    ValidatedChangePasswordInput input,
-  ) async {
+    ValidatedChangePasswordInput input, {
+    String? accessToken,
+  }) async {
     try {
       final session = await _signInWithEmailPassword(
         email: actor.email,
@@ -413,7 +467,24 @@ final class AuthService {
       actor.authUid,
       attributes: AdminUserAttributes(password: input.newPassword),
     );
+
+    final currentToken = accessToken?.trim() ?? '';
+    if (currentToken.isNotEmpty) {
+      try {
+        await _supabase.adminClient.auth.admin.signOut(
+          currentToken,
+          scope: SignOutScope.others,
+        );
+      } catch (e) {
+        // Password sudah berhasil diganti; kegagalan pencabutan sesi lain
+        // dicatat agar operator dapat menindaklanjuti, bukan menggagalkan request.
+        stderr.writeln(
+          '[WARN] Password diubah tetapi sesi lain gagal dicabut (${actor.id}): $e',
+        );
+      }
+    }
   }
+
 
   /// 7. POST `/v1/auth/password-reset`
   Future<void> requestPasswordReset(String email) async {

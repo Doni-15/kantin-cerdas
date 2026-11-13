@@ -7,10 +7,9 @@ import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/security/media_paths.dart';
 import 'package:kantin_cerdas_backend/src/core/supabase/supabase_service.dart';
+import 'package:kantin_cerdas_backend/src/core/utils/json_types.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/authenticated_actor.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_validated_input.dart';
-
-typedef JsonMap = Map<String, Object?>;
 
 /// Layanan bisnis domain Media (`POST /v1/media/images`).
 final class MediaService {
