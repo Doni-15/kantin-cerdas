@@ -97,7 +97,11 @@ Router buildAuthRouter(AuthService authService, StorageConfig storage) {
     guard((Request request) async {
       final body = await _readJsonObject(request);
       final input = AuthValidator.validateChangePassword(body);
-      await authService.changePassword(request.authActor, input);
+      await authService.changePassword(
+        request.authActor,
+        input,
+        accessToken: extractBearerToken(request),
+      );
       return _noContent();
     }),
   );

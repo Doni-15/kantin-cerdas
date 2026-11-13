@@ -350,9 +350,6 @@ final class AuthValidator {
     );
   }
 
-  static String generateSecureMutationId48() =>
-      MediaPaths.generateMutationId48();
-
   static bool _isOwnedAvatarUrl(String url, String publicBaseUrl, String actorId) {
     if (url.isEmpty || url.length > 512) return false;
     if (SecurityConstants.unsafeUrlChars.hasMatch(url)) return false;

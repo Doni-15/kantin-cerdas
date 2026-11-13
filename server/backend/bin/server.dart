@@ -22,6 +22,10 @@ Future<void> main() async {
     exit(1);
   }
 
+  for (final warning in _productionConfigWarnings(config)) {
+    stderr.writeln('[WARN] $warning');
+  }
+
   final supabaseService = SupabaseService(config.supabase);
   final handler = buildAppHandler(
     config: config,
@@ -74,4 +78,23 @@ Future<void> main() async {
   if (!Platform.isWindows) {
     ProcessSignal.sigterm.watch().listen(shutdown);
   }
+}
+
+/// Peringatan konfigurasi yang valid secara teknis tetapi berisiko di produksi.
+/// Tidak menghentikan server: nilai tersebut bisa disengaja (mis. CORS `*`
+/// untuk API yang hanya dipakai aplikasi mobile).
+List<String> _productionConfigWarnings(AppConfig config) {
+  if (!config.app.env.isProduction) return const <String>[];
+
+  return <String>[
+    if (config.security.allowedHosts.contains('*'))
+      'SECURITY_ALLOWED_HOSTS=* menonaktifkan validasi header Host.',
+    if (config.cors.enabled && config.cors.allowedOrigins.contains('*'))
+      'CORS_ALLOWED_ORIGINS=* mengizinkan seluruh origin browser.',
+    if (!config.rateLimit.enabled)
+      'RATE_LIMIT_ENABLED=false: endpoint login/register tanpa pembatasan laju.',
+    if (config.rateLimit.enabled && !config.rateLimit.trustProxy)
+      'RATE_LIMIT_TRUST_PROXY=false: bila server berada di belakang reverse '
+          'proxy, semua klien terlihat sebagai satu IP dan berbagi satu kuota.',
+  ];
 }

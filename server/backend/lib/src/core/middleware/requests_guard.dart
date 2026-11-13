@@ -51,6 +51,19 @@ Middleware rateLimitMiddleware(AppConfig config) {
   final healthPath = '$prefix/health';
   final authPath = '$prefix/auth';
   final uploadPath = '$prefix/media/images';
+  // Limiter ketat hanya untuk endpoint yang memproses kredensial / bisa dipakai
+  // untuk enumerasi akun. Endpoint sesi berotentikasi (`/auth/me`,
+  // `/auth/profile/avatar`, `/auth/logout`) memakai limiter umum: pada Wi-Fi
+  // kampus banyak pengguna berbagi satu IP publik, sehingga memasukkannya ke
+  // limiter ketat akan memblokir seluruh pengguna di jaringan yang sama.
+  final strictAuthPaths = <String>{
+    '$authPath/register',
+    '$authPath/availability',
+    '$authPath/login',
+    '$authPath/refresh',
+    '$authPath/password-reset',
+    '$authPath/change-password',
+  };
 
   final general = _FixedWindowLimiter(
     Duration(seconds: cfg.windowSeconds),
@@ -71,7 +84,7 @@ Middleware rateLimitMiddleware(AppConfig config) {
       final path = '/${request.url.path}';
       if (path == healthPath) return inner(request);
 
-      final isAuth = path == authPath || path.startsWith('$authPath/');
+      final isAuth = strictAuthPaths.contains(path);
       final ip = _clientIp(request, cfg.trustProxy);
 
       final isHeavy = request.method == 'POST' &&

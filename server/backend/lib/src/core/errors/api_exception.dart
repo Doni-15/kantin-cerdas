@@ -257,6 +257,18 @@ final class ApiException implements Exception {
       );
     }
 
+    // Kegagalan di sisi GoTrue (5xx) atau tanpa status HTTP (mis. jaringan)
+    // adalah gangguan infrastruktur, BUKAN penolakan kredensial. Memetakannya
+    // ke 401 akan membuat klien mengira sesi berakhir lalu memaksa logout.
+    final status = int.tryParse(error.statusCode ?? '');
+    if (status == null || status >= 500) {
+      return const ApiException(
+        statusCode: 503,
+        code: 'AUTH_UNAVAILABLE',
+        message: 'Layanan autentikasi sedang tidak tersedia. Silakan coba lagi.',
+      );
+    }
+
     return ApiException.unauthenticated(
       'Autentikasi gagal. Silakan login kembali.',
       'UNAUTHENTICATED',

@@ -2,6 +2,7 @@ import 'package:characters/characters.dart';
 
 import 'package:kantin_cerdas_backend/src/core/constants/security_constants.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
+import 'package:kantin_cerdas_backend/src/core/utils/json_types.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_validated_input.dart';
 
 export 'package:kantin_cerdas_backend/src/modules/admin/admin_validated_input.dart';
@@ -22,24 +23,27 @@ final class AdminValidator {
   static final RegExp _applicationIdPattern = RegExp(r'^app_[a-f0-9]{32}$');
 
   static const Set<String> _allowedApplicationStatuses = <String>{
-    'submitted', 'reviewing', 'approved', 'rejected',
+    'submitted',
+    'reviewing',
+    'approved',
+    'rejected',
   };
 
   static const Set<String> _allowedReviewDecisions = <String>{
-    'approved', 'rejected',
+    'approved',
+    'rejected',
   };
 
   /// 1. Validasi query `GET /v1/admin/users?search=...&cursor=...&limit=...`.
   static ValidatedListAdminUsersInput validateListUsers(
     Map<String, String> queryParams,
-  ){
+  ) {
     final rawSearch = (queryParams['search'] ?? '').trim();
-
-    if (rawSearch.characters.length > _maxSearchGraphemes || rawSearch.length > _maxSearchCodePoints) {
+    if (rawSearch.characters.length > _maxSearchGraphemes ||
+        rawSearch.runes.length > _maxSearchCodePoints) {
       throw ApiException.unprocessable(
         'Kata kunci pencarian maksimal 120 karakter.',
         code: 'INVALID_INPUT',
-
         fieldErrors: const {
           'search': 'Kata kunci pencarian maksimal 120 karakter.',
         },
@@ -77,10 +81,9 @@ final class AdminValidator {
     required String? rawTargetUserId,
     required String? idempotencyKeyHeader,
     required String actorId,
-    required Map<String, Object?> body,
+    required JsonMap body,
   }) {
     final targetUserId = validateUserId(rawTargetUserId);
-
     if (targetUserId == actorId) {
       throw ApiException.forbidden(
         'Admin tidak dapat mengubah status akses akunnya sendiri.',
@@ -94,39 +97,41 @@ final class AdminValidator {
     );
 
     final fieldErrors = <String, String>{};
-    final rawExpectedVersion = body['expected_version'] ?? body['expectedVersion'];
 
+    final rawExpectedVersion =
+        body['expected_version'] ?? body['expectedVersion'];
     int? expectedVersion;
     if (rawExpectedVersion is int && rawExpectedVersion >= 1) {
       expectedVersion = rawExpectedVersion;
-    } 
-    else {
-      fieldErrors['expected_version'] = 'Field expected_version wajib berupa bilangan bulat >= 1.';
+    } else {
+      fieldErrors['expected_version'] =
+          'Field expected_version wajib berupa bilangan bulat >= 1.';
     }
 
     final rawIsActive = body['is_active'] ?? body['isActive'];
     bool? isActive;
     if (rawIsActive is bool) {
       isActive = rawIsActive;
-    } 
-    else {
-      fieldErrors['is_active'] = 'Field is_active wajib berupa boolean (true atau false).';
+    } else {
+      fieldErrors['is_active'] =
+          'Field is_active wajib berupa boolean (true atau false).';
     }
 
-    final rawReason = _readString(body['reason']).trim();
-    if (rawReason.isEmpty) {
-      fieldErrors['reason'] = 'Alasan perubahan akses wajib diisi.';
-    } 
-    else if (rawReason.characters.length > _maxReasonGraphemes || rawReason.length > _maxReasonCodePoints) {
-      fieldErrors['reason'] = 'Alasan perubahan akses maksimal 300 karakter.';
+    final reasonError = _validateRequiredReason(
+      body['reason'],
+      emptyMessage: 'Alasan perubahan akses wajib diisi.',
+      maxMessage: 'Alasan perubahan akses maksimal 300 karakter.',
+    );
+    if (reasonError != null) {
+      fieldErrors['reason'] = reasonError;
     }
 
     if (fieldErrors.isNotEmpty) {
       throw ApiException.unprocessable(
         fieldErrors.values.first,
-        code: fieldErrors.containsKey('reason')
-          ? 'INVALID_REASON'
-          : 'INVALID_INPUT',
+        code: fieldErrors.keys.first == 'reason'
+            ? 'INVALID_REASON'
+            : 'INVALID_INPUT',
         fieldErrors: fieldErrors,
       );
     }
@@ -136,7 +141,7 @@ final class AdminValidator {
       targetUserId: targetUserId,
       expectedVersion: expectedVersion!,
       isActive: isActive!,
-      reason: rawReason,
+      reason: _readString(body['reason']).trim(),
     );
   }
 
@@ -146,7 +151,6 @@ final class AdminValidator {
   ) {
     final rawStatus = (queryParams['status'] ?? '').trim();
     String? status;
-
     if (rawStatus.isNotEmpty) {
       if (!_allowedApplicationStatuses.contains(rawStatus)) {
         throw ApiException.unprocessable(
@@ -174,7 +178,6 @@ final class AdminValidator {
   /// 5. Validasi parameter path `applicationId` pada `GET /v1/admin/applications/<applicationId>`.
   static String validateApplicationId(String? rawApplicationId) {
     final decoded = _decodePathParam(rawApplicationId);
-
     if (!_applicationIdPattern.hasMatch(decoded)) {
       throw ApiException.unprocessable(
         'Format identitas pengajuan (applicationId) tidak valid.',
@@ -189,7 +192,7 @@ final class AdminValidator {
   static ValidatedReviewApplicationInput validateReviewApplication({
     required String? rawApplicationId,
     required String? idempotencyKeyHeader,
-    required Map<String, Object?> body,
+    required JsonMap body,
   }) {
     final applicationId = validateApplicationId(rawApplicationId);
     final mutationId = _resolveMutationId(
@@ -197,8 +200,8 @@ final class AdminValidator {
       bodyValue: body['mutation_id'] ?? body['mutationId'],
     );
 
-    final rawExpectedVersion = body['expected_version'] ?? body['expectedVersion'];
-
+    final rawExpectedVersion =
+        body['expected_version'] ?? body['expectedVersion'];
     if (rawExpectedVersion is! int || rawExpectedVersion < 1) {
       throw ApiException.unprocessable(
         'Field expected_version wajib berupa bilangan bulat >= 1.',
@@ -209,8 +212,6 @@ final class AdminValidator {
       );
     }
 
-    // Klien Flutter mengirim di key 'status' (lihat AdminApiDataSource.reviewApplication),
-    // namun kita terima juga alias 'decision' untuk fleksibilitas kontrak.
     final rawDecision = _readString(body['status'] ?? body['decision']).trim();
     if (!_allowedReviewDecisions.contains(rawDecision)) {
       throw ApiException.unprocessable(
@@ -243,24 +244,16 @@ final class AdminValidator {
     }
 
     if (rawDecision == 'rejected') {
-      if (trimmedReason.isEmpty) {
+      final reasonError = _validateRequiredReason(
+        trimmedReason,
+        emptyMessage: 'Penolakan pengajuan wajib menyertakan alasan.',
+        maxMessage: 'Alasan penolakan maksimal 300 karakter.',
+      );
+      if (reasonError != null) {
         throw ApiException.unprocessable(
-          'Penolakan pengajuan wajib menyertakan alasan.',
+          reasonError,
           code: 'INVALID_REASON',
-          fieldErrors: const {
-            'reason': 'Alasan penolakan wajib diisi.',
-          },
-        );
-      }
-      if (trimmedReason.characters.length > _maxReasonGraphemes 
-        || trimmedReason.length > _maxReasonCodePoints
-      ) {
-        throw ApiException.unprocessable(
-          'Alasan penolakan maksimal 300 karakter.',
-          code: 'INVALID_REASON',
-          fieldErrors: const {
-            'reason': 'Alasan penolakan maksimal 300 karakter.',
-          },
+          fieldErrors: <String, String>{'reason': reasonError},
         );
       }
     }
@@ -272,6 +265,22 @@ final class AdminValidator {
       decision: rawDecision,
       reason: trimmedReason.isEmpty ? null : trimmedReason,
     );
+  }
+
+  static String? _validateRequiredReason(
+    Object? rawValue, {
+    required String emptyMessage,
+    required String maxMessage,
+  }) {
+    final trimmed = _readString(rawValue).trim();
+    if (trimmed.isEmpty) {
+      return emptyMessage;
+    }
+    if (trimmed.characters.length > _maxReasonGraphemes ||
+        trimmed.runes.length > _maxReasonCodePoints) {
+      return maxMessage;
+    }
+    return null;
   }
 
   static int _parseLimit(String? rawLimit) {
@@ -309,7 +318,9 @@ final class AdminValidator {
     final idPart = trimmed.substring(sepIndex + 1).trim();
 
     final parsedTs = DateTime.tryParse(tsPart);
-    if (parsedTs == null || !tsPart.endsWith('Z') || !idPattern.hasMatch(idPart)) {
+    if (parsedTs == null ||
+        !tsPart.endsWith('Z') ||
+        !idPattern.hasMatch(idPart)) {
       throw ApiException.unprocessable(
         'Token kursor paginasi rusak atau kedaluwarsa.',
         code: 'INVALID_CURSOR',
@@ -346,13 +357,21 @@ final class AdminValidator {
     return effective;
   }
 
+  /// Mendekode parameter path URL secara aman.
+  /// Menangkap baik [ArgumentError] maupun [FormatException] (mis. byte UTF-8
+  /// tidak valid seperti `%FF`) agar selalu menghasilkan 400 `INVALID_INPUT`.
   static String _decodePathParam(String? raw) {
     final trimmed = (raw ?? '').trim();
     if (trimmed.isEmpty) return '';
+    if (!trimmed.contains('%')) return trimmed;
     try {
       return Uri.decodeComponent(trimmed).trim();
-    } 
-    on ArgumentError {
+    } on FormatException {
+      throw ApiException.badRequest(
+        'Parameter URL mengandung encoding UTF-8 yang tidak valid.',
+        code: 'INVALID_INPUT',
+      );
+    } on ArgumentError {
       throw ApiException.badRequest(
         'Parameter URL mengandung encoding yang tidak valid.',
         code: 'INVALID_INPUT',
