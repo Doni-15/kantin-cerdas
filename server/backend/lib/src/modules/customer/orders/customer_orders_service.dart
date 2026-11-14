@@ -9,14 +9,33 @@ final class CustomerOrdersService {
 
   final SupabaseService supabase;
 
-  /// Sesuai aturan domain (`UserRole.canUseCustomerFeatures` di aplikasi dan
-  /// `ARRAY['customer', 'owner']` di SQL `006` & `009`), pemilik kantin (`owner`)
-  /// tetap memiliki hak sebagai pelanggan untuk pesanan pribadinya sendiri.
   static const Set<String> _allowedCustomerFeatureRoles = <String>{
     'customer',
     'owner',
   };
 
+  Future<JsonMap> createOrder(
+    AuthenticatedActor actor,
+    ValidatedCreateOrderInput input,
+  ) async {
+    _requireCustomerFeatureRole(actor);
+
+    final result = await supabase.adminClient.rpc<dynamic>(
+      'rpc_create_customer_order',
+      params: <String, Object?>{
+        'p_actor_id': actor.id,
+        'p_submission_id': input.submissionId,
+        'p_stall_id': input.stallId,
+        'p_items': input.items,
+        'p_total_price_idr': input.totalPriceIdr,
+        'p_order_note': input.orderNote,
+      },
+    );
+    return asDatabaseMap(result, 'rpc_create_customer_order');
+  }
+
+  /// FE-BE-MED-02: Meneruskan `input.cursorTsIso` (string ISO-8601 tervalidasi)
+  /// secara langsung ke `p_cursor_ts` tanpa konversi ulang `.toIso8601String()`.
   Future<JsonMap> getOrders(
     AuthenticatedActor actor,
     ValidatedListQuery input,
@@ -25,10 +44,10 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_list_customer_orders',
-      params: {
+      params: <String, Object?>{
         'p_actor_id': actor.id,
         'p_history': input.history,
-        'p_cursor_ts': input.cursorTs?.toUtc().toIso8601String(),
+        'p_cursor_ts': input.cursorTsIso,
         'p_cursor_id': input.cursorId,
         'p_limit': input.limit,
       },
@@ -44,7 +63,7 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_get_customer_order',
-      params: {'p_actor_id': actor.id, 'p_order_id': orderId},
+      params: <String, Object?>{'p_actor_id': actor.id, 'p_order_id': orderId},
     );
     if (result == null) {
       throw ApiException.notFound(
@@ -55,7 +74,9 @@ final class CustomerOrdersService {
     return asDatabaseMap(result, 'rpc_get_customer_order');
   }
 
-  Future<void> cancelOrder(
+  /// FE-BE-HIGH-02: Mengembalikan langsung snapshot JSONB dari
+  /// `rpc_cancel_customer_order` tanpa memanggil `rpc_get_customer_order` kedua kalinya.
+  Future<JsonMap> cancelOrder(
     AuthenticatedActor actor,
     String orderId,
     ValidatedCancelInput input,
@@ -64,14 +85,14 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_cancel_customer_order',
-      params: {
+      params: <String, Object?>{
         'p_actor_id': actor.id,
         'p_mutation_id': input.mutationId,
         'p_order_id': orderId,
         'p_expected_version': input.expectedVersion,
       },
     );
-    asDatabaseMap(result, 'rpc_cancel_customer_order');
+    return asDatabaseMap(result, 'rpc_cancel_customer_order');
   }
 
   void _requireCustomerFeatureRole(AuthenticatedActor actor) {
