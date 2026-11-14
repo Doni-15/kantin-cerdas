@@ -9,33 +9,14 @@ final class CustomerOrdersService {
 
   final SupabaseService supabase;
 
+  /// Sesuai aturan domain (`UserRole.canUseCustomerFeatures` di aplikasi dan
+  /// `ARRAY['customer', 'owner']` di SQL `006` & `009`), pemilik kantin (`owner`)
+  /// tetap memiliki hak sebagai pelanggan untuk pesanan pribadinya sendiri.
   static const Set<String> _allowedCustomerFeatureRoles = <String>{
     'customer',
     'owner',
   };
 
-  Future<JsonMap> createOrder(
-    AuthenticatedActor actor,
-    ValidatedCreateOrderInput input,
-  ) async {
-    _requireCustomerFeatureRole(actor);
-
-    final result = await supabase.adminClient.rpc<dynamic>(
-      'rpc_create_customer_order',
-      params: <String, Object?>{
-        'p_actor_id': actor.id,
-        'p_submission_id': input.submissionId,
-        'p_stall_id': input.stallId,
-        'p_items': input.items,
-        'p_total_price_idr': input.totalPriceIdr,
-        'p_order_note': input.orderNote,
-      },
-    );
-    return asDatabaseMap(result, 'rpc_create_customer_order');
-  }
-
-  /// FE-BE-MED-02: Meneruskan `input.cursorTsIso` (string ISO-8601 tervalidasi)
-  /// secara langsung ke `p_cursor_ts` tanpa konversi ulang `.toIso8601String()`.
   Future<JsonMap> getOrders(
     AuthenticatedActor actor,
     ValidatedListQuery input,
@@ -92,7 +73,7 @@ final class CustomerOrdersService {
         'p_expected_version': input.expectedVersion,
       },
     );
-    return asDatabaseMap(result, 'rpc_cancel_customer_order');
+    asDatabaseMap(result, 'rpc_cancel_customer_order');
   }
 
   void _requireCustomerFeatureRole(AuthenticatedActor actor) {
