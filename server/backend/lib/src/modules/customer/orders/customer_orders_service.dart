@@ -25,10 +25,10 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_list_customer_orders',
-      params: {
+      params: <String, Object?>{
         'p_actor_id': actor.id,
         'p_history': input.history,
-        'p_cursor_ts': input.cursorTs?.toUtc().toIso8601String(),
+        'p_cursor_ts': input.cursorTsIso,
         'p_cursor_id': input.cursorId,
         'p_limit': input.limit,
       },
@@ -44,7 +44,7 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_get_customer_order',
-      params: {'p_actor_id': actor.id, 'p_order_id': orderId},
+      params: <String, Object?>{'p_actor_id': actor.id, 'p_order_id': orderId},
     );
     if (result == null) {
       throw ApiException.notFound(
@@ -55,7 +55,9 @@ final class CustomerOrdersService {
     return asDatabaseMap(result, 'rpc_get_customer_order');
   }
 
-  Future<void> cancelOrder(
+  /// FE-BE-HIGH-02: Mengembalikan langsung snapshot JSONB dari
+  /// `rpc_cancel_customer_order` tanpa memanggil `rpc_get_customer_order` kedua kalinya.
+  Future<JsonMap> cancelOrder(
     AuthenticatedActor actor,
     String orderId,
     ValidatedCancelInput input,
@@ -64,7 +66,7 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_cancel_customer_order',
-      params: {
+      params: <String, Object?>{
         'p_actor_id': actor.id,
         'p_mutation_id': input.mutationId,
         'p_order_id': orderId,

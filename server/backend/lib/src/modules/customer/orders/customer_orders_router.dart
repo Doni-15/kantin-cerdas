@@ -5,6 +5,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/middleware/auth_guard.dart';
+import 'package:kantin_cerdas_backend/src/core/utils/json_types.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_validator.dart';
@@ -14,6 +15,19 @@ Handler buildCustomerOrdersRouter({
   required CustomerOrdersService customerOrdersService,
 }) {
   final router = Router();
+
+  router.post('/', (Request request) async {
+    final body = await _readJsonObject(request);
+    final input = CustomerOrdersValidator.validateCreateOrder(
+      body,
+      idempotencyKeyHeader: request.headers['idempotency-key'],
+    );
+    final result = await customerOrdersService.createOrder(
+      request.authActor,
+      input,
+    );
+    return _json(result, statusCode: 201);
+  });
 
   router.get('/', (Request request) async {
     final input = CustomerOrdersValidator.validateListQuery(
@@ -42,14 +56,10 @@ Handler buildCustomerOrdersRouter({
       body,
       idempotencyKeyHeader: request.headers['idempotency-key'],
     );
-    await customerOrdersService.cancelOrder(
+    final result = await customerOrdersService.cancelOrder(
       request.authActor,
       validatedId,
       input,
-    );
-    final result = await customerOrdersService.getOrderDetail(
-      request.authActor,
-      validatedId,
     );
     return _json(result);
   });
@@ -60,7 +70,7 @@ Handler buildCustomerOrdersRouter({
       .addHandler(router.call);
 }
 
-Future<Map<String, dynamic>> _readJsonObject(Request request) async {
+Future<JsonMap> _readJsonObject(Request request) async {
   final String raw;
   try {
     raw = await request.readAsString();
@@ -86,19 +96,20 @@ Future<Map<String, dynamic>> _readJsonObject(Request request) async {
       code: 'INVALID_JSON',
     );
   }
-  if (decoded is! Map) {
+  if (decoded is! Map<Object?, Object?>) {
     throw ApiException.badRequest(
       'Body harus berupa objek JSON.',
       code: 'INVALID_JSON',
     );
   }
-  return Map<String, dynamic>.from(decoded);
+  return JsonMap.from(decoded);
 }
 
-Response _json(Object? payload) {
-  return Response.ok(
-    jsonEncode(payload),
-    headers: const {
+Response _json(Object? payload, {int statusCode = 200}) {
+  return Response(
+    statusCode,
+    body: jsonEncode(payload),
+    headers: const <String, String>{
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store',
     },
