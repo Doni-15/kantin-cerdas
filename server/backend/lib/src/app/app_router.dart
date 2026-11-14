@@ -125,7 +125,8 @@ Middleware _requestIdMiddleware() {
   final random = Random.secure();
 
   String generate() => List<String>.generate(
-    16, (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
+    16,
+    (_) => random.nextInt(256).toRadixString(16).padLeft(2, '0'),
   ).join();
 
   return (Handler innerHandler) {
@@ -254,14 +255,16 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
         return const ApiException(
           statusCode: 503,
           code: 'UPSTREAM_UNAVAILABLE',
-          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+          message:
+              'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
         ).toResponse(requestId: rid);
       } on http.ClientException catch (e, st) {
         logError(request, e, st, extra: 'Upstream unreachable');
         return const ApiException(
           statusCode: 503,
           code: 'UPSTREAM_UNAVAILABLE',
-          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+          message:
+              'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
         ).toResponse(requestId: rid);
       } catch (e, st) {
         logError(request, e, st);
