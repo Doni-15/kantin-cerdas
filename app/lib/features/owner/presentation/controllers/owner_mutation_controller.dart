@@ -95,6 +95,25 @@ class OwnerMutationController extends Notifier<OwnerMutationState> {
     );
   }
 
+  /// Sama dengan `ownerMutationProvider.blocked`, dihitung langsung dari state
+  /// controller ini dan jurnal. `ownerMutationProvider` meng-watch controller
+  /// ini, jadi membacanya dari sini melempar CircularDependencyError di debug.
+  bool get _blocked {
+    final actor = _actor;
+    if (actor.isEmpty) {
+      return true;
+    }
+    final journal = ref.read(ownerMutationJournalProvider(actor));
+    return OwnerMutationState(
+      busy: state.busy,
+      uncertain: journal.asData?.value != null || state.uncertain,
+      journalLoading:
+          journal.isLoading || (!journal.hasError && journal.asData == null),
+      journalError: journal.error,
+      configured: ref.read(ownerRepositoryProvider).isMutationConfigured,
+    ).blocked;
+  }
+
   bool _current(String actor, int generation) {
     if (!ref.mounted ||
         generation != _generation ||
@@ -236,7 +255,7 @@ class OwnerMutationController extends Notifier<OwnerMutationState> {
     if (!ref.mounted ||
         !_owns(stallId) ||
         _inFlight.contains(_actor) ||
-        ref.read(ownerMutationProvider).blocked) {
+        _blocked) {
       return false;
     }
     final actor = _actor;

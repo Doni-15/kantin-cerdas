@@ -59,6 +59,30 @@ class FoodPreferencesController extends Notifier<FoodPreferencesSaveState> {
     );
   }
 
+  /// Sama dengan `foodPreferencesSaveProvider`, dihitung langsung dari state
+  /// controller ini dan jurnal. Provider itu meng-watch controller ini, jadi
+  /// membacanya dari sini melempar CircularDependencyError di mode debug.
+  FoodPreferencesSaveState get _visible {
+    final actor = _actor;
+    if (actor.isEmpty) {
+      return const FoodPreferencesSaveState(configured: false);
+    }
+    final journal = ref.read(foodPreferencesJournalProvider(actor));
+    return FoodPreferencesSaveState(
+      busy: state.busy,
+      pending: journal.asData?.value,
+      error: state.error,
+      saved: state.saved,
+      reconciled: state.reconciled,
+      needsRefresh: state.needsRefresh,
+      revision: state.revision,
+      journalLoading:
+          journal.isLoading || (!journal.hasError && journal.asData == null),
+      journalError: journal.error,
+      configured: ref.read(foodPreferencesRepositoryProvider).isSaveConfigured,
+    );
+  }
+
   bool _current(String actor, int epoch) {
     if (!ref.mounted || actor.isEmpty || actor != _actor || epoch != _epoch) {
       return false;
@@ -93,7 +117,7 @@ class FoodPreferencesController extends Notifier<FoodPreferencesSaveState> {
   }) async {
     if (!_current(_actor, _epoch) ||
         _inFlight.contains(_actor) ||
-        ref.read(foodPreferencesSaveProvider).blocked ||
+        _visible.blocked ||
         revision != _revision) {
       return;
     }
@@ -297,7 +321,7 @@ class FoodPreferencesController extends Notifier<FoodPreferencesSaveState> {
     if (!_current(_actor, _epoch) || _inFlight.contains(_actor)) {
       return;
     }
-    final visible = ref.read(foodPreferencesSaveProvider);
+    final visible = _visible;
     if (visible.pending != null ||
         visible.journalLoading ||
         visible.journalError != null) {
@@ -310,8 +334,7 @@ class FoodPreferencesController extends Notifier<FoodPreferencesSaveState> {
   }
 
   void clearNotice() {
-    if (_current(_actor, _epoch) &&
-        !ref.read(foodPreferencesSaveProvider).blocked) {
+    if (_current(_actor, _epoch) && !_visible.blocked) {
       _publish();
     }
   }
