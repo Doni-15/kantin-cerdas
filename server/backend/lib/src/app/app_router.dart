@@ -71,8 +71,11 @@ Handler buildAppHandler({
     buildMediaRouter(authService: authService, mediaService: mediaService).call,
   );
 
+  // Tanpa '/' di akhir: shelf_router lalu mendaftarkan '/v1/customer/orders'
+  // sekaligus '/v1/customer/orders/<...>'. Dengan '/' di akhir, URL tanpa slash
+  // yang dipanggil aplikasi (daftar dan buat pesanan) jatuh ke 404.
   router.mount(
-    '$prefix/customer/orders/',
+    '$prefix/customer/orders',
     buildCustomerOrdersRouter(
       authService: authService,
       customerOrdersService: customerOrdersService,

@@ -18,6 +18,8 @@ Seluruh berkas migrasi di `server/supabase/migrations/` dibungkus transaksi (`BE
 10. `20261108000010_010_storage.sql` — Konfigurasi bucket `kantin-media`, pencabusan policy listing publik `storage.objects`, `rpc_register_media_asset()`, dan pembersihan aset yatim.
 11. `20261108000011_011_indexes.sql` — Indeks kursor keyset, Foreign Key, trigram (`gin_trgm_ops`), dan audit.
 12. `20261108000012_012_upgrade_from_legacy.sql` — Migrasi upgrade transaksional bagi database yang sebelumnya pernah memasang skema lama.
+13. `20261113000013_013_patch_004_helpers.sql` — Perbaikan `fn_require_actor()` agar fungsi baca `STABLE` (dijalankan PostgREST dalam transaksi READ ONLY) tidak gagal pada `FOR SHARE`.
+14. `20261114000014_014_fix_create_order_ordinality.sql` — Perbaikan `rpc_create_customer_order`: klausa `jsonb_to_recordset(...) WITH ORDINALITY` yang ditolak PostgreSQL diganti `ROWS FROM (...) WITH ORDINALITY`.
 
 Jalankan migrasi ke proyek Supabase Cloud dari direktori `server/`:
 
@@ -82,6 +84,8 @@ Seluruh `RAISE EXCEPTION` di SQL memakai format `<KODE>: <pesan>`. Error sistem 
 | `IMMUTABLE_VIOLATION` | `KC020` | `409` | Definitif No-Commit (pelanggaran trigger immutability) | `IMMUTABLE_VIOLATION: ...` |
 | `LAST_ADMIN_PROTECTED` | `KC021` | `409` | Definitif No-Commit (menolak penghapusan admin terakhir) | `LAST_ADMIN_PROTECTED: Tidak dapat menonaktifkan, menurunkan role, atau menghapus admin aktif terakhir.` |
 | `ORDER_INTEGRITY_VIOLATION` | `KC022` | `409` | Definitif No-Commit (invarian `orders` $\leftrightarrow$ `order_items`) | `ORDER_INTEGRITY_VIOLATION: Pesanan ... wajib memiliki minimal 1 item dengan total_price_idr sama dengan jumlah item.` |
+
+> **Catatan `INVALID_TRANSITION` vs `VERSION_CONFLICT`:** `rpc_owner_transition_order` memakai `INVALID_TRANSITION` (`422`) bila kombinasi `reason`, `cash_received`, atau `food_handed_over` salah untuk transisi yang sah. Jalur status yang tidak diizinkan (misalnya `waiting` $\rightarrow$ `completed`) atau pesanan yang statusnya sudah berubah dijawab `VERSION_CONFLICT` (`409`) agar aplikasi memuat ulang data pesanan. Pembagian ini disengaja.
 
 ## 5. Keputusan Terbuka dan Kewajiban Integrasi Backend `/v1/*`
 

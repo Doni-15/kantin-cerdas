@@ -14,7 +14,7 @@ flowchart TB
         SIM["Mode Simulasi (test/support/)\n(SimulationStore Lokal)"] -. "Override Simulasi" .-> DOM
     end
     subgraph Server["Tier 2 — Server Backend (/v1/*)"]
-        GW["HTTP Handler, JWT & session_epoch Guard,\nGrapheme & Magic Bytes Validator"]
+        GW["HTTP Handler, JWT & Status Akun Guard,\nGrapheme & Magic Bytes Validator"]
     end
     subgraph Cloud["Tier 3 — Supabase Cloud (server/supabase/)"]
         PG[("PostgreSQL (RLS + FORCE RLS,\nRPC Transaksional, mutation_receipts)")]
@@ -26,7 +26,7 @@ flowchart TB
 ```
 
 - **Tier 1 (`app/`):** Menangani tampilan, validasi awal input dan *magic bytes* gambar, penyimpanan token sesi serta jurnal mutasi di `FlutterSecureStorage`, dan rekonsiliasi saat jaringan terputus. Klien tidak memakai `supabase_flutter` dan tidak pernah memegang kunci Supabase.
-- **Tier 2 (`/v1/*`):** Memverifikasi JWT dan `session_epoch`, memvalidasi panjang karakter grapheme (`.characters.length`), memeriksa *magic bytes* unggahan gambar, menandatangani kursor paginasi, dan memanggil RPC PostgreSQL memakai `service_role`.
+- **Tier 2 (`/v1/*`):** Memverifikasi JWT dan status aktif akun (`is_active`) pada setiap request (penegakan `session_epoch` belum diimplementasikan; lihat keputusan terbuka di `server/supabase/README.md`), memvalidasi panjang karakter grapheme (`.characters.length`), memeriksa *magic bytes* unggahan gambar, menandatangani kursor paginasi, dan memanggil RPC PostgreSQL memakai `service_role`.
 - **Tier 3 (`server/supabase/`):** Menegakkan `ENABLE` + `FORCE ROW LEVEL SECURITY` tanpa policy untuk `anon`/`authenticated`, menjaga invarian transaksi ACID, menolak konflik versi (`expected_version`), dan mencatat audit *append-only* di `public.audit_events`.
 
 ## 2. Struktur Modul dan Batas Clean Architecture
