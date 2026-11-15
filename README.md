@@ -15,8 +15,8 @@ KantinCerdas melayani tiga peran pengguna dalam satu aplikasi Flutter: pelanggan
 |---|---|---|
 | Aplikasi Flutter (`app/`) | Berjalan | Seluruh antarmuka tiga peran, manajemen state, penyimpanan jurnal mutasi lokal, dan adapter HTTP telah tersedia. |
 | Mode Simulasi (`app/test/support/`) | Berjalan | Berjalan mandiri di perangkat/emulator menggunakan database fiktif lokal tanpa akun cloud dan tanpa server. |
-| Database Supabase (`server/supabase/`) | Berjalan | Migrasi tabel PostgreSQL, kebijakan Row Level Security, fungsi RPC transaksional, dan skrip pengujian telah tersedia. |
-| Server Backend `/v1/*` (`backend/`) | Belum ada | Direktori server perantara belum ada di repositori ini, sehingga aplikasi baru dapat dijalankan penuh lewat Mode Simulasi atau diarahkan ke server eksternal. |
+| Database Supabase (`server/supabase/`) | Berjalan | Migrasi tabel PostgreSQL, kebijakan Row Level Security, fungsi RPC transaksional, dan skrip bootstrap admin telah tersedia. |
+| Server Backend `/v1/*` (`server/backend/`) | Sebagian | Server Dart Shelf sudah memiliki modul auth, unggah gambar, pesanan pelanggan, admin, dan pemulihan mutasi. Modul katalog dan owner belum dibangun. |
 | Pipeline CI/CD (`.github/workflows/`) | Berjalan | Workflow pemeriksaan kualitas/build APK debug (`ci.yml`) dan rilis Android bertanda tangan (`cd-release.yml`) telah terpasang. |
 
 ## Teknologi
@@ -85,12 +85,12 @@ Sumber kebenaran versi paket yang terpasang adalah `app/pubspec.lock`.
 
 ### B. Terhubung ke server
 
-Kode server backend `/v1/*` belum tersedia di repositori ini; mode terhubung hanya dapat digunakan apabila Anda sudah memiliki endpoint server `/v1/*` aktif yang terhubung ke proyek Supabase Cloud.
+Server backend `/v1/*` ada di `server/backend/` (Dart Shelf) dan memakai kunci `service_role` Supabase. Jalankan server tersebut, lalu arahkan aplikasi ke URL-nya. Fitur yang modul backend-nya belum dibangun (katalog dan owner) belum dapat dipakai pada mode ini.
 
 1. Masuk ke folder `app/` dan buat berkas `app/dart_defines.json` (berkas ini diabaikan oleh Git):
    ```json
    {
-     "API_BASE_URL": "https://api-staging.domain-anda.ac.id/v1"
+     "API_BASE_URL": "https://api-staging.domain-anda.ac.id"
    }
    ```
 2. Jalankan entrypoint utama `lib/main.dart` dengan menyertakan berkas konfigurasi tersebut:
@@ -105,7 +105,7 @@ Variabel berikut dibaca saat kompilasi oleh klien Flutter di `app/lib/core/netwo
 
 | Variabel (`--dart-define`) | Wajib? | Default | Fungsi |
 |---|---|---|---|
-| `API_BASE_URL` | Wajib pada mode server | `""` | URL dasar server REST API `/v1/*` (`http://` atau `https://`) |
+| `API_BASE_URL` | Wajib pada mode server | `""` | URL dasar server REST API (`http://` atau `https://`), **tanpa** akhiran `/v1` karena aplikasi sudah menambahkan `/v1/...` pada setiap path |
 | `APP_VERSION` | Opsional | `"1.0.0"` | Label versi yang ditampilkan di halaman Pengaturan |
 | `SUPPORT_EMAIL` | Opsional | `"support@kantincerdas.ac.id"` | Alamat email dukungan di halaman Bantuan dan Ketentuan |
 | `ENABLE_GOOGLE_AUTH` | Opsional | `false` | Menampilkan opsi login Google pada layar autentikasi |
@@ -129,7 +129,9 @@ Variabel berikut dibaca saat kompilasi oleh klien Flutter di `app/lib/core/netwo
 ├── docs/                    # Dokumentasi arsitektur, desain UI, kontrak backend, dan arsip
 │   ├── backend/             # Spesifikasi REST API /v1/*, kamus entitas, dan peta file
 │   └── arsip/               # Dokumen historis (SRS awal, roadmap lama, laporan audit)
-└── server/supabase/         # Konfigurasi Supabase, migrasi SQL, bootstrap admin, dan tes pgTAP
+└── server/
+    ├── backend/             # Server REST API /v1/* (Dart Shelf)
+    └── supabase/            # Konfigurasi Supabase, migrasi SQL, dan bootstrap admin
 ```
 
 ## Perintah Umum
@@ -168,7 +170,7 @@ Jalankan pengujian dari direktori `app/`:
 
 ```bash
 cd app
-flutter test --no-pub --reporter expanded test/audit/architecture_boundary_test.dart
+flutter test --no-pub --reporter expanded test/architecture/architecture_boundary_test.dart
 flutter test --no-pub --reporter expanded
 ```
 
