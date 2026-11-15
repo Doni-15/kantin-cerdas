@@ -141,51 +141,189 @@ final class CustomerOrdersValidator {
     return normalizedId;
   }
 
+  static ValidatedCreateOrderInput validateCreateBody(
+    Map<String, dynamic> body, {
+    String? idempotencyKeyHeader,
+  }) {
+    final submissionId = _resolveIdempotencyKey(
+      headerValue: idempotencyKeyHeader,
+      body: body,
+      bodyFieldName: 'submission_id',
+    );
+
+    final rawStallId = body['stall_id'];
+    if (rawStallId is! String || !_stallIdPattern.hasMatch(rawStallId.trim())) {
+      throw ApiException.unprocessable(
+        'Field stall_id tidak valid.',
+        code: 'INVALID_INPUT',
+        fieldErrors: const {
+          'stall_id':
+              'Gunakan format stl_ diikuti 32 karakter hex huruf kecil.',
+        },
+      );
+    }
+    final stallId = rawStallId.trim();
+
+    final rawOrderNote = body['order_note'];
+    if (rawOrderNote != null && rawOrderNote is! String) {
+      throw ApiException.unprocessable(
+        'Field order_note harus berupa teks.',
+        code: 'INVALID_INPUT',
+        fieldErrors: const {'order_note': 'Harus berupa teks.'},
+      );
+    }
+    final orderNote = (rawOrderNote is String ? rawOrderNote : '').trim();
+    if (orderNote.characters.length > _maxNoteGraphemes ||
+        orderNote.length > _maxNoteCodePoints) {
+      throw ApiException.unprocessable(
+        'Catatan pesanan maksimal 300 karakter.',
+        code: 'INVALID_INPUT',
+        fieldErrors: const {
+          'order_note': 'Catatan pesanan maksimal 300 karakter.',
+        },
+      );
+    }
+
+    final rawPaymentMethod = body['payment_method'];
+    if (rawPaymentMethod != null &&
+        (rawPaymentMethod is! String ||
+            rawPaymentMethod.trim() != 'CASH_ON_PICKUP')) {
+      throw ApiException.unprocessable(
+        'Metode pembayaran hanya mendukung CASH_ON_PICKUP.',
+        code: 'INVALID_INPUT',
+        fieldErrors: const {
+          'payment_method': 'Gunakan metode pembayaran CASH_ON_PICKUP.',
+        },
+      );
+    }
+
+    final rawTotal = body['total_price_idr'];
+    if (rawTotal is! int || rawTotal < 1 || rawTotal > _maxOrderTotalIdr) {
+      throw ApiException.unprocessable(
+        'Field total_price_idr wajib berupa integer positif yang valid.',
+        code: 'INVALID_INPUT',
+        fieldErrors: const {
+          'total_price_idr': 'Harus bernilai antara 1 dan 1000000000.',
+        },
+      );
+    }
+
+    final rawItems = body['items'];
+    if (rawItems is! List<Object?> ||
+        rawItems.isEmpty ||
+        rawItems.length > _maxItemsPerOrder) {
+      throw ApiException.unprocessable(
+        'Daftar item pesanan wajib berisi 1 hingga $_maxItemsPerOrder item.',
+        code: 'INVALID_ORDER_ITEMS',
+        fieldErrors: const {
+          'items': 'Isi minimal 1 dan maksimal 100 item pesanan.',
+        },
+      );
+    }
+
+    final items = <ValidatedOrderItemInput>[];
+    final seenMenuIds = <String>{};
+
+    for (var i = 0; i < rawItems.length; i++) {
+      final rawItem = rawItems[i];
+      if (rawItem is! Map<Object?, Object?>) {
+        throw ApiException.unprocessable(
+          'Setiap item pesanan harus berupa objek JSON.',
+          code: 'INVALID_ORDER_ITEMS',
+          fieldErrors: {'items[$i]': 'Format item tidak valid.'},
+        );
+      }
+
+      final rawMenuId = rawItem['menu_id'];
+      if (rawMenuId is! String || !_menuIdPattern.hasMatch(rawMenuId.trim())) {
+        throw ApiException.unprocessable(
+          'Identitas menu pada item pesanan tidak valid.',
+          code: 'INVALID_ORDER_ITEMS',
+          fieldErrors: {'items[$i].menu_id': 'Format menu_id tidak valid.'},
+        );
+      }
+      final menuId = rawMenuId.trim();
+      if (!seenMenuIds.add(menuId)) {
+        throw ApiException.unprocessable(
+          'Terdapat menu_id duplikat di dalam daftar item pesanan.',
+          code: 'INVALID_ORDER_ITEMS',
+          fieldErrors: {
+            'items[$i].menu_id':
+                'Gabungkan kuantitas untuk menu yang sama menjadi satu baris.',
+          },
+        );
+      }
+
+      final rawQty = rawItem['quantity'];
+      if (rawQty is! int || rawQty < 1 || rawQty > 99) {
+        throw ApiException.unprocessable(
+          'Kuantitas item wajib bernilai antara 1 dan 99.',
+          code: 'INVALID_QUANTITY',
+          fieldErrors: {
+            'items[$i].quantity': 'Gunakan bilangan bulat 1..99.',
+          },
+        );
+      }
+
+      final rawUnitPrice = rawItem['unit_price_idr'];
+      if (rawUnitPrice is! int ||
+          rawUnitPrice < 1 ||
+          rawUnitPrice > _maxMenuPriceIdr) {
+        throw ApiException.unprocessable(
+          'Harga satuan konfirmasi item tidak valid.',
+          code: 'INVALID_ORDER_ITEMS',
+          fieldErrors: {
+            'items[$i].unit_price_idr': 'Harga satuan tidak valid.',
+          },
+        );
+      }
+
+      final rawItemNote = rawItem['note'];
+      if (rawItemNote != null && rawItemNote is! String) {
+        throw ApiException.unprocessable(
+          'Catatan item harus berupa teks.',
+          code: 'INVALID_INPUT',
+          fieldErrors: {'items[$i].note': 'Harus berupa teks.'},
+        );
+      }
+      final itemNote = (rawItemNote is String ? rawItemNote : '').trim();
+      if (itemNote.characters.length > _maxNoteGraphemes ||
+          itemNote.length > _maxNoteCodePoints) {
+        throw ApiException.unprocessable(
+          'Catatan item maksimal 300 karakter.',
+          code: 'INVALID_INPUT',
+          fieldErrors: {
+            'items[$i].note': 'Catatan item maksimal 300 karakter.',
+          },
+        );
+      }
+
+      items.add((
+        menuId: menuId,
+        quantity: rawQty,
+        unitPriceIdr: rawUnitPrice,
+        note: itemNote,
+      ));
+    }
+
+    return (
+      submissionId: submissionId,
+      stallId: stallId,
+      orderNote: orderNote,
+      totalPriceIdr: rawTotal,
+      items: items,
+    );
+  }
+
   static ValidatedCancelInput validateCancelBody(
     Map<String, dynamic> body, {
     String? idempotencyKeyHeader,
   }) {
-    final rawHeader = idempotencyKeyHeader?.trim();
-    final rawBodyMutationId =
-        (body['mutation_id'] is String ? body['mutation_id'] as String : '')
-            .trim();
-
-    if (body.containsKey('mutation_id') && body['mutation_id'] is! String) {
-      throw ApiException.unprocessable(
-        'Field mutation_id harus berupa teks.',
-        code: 'INVALID_INPUT',
-        fieldErrors: const {'mutation_id': 'Harus berupa teks.'},
-      );
-    }
-
-    final headerMutationId = rawHeader == null || rawHeader.isEmpty
-        ? null
-        : rawHeader;
-    final bodyMutationId = rawBodyMutationId.isEmpty ? null : rawBodyMutationId;
-
-    if (headerMutationId != null &&
-        bodyMutationId != null &&
-        headerMutationId != bodyMutationId) {
-      throw ApiException.unprocessable(
-        'Header Idempotency-Key dan field mutation_id harus sama.',
-        code: 'INVALID_INPUT',
-        fieldErrors: const {
-          'mutation_id': 'Harus sama dengan Idempotency-Key.',
-        },
-      );
-    }
-
-    final mutationId = headerMutationId ?? bodyMutationId;
-    if (mutationId == null ||
-        !SecurityConstants.idempotencyKeyPattern.hasMatch(mutationId)) {
-      throw ApiException.unprocessable(
-        'Idempotency-Key atau mutation_id wajib berupa 48 karakter hex huruf kecil.',
-        code: 'INVALID_INPUT',
-        fieldErrors: const {
-          'mutation_id': 'Wajib berupa 48 karakter hex huruf kecil.',
-        },
-      );
-    }
+    final mutationId = _resolveIdempotencyKey(
+      headerValue: idempotencyKeyHeader,
+      body: body,
+      bodyFieldName: 'mutation_id',
+    );
 
     final rawVersion = body['expected_version'];
     if (rawVersion is! int || rawVersion < 1) {

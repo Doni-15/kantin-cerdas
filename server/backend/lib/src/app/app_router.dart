@@ -18,6 +18,8 @@ import 'package:kantin_cerdas_backend/src/modules/admin/admin_router.dart';
 import 'package:kantin_cerdas_backend/src/modules/admin/admin_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_router.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/auth_service.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/canteen_submissions/canteen_submissions_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/canteen_submissions/canteen_submissions_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_router.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/orders/customer_orders_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/media/media_router.dart';
@@ -61,6 +63,9 @@ Handler buildAppHandler({
   final authService = AuthService(supabaseService, mediaService: mediaService);
   final adminService = AdminService(supabase: supabaseService);
   final customerOrdersService = CustomerOrdersService(supabaseService);
+  final canteenSubmissionsService = CanteenSubmissionsService(
+    supabase: supabaseService,
+  );
   final operationsService = OperationsService(supabase: supabaseService);
   final canteenSubmissionsService = CanteenSubmissionsService(supabase: supabaseService);
 
@@ -269,16 +274,14 @@ Middleware _errorBoundaryMiddleware(AppConfig config) {
         return const ApiException(
           statusCode: 503,
           code: 'UPSTREAM_UNAVAILABLE',
-          message:
-              'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
         ).toResponse(requestId: rid);
       } on http.ClientException catch (e, st) {
         logError(request, e, st, extra: 'Upstream unreachable');
         return const ApiException(
           statusCode: 503,
           code: 'UPSTREAM_UNAVAILABLE',
-          message:
-              'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
+          message: 'Layanan pendukung sedang tidak tersedia. Silakan coba lagi.',
         ).toResponse(requestId: rid);
       } catch (e, st) {
         logError(request, e, st);
