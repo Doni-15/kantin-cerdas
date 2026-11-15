@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:http/http.dart' as http;
+import 'package:kantin_cerdas_backend/src/modules/customer/canteen_submissions/canteen_submissions_router.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/canteen_submissions/canteen_submissions_service.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:supabase/supabase.dart';
@@ -60,6 +62,7 @@ Handler buildAppHandler({
   final adminService = AdminService(supabase: supabaseService);
   final customerOrdersService = CustomerOrdersService(supabaseService);
   final operationsService = OperationsService(supabase: supabaseService);
+  final canteenSubmissionsService = CanteenSubmissionsService(supabase: supabaseService);
 
   router.mount(
     '$prefix/auth/',
@@ -81,6 +84,14 @@ Handler buildAppHandler({
       customerOrdersService: customerOrdersService,
     ),
   );
+
+  router.mount(
+  '$prefix/customer/canteen-applications',
+  buildCanteenSubmissionsRouter(
+    authService: authService,
+    canteenSubmissionsService: canteenSubmissionsService,
+  ),
+);
 
   router.mount(
     '$prefix/admin/',
