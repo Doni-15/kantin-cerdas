@@ -17,6 +17,11 @@ final class CustomerOrdersService {
     'owner',
   };
 
+  /// `POST /v1/customer/orders` -> `public.rpc_create_customer_order`.
+  ///
+  /// Harga dan total dihitung ulang oleh RPC; nilai dari klien hanya dipakai
+  /// sebagai konfirmasi harga (`PRICE_CHANGED` bila tidak cocok). Permintaan
+  /// ulang dengan `submission_id` yang sama mengembalikan hasil yang sama.
   Future<JsonMap> createOrder(
     AuthenticatedActor actor,
     ValidatedCreateOrderInput input,
@@ -25,11 +30,11 @@ final class CustomerOrdersService {
 
     final result = await supabase.adminClient.rpc<dynamic>(
       'rpc_create_customer_order',
-      params: {
+      params: <String, Object?>{
         'p_actor_id': actor.id,
         'p_submission_id': input.submissionId,
         'p_stall_id': input.stallId,
-        'p_items': [
+        'p_items': <Map<String, Object?>>[
           for (final item in input.items)
             <String, Object?>{
               'menu_id': item.menuId,
@@ -99,7 +104,7 @@ final class CustomerOrdersService {
         'p_expected_version': input.expectedVersion,
       },
     );
-    asDatabaseMap(result, 'rpc_cancel_customer_order');
+    return asDatabaseMap(result, 'rpc_cancel_customer_order');
   }
 
   void _requireCustomerFeatureRole(AuthenticatedActor actor) {

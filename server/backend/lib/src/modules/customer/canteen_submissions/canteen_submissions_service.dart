@@ -17,6 +17,7 @@ final class CanteenSubmissionsService {
   static const Set<String> _readRoles = <String>{'customer', 'owner'};
 
   /// 1. `GET /v1/customer/canteen-applications/me` -> `public.rpc_get_my_canteen_application`
+  /// Mengembalikan `null` apabila akun belum pernah mengajukan pembukaan stan.
   Future<JsonMap?> getMyApplication(AuthenticatedActor actor) async {
     if (!_readRoles.contains(actor.role)) {
       throw ApiException.forbidden(
@@ -36,6 +37,8 @@ final class CanteenSubmissionsService {
   }
 
   /// 2. `POST /v1/customer/canteen-applications` -> `public.rpc_submit_canteen_application`
+  /// Hanya pengguna dengan role `customer` yang diizinkan mengirim pengajuan baru
+  /// atau mengajukan ulang pengajuan yang berstatus `rejected`.
   Future<JsonMap> submitApplication(
     AuthenticatedActor actor,
     ValidatedSubmitCanteenApplicationInput input,

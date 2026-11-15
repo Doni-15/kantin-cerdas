@@ -105,5 +105,32 @@ void main() {
         );
       },
     );
+
+    test(
+      'menolak format nomor telepon yang kurang dari 8 digit atau mengandung huruf',
+      () {
+        expect(
+          () => CanteenSubmissionsValidator.validateSubmit(
+            <String, Object?>{
+              'submission_id': validSubmissionId,
+              'name': 'Kantin Nusantara',
+              'description': 'Deskripsi usaha',
+              'location': 'Blok A',
+              'phone': '0812abc',
+            },
+            idempotencyKeyHeader: validSubmissionId,
+          ),
+          throwsA(
+            isA<ApiException>()
+                .having((e) => e.statusCode, 'statusCode', 422)
+                .having(
+                  (e) => e.fieldErrors?.containsKey('phone'),
+                  'has phone error',
+                  isTrue,
+                ),
+          ),
+        );
+      },
+    );
   });
 }
