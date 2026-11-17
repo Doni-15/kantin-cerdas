@@ -66,6 +66,27 @@ class CustomerOrderCancellationController
     );
   }
 
+  /// Sama dengan `customerOrderCancellationProvider.blocked`, dihitung langsung
+  /// dari state controller ini dan jurnal. Provider itu meng-watch controller
+  /// ini, jadi membacanya dari sini melempar CircularDependencyError di debug.
+  bool get _blocked {
+    final actor = _actor;
+    if (actor.isEmpty) {
+      return true;
+    }
+    final journal = ref.read(orderCancellationJournalProvider(actor));
+    return CustomerOrderCancellationState(
+      busy: state.busy,
+      unresolved: journal.asData?.value != null || state.unresolved,
+      journalError: journal.error,
+      journalLoading:
+          journal.isLoading || (!journal.hasError && journal.asData == null),
+      configured: ref
+          .read(customerOrderTrackingRepositoryProvider)
+          .isCancellationConfigured,
+    ).blocked;
+  }
+
   bool _current(String actor, int epoch) {
     if (!ref.mounted || actor.isEmpty || actor != _actor || epoch != _epoch) {
       return false;
@@ -102,7 +123,7 @@ class CustomerOrderCancellationController
   }) async {
     if (!_current(_actor, _epoch) ||
         _inFlight.contains(_actor) ||
-        ref.read(customerOrderCancellationProvider).blocked ||
+        _blocked ||
         revision != _revision ||
         (state.confirmed && state.request?.orderId == input.orderId)) {
       return;

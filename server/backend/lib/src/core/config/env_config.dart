@@ -12,9 +12,7 @@ final class EnvConfig {
       dotEnv.load([envFilePath]);
     }
 
-    final map = <String, String?>{
-      ...Platform.environment,
-    };
+    final map = <String, String?>{...Platform.environment};
 
     if (File(envFilePath).existsSync()) {
       for (final line in File(envFilePath).readAsLinesSync()) {
@@ -37,7 +35,8 @@ final class EnvConfig {
 
     void alias(String canonicalKey, String fallbackKey) {
       final current = normalized[canonicalKey]?.trim() ?? '';
-      if (current.isEmpty && (normalized[fallbackKey]?.trim().isNotEmpty ?? false)) {
+      if (current.isEmpty &&
+          (normalized[fallbackKey]?.trim().isNotEmpty ?? false)) {
         normalized[canonicalKey] = normalized[fallbackKey];
       }
     }
@@ -63,10 +62,16 @@ final class EnvConfig {
     final effectiveDebug = env.isProduction ? false : rawDebug;
 
     final appSettings = AppSettings(
-      name: parser.optionalString('APP_NAME', defaultValue: 'Kantin Cerdas API'),
+      name: parser.optionalString(
+        'APP_NAME',
+        defaultValue: 'Kantin Cerdas API',
+      ),
       env: env,
       debug: effectiveDebug,
-      timezone: parser.optionalString('APP_TIMEZONE', defaultValue: 'Asia/Jakarta'),
+      timezone: parser.optionalString(
+        'APP_TIMEZONE',
+        defaultValue: 'Asia/Jakarta',
+      ),
       locale: parser.optionalString('APP_LOCALE', defaultValue: 'id_ID'),
       version: parser.optionalString('APP_VERSION', defaultValue: '1.0.0'),
     );
@@ -77,7 +82,12 @@ final class EnvConfig {
 
     final serverConfig = ServerConfig(
       host: parser.optionalString('SERVER_HOST', defaultValue: '0.0.0.0'),
-      port: parser.intValue('SERVER_PORT', defaultValue: 8080, min: 1, max: 65535),
+      port: parser.intValue(
+        'SERVER_PORT',
+        defaultValue: 8080,
+        min: 1,
+        max: 65535,
+      ),
       apiPrefix: apiPrefix,
       requestTimeoutSeconds: parser.intValue(
         'SERVER_REQUEST_TIMEOUT_SECONDS',
@@ -206,7 +216,14 @@ final class EnvConfig {
 
       allowedMethods: parser.csvList(
         'CORS_ALLOWED_METHODS',
-        defaultValue: const ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        defaultValue: const [
+          'GET',
+          'POST',
+          'PUT',
+          'PATCH',
+          'DELETE',
+          'OPTIONS',
+        ],
       ),
 
       allowedHeaders: parser.csvList(
@@ -276,7 +293,10 @@ final class EnvConfig {
         min: 1,
         max: 1000,
       ),
-      trustProxy: parser.boolValue('RATE_LIMIT_TRUST_PROXY', defaultValue: false),
+      trustProxy: parser.boolValue(
+        'RATE_LIMIT_TRUST_PROXY',
+        defaultValue: false,
+      ),
     );
 
     // H. Storage & Media Configuration (Selaras Migrasi 010: bucket kantin-media, maks 2 MB, kuota 200)
@@ -330,8 +350,11 @@ final class EnvConfig {
         LogFormat.values,
         defaultValue: env.isProduction ? LogFormat.json : LogFormat.text,
       ),
-      
-      requestEnabled: parser.boolValue('LOG_REQUEST_ENABLED', defaultValue: true),
+
+      requestEnabled: parser.boolValue(
+        'LOG_REQUEST_ENABLED',
+        defaultValue: true,
+      ),
       includeStackTrace: env.isProduction ? false : rawIncludeStack,
     );
 

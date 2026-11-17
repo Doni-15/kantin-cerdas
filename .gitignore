@@ -1,5 +1,6 @@
 # Just for me to make server hot reload
-dev.sh 
+*.sh 
+*.bash
 
 # Flutter / Dart / Gradle build & tool artifacts
 .dart_tool/

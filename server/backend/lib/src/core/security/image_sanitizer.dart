@@ -100,7 +100,18 @@ abstract final class ImageSanitizer {
     if (marker == 0xE2) {
       // Pertahankan hanya profil warna ICC ("ICC_PROFILE\0").
       const icc = [
-        0x49, 0x43, 0x43, 0x5F, 0x50, 0x52, 0x4F, 0x46, 0x49, 0x4C, 0x45, 0x00,
+        0x49,
+        0x43,
+        0x43,
+        0x5F,
+        0x50,
+        0x52,
+        0x4F,
+        0x46,
+        0x49,
+        0x4C,
+        0x45,
+        0x00,
       ];
       if (end - start < icc.length) return false;
       for (var k = 0; k < icc.length; k++) {
@@ -196,7 +207,8 @@ abstract final class ImageSanitizer {
 
     while (i + 8 <= riffEnd) {
       final type = String.fromCharCodes(b.sublist(i, i + 4));
-      final size = b[i + 4] | (b[i + 5] << 8) | (b[i + 6] << 16) | (b[i + 7] << 24);
+      final size =
+          b[i + 4] | (b[i + 5] << 8) | (b[i + 6] << 16) | (b[i + 7] << 24);
       final end = i + 8 + size + (size & 1);
       if (end > riffEnd) return null;
 
@@ -291,15 +303,15 @@ abstract final class ImageSanitizer {
 
   /// TIFF minimal (big-endian) yang hanya berisi tag Orientation.
   static List<int> _orientationTiff(int o) => <int>[
-        0x4D, 0x4D, 0x00, 0x2A, 0x00, 0x00, 0x00, 0x08, // header, IFD @ 8
-        0x00, 0x01, // 1 entri
-        0x01, 0x12, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, o, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, // IFD berikutnya: tidak ada
-      ];
+    0x4D, 0x4D, 0x00, 0x2A, 0x00, 0x00, 0x00, 0x08, // header, IFD @ 8
+    0x00, 0x01, // 1 entri
+    0x01, 0x12, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, o, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, // IFD berikutnya: tidak ada
+  ];
 
   static List<int> _orientationApp1(int o) => <int>[
-        0xFF, 0xE1, 0x00, 0x22, // APP1, panjang 34
-        0x45, 0x78, 0x69, 0x66, 0x00, 0x00, // "Exif\0\0"
-        ..._orientationTiff(o),
-      ];
+    0xFF, 0xE1, 0x00, 0x22, // APP1, panjang 34
+    0x45, 0x78, 0x69, 0x66, 0x00, 0x00, // "Exif\0\0"
+    ..._orientationTiff(o),
+  ];
 }

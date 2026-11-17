@@ -28,13 +28,13 @@ abstract final class ImageGuard {
       throw ApiException(
         statusCode: 413,
         code: 'FILE_TOO_LARGE',
-        message:
-            'Ukuran file gambar melebihi batas maksimal ${_mb(maxBytes)}.',
+        message: 'Ukuran file gambar melebihi batas maksimal ${_mb(maxBytes)}.',
       );
     }
 
     final detected = ImageInspector.detectFormat(raw);
-    if (detected == null || !storage.allowedImageTypes.contains(detected.mimeType)) {
+    if (detected == null ||
+        !storage.allowedImageTypes.contains(detected.mimeType)) {
       throw const ApiException(
         statusCode: 415,
         code: 'UNSUPPORTED_MEDIA_TYPE',

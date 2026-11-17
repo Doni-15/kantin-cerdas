@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:kantin_cerdas/core/errors/data_parsing_exception.dart';
 import 'package:kantin_cerdas/core/network/api_exception_mapper.dart';
 import 'package:kantin_cerdas/core/network/app_environment.dart';
 import 'package:kantin_cerdas/core/utils/json_map_utils.dart';
@@ -32,13 +33,20 @@ final class CustomerOrderTrackingApiDataSource
     if (!isConfigured || client == null) {
       throw const CustomerFeatureNotConfiguredFailure();
     }
+    if (limit < 1 || limit > 50) {
+      throw const DataParsingException(
+        'Batas paginasi pesanan harus antara 1 dan 50.',
+      );
+    }
+
+    final cursorParameters = _cursorQueryParameters(cursor);
     try {
       final response = await client.get<Object?>(
         '/v1/customer/orders',
         queryParameters: <String, Object?>{
           'history': history,
-          'cursor': ?cursor,
           'limit': limit,
+          ...cursorParameters,
         },
       );
       return OrderRecordPageModel.fromJson(
@@ -47,6 +55,16 @@ final class CustomerOrderTrackingApiDataSource
     } on DioException catch (error) {
       throw mapDioException(error);
     }
+  }
+
+  Map<String, String> _cursorQueryParameters(String? cursor) {
+    if (cursor == null) return const {};
+
+    final parts = cursor.split('|');
+    if (parts.length != 2 || parts.any((part) => part.isEmpty)) {
+      throw const DataParsingException('Format cursor pesanan tidak valid.');
+    }
+    return {'cursorTs': parts[0], 'cursorId': parts[1]};
   }
 
   @override

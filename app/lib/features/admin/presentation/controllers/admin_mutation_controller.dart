@@ -95,6 +95,27 @@ class AdminMutationController extends Notifier<AdminMutationState> {
     );
   }
 
+  /// Sama dengan `adminMutationProvider.blocked`, dihitung langsung dari state
+  /// controller ini dan jurnal. Controller tidak boleh membaca
+  /// `adminMutationProvider`: provider itu meng-watch controller ini, sehingga
+  /// di mode debug `ref.read` melempar CircularDependencyError dan mutasi
+  /// berhenti sebelum request dikirim.
+  bool get _blocked {
+    final actor = _actor;
+    if (actor.isEmpty) {
+      return true;
+    }
+    final journal = ref.read(adminMutationJournalProvider(actor));
+    return AdminMutationState(
+      busy: state.busy,
+      unresolved: journal.asData?.value != null || state.unresolved,
+      journalLoading:
+          journal.isLoading || (!journal.hasError && journal.asData == null),
+      journalError: journal.error,
+      configured: ref.read(adminRepositoryProvider).isMutationConfigured,
+    ).blocked;
+  }
+
   bool _current(String actor, int generation) {
     if (!ref.mounted ||
         actor.isEmpty ||
@@ -138,9 +159,7 @@ class AdminMutationController extends Notifier<AdminMutationState> {
       : const AdminUserAccessConflictFailure();
 
   Future<void> review(AdminApplicationReview input) async {
-    if (!ref.mounted ||
-        !_current(_actor, _generation) ||
-        ref.read(adminMutationProvider).blocked) {
+    if (!ref.mounted || !_current(_actor, _generation) || _blocked) {
       return;
     }
     final loaded = ref.read(
@@ -185,9 +204,7 @@ class AdminMutationController extends Notifier<AdminMutationState> {
   }
 
   Future<void> changeAccess(AdminUserAccessChange input) async {
-    if (!ref.mounted ||
-        !_current(_actor, _generation) ||
-        ref.read(adminMutationProvider).blocked) {
+    if (!ref.mounted || !_current(_actor, _generation) || _blocked) {
       return;
     }
     final actor = _actor;
@@ -239,7 +256,7 @@ class AdminMutationController extends Notifier<AdminMutationState> {
   }) async {
     if (!_current(_actor, _generation) ||
         _inFlight.contains(_actor) ||
-        ref.read(adminMutationProvider).blocked) {
+        _blocked) {
       return;
     }
     final actor = _actor;

@@ -10,17 +10,12 @@ final class SupabaseService {
   final http.Client _sharedHttpClient;
   late final SupabaseClient adminClient;
 
-  SupabaseService(
-    this.config, {
-    http.Client? httpClient,
-  }) : 
-  _sharedHttpClient = httpClient ?? http.Client() {
+  SupabaseService(this.config, {http.Client? httpClient})
+    : _sharedHttpClient = httpClient ?? http.Client() {
     adminClient = SupabaseClient(
       config.url,
       config.secretKey,
-      authOptions: const AuthClientOptions(
-        autoRefreshToken: false,
-      ),
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
       httpClient: _TimeoutHttpClient(
         _sharedHttpClient,
         Duration(seconds: config.requestTimeoutSeconds),
@@ -29,38 +24,21 @@ final class SupabaseService {
     );
   }
 
-  SupabaseClient createStatelessAuthClient({String? accessToken}) {
-    final headers = <String, String>{
-      if (accessToken != null && accessToken.trim().isNotEmpty)
-        'Authorization': 'Bearer ${accessToken.trim()}',
-    };
-
+  /// Client berbasis publishable key untuk alur Auth atas nama pengguna
+  /// (sign-in, refresh, reset password). Seluruh akses data memakai
+  /// [adminClient] (service role) dengan otorisasi eksplisit di backend + RPC;
+  /// tidak ada jalur PostgREST atas nama pengguna (RLS tidak memiliki policy).
+  SupabaseClient createStatelessAuthClient() {
     return SupabaseClient(
       config.url,
       config.publishableKey,
-      headers: headers,
-      authOptions: const AuthClientOptions(
-        autoRefreshToken: false,
-      ),
+      authOptions: const AuthClientOptions(autoRefreshToken: false),
       httpClient: _TimeoutHttpClient(
         _sharedHttpClient,
         Duration(seconds: config.requestTimeoutSeconds),
         config.maxRetries,
       ),
     );
-  }
-
-  Future<T> withUserClient<T>(
-    String accessToken,
-    Future<T> Function(SupabaseClient client) action,
-  ) 
-  async {
-    final client = createStatelessAuthClient(accessToken: accessToken);
-    try {
-      return await action(client);
-    } finally {
-      await client.dispose();
-    }
   }
 
   Future<void> dispose() async {
@@ -79,9 +57,10 @@ final class _TimeoutHttpClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final canRetry = _maxRetries > 0 &&
-       request is http.Request &&
-       (request.method == 'GET' || request.method == 'HEAD');
+    final canRetry =
+        _maxRetries > 0 &&
+        request is http.Request &&
+        (request.method == 'GET' || request.method == 'HEAD');
 
     var attempt = 0;
     while (true) {
@@ -89,7 +68,9 @@ final class _TimeoutHttpClient extends http.BaseClient {
       try {
         final response = await _inner.send(toSend).timeout(_timeout);
 
-        if (canRetry && attempt < _maxRetries && _retryableStatus.contains(response.statusCode)) {
+        if (canRetry &&
+            attempt < _maxRetries &&
+            _retryableStatus.contains(response.statusCode)) {
           await response.stream.drain<void>();
           attempt++;
           await Future<void>.delayed(Duration(milliseconds: 200 * attempt));
@@ -97,11 +78,9 @@ final class _TimeoutHttpClient extends http.BaseClient {
         }
 
         return response;
-      } 
-      on TimeoutException {
+      } on TimeoutException {
         if (!canRetry || attempt >= _maxRetries) rethrow;
-      } 
-      on SocketException {
+      } on SocketException {
         if (!canRetry || attempt >= _maxRetries) rethrow;
       }
       attempt++;

@@ -14,9 +14,10 @@ Middleware allowedHostsMiddleware(AppConfig config) {
 
   return (Handler inner) {
     return (Request request) {
-      final raw = (trustProxy ? request.headers['x-forwarded-host'] : null) 
-        ?? request.headers['host'] 
-        ?? '';
+      final raw =
+          (trustProxy ? request.headers['x-forwarded-host'] : null) ??
+          request.headers['host'] ??
+          '';
 
       final first = raw.split(',').first.trim();
       final host = Uri.tryParse('http://$first')?.host ?? '';
@@ -51,6 +52,19 @@ Middleware rateLimitMiddleware(AppConfig config) {
   final healthPath = '$prefix/health';
   final authPath = '$prefix/auth';
   final uploadPath = '$prefix/media/images';
+  // Limiter ketat hanya untuk endpoint yang memproses kredensial / bisa dipakai
+  // untuk enumerasi akun. Endpoint sesi berotentikasi (`/auth/me`,
+  // `/auth/profile/avatar`, `/auth/logout`) memakai limiter umum: pada Wi-Fi
+  // kampus banyak pengguna berbagi satu IP publik, sehingga memasukkannya ke
+  // limiter ketat akan memblokir seluruh pengguna di jaringan yang sama.
+  final strictAuthPaths = <String>{
+    '$authPath/register',
+    '$authPath/availability',
+    '$authPath/login',
+    '$authPath/refresh',
+    '$authPath/password-reset',
+    '$authPath/change-password',
+  };
 
   final general = _FixedWindowLimiter(
     Duration(seconds: cfg.windowSeconds),
@@ -71,10 +85,11 @@ Middleware rateLimitMiddleware(AppConfig config) {
       final path = '/${request.url.path}';
       if (path == healthPath) return inner(request);
 
-      final isAuth = path == authPath || path.startsWith('$authPath/');
+      final isAuth = strictAuthPaths.contains(path);
       final ip = _clientIp(request, cfg.trustProxy);
 
-      final isHeavy = request.method == 'POST' &&
+      final isHeavy =
+          request.method == 'POST' &&
           (path == uploadPath || path == '$authPath/register');
       if (isHeavy) {
         final heavyRetry = upload.hit(ip);
@@ -90,9 +105,9 @@ Middleware rateLimitMiddleware(AppConfig config) {
 }
 
 Response _tooMany(int retryAfter) {
-  return ApiException.rateLimited()
-      .toResponse()
-      .change(headers: {'retry-after': '$retryAfter'});
+  return ApiException.rateLimited().toResponse().change(
+    headers: {'retry-after': '$retryAfter'},
+  );
 }
 
 /// IP client. Dengan `trustProxy` dipakai entri TERAKHIR `X-Forwarded-For`
@@ -221,7 +236,7 @@ Middleware requestTimeoutMiddleware(AppConfig config) {
             code: 'REQUEST_TIMEOUT',
             message: isMutation
                 ? 'Permintaan memakan waktu terlalu lama dan hasilnya belum pasti. '
-                    'Periksa data Anda sebelum mencoba lagi.'
+                      'Periksa data Anda sebelum mencoba lagi.'
                 : 'Permintaan memakan waktu terlalu lama. Silakan coba lagi.',
             details: isMutation
                 ? const <String, Object?>{'outcome_unknown': true}

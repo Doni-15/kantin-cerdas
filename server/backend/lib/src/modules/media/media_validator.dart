@@ -119,7 +119,7 @@ final class MediaValidator {
   ///    karena body terpotong akan membuat `await for` pada bagian menggantung
   ///    selamanya. Karena itu bagian dibaca paralel lalu di-await sesudah loop.
   static Future<({Map<String, String> fields, Uint8List? fileBytes})>
-      _parseMultipart(Request request, String boundary) {
+  _parseMultipart(Request request, String boundary) {
     final done =
         Completer<({Map<String, String> fields, Uint8List? fileBytes})>();
 
@@ -136,8 +136,9 @@ final class MediaValidator {
           SecurityConstants.maxMultipartEnvelopeBytes,
         );
 
-        await for (final part
-            in capped.transform(MimeMultipartTransformer(boundary))) {
+        await for (final part in capped.transform(
+          MimeMultipartTransformer(boundary),
+        )) {
           if (pending.length >= SecurityConstants.maxMultipartParts) {
             throw ApiException.badRequest(
               'Terlalu banyak bagian pada body multipart.',
@@ -192,16 +193,16 @@ final class MediaValidator {
     }, fail);
 
     return done.future.catchError(
-      (Object e, StackTrace st) => Future<
-          ({Map<String, String> fields, Uint8List? fileBytes})>.error(
-        e is ApiException
-            ? e
-            : ApiException.badRequest(
-                'Body multipart/form-data tidak lengkap atau rusak.',
-                code: 'INVALID_MULTIPART',
-              ),
-        st,
-      ),
+      (Object e, StackTrace st) =>
+          Future<({Map<String, String> fields, Uint8List? fileBytes})>.error(
+            e is ApiException
+                ? e
+                : ApiException.badRequest(
+                    'Body multipart/form-data tidak lengkap atau rusak.',
+                    code: 'INVALID_MULTIPART',
+                  ),
+            st,
+          ),
     );
   }
 
