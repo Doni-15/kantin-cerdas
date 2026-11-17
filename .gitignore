@@ -1,9 +1,19 @@
+# Dart
+.dart_tool/
+.packages
+.pub/
+build/
+
 # Environment and secrets
 .env
 .env.*
 !.env.example
-secrets/
 
+# Local overrides
+pubspec_overrides.yaml
+
+# Logs
+*.log
 # IDE
 .idea/
 .vscode/
@@ -12,22 +22,14 @@ secrets/
 *.iws
 *.swp
 
-# OS
+# Operating system
 .DS_Store
 Thumbs.db
 
-# Logs and temporary files
-*.log
-*.tmp
-*.bak
-
-# Flutter and Dart
-.dart_tool/
+# Flutter
 .flutter-plugins
 .flutter-plugins-dependencies
-.pub/
 .pub-cache/
-build/
 coverage/
 **/build/
 **/.dart_tool/
@@ -35,5 +37,12 @@ coverage/
 # Android local configuration
 **/android/local.properties
 
-# Backend local configuration
+# Dart local overrides
 **/pubspec_overrides.yaml
+
+# Secrets
+secrets/
+
+# Temporary and backup files
+*.tmp
+*.bak

@@ -1,0 +1,14 @@
+# https://dart.dev/tools/private-files
+# Created by `dart pub`
+.dart_tool/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local overrides
+pubspec_overrides.yaml
+
+# Logs
+*.log
