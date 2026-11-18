@@ -104,7 +104,7 @@ final class CustomerOrdersService {
         'p_expected_version': input.expectedVersion,
       },
     );
-    return asDatabaseMap(result, 'rpc_cancel_customer_order');
+    asDatabaseMap(result, 'rpc_cancel_customer_order');
   }
 
   void _requireCustomerFeatureRole(AuthenticatedActor actor) {

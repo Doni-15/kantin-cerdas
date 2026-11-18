@@ -17,9 +17,10 @@ Handler buildCustomerOrdersRouter({
 
   router.post('/', (Request request) async {
     final body = await _readJsonObject(request);
+    final idempotencyKeyHeader = request.headers['idempotency-key'];
     final input = CustomerOrdersValidator.validateCreateBody(
       body,
-      idempotencyKeyHeader: request.headers['idempotency-key'],
+      idempotencyKeyHeader: idempotencyKeyHeader,
     );
     final result = await customerOrdersService.createOrder(
       request.authActor,
