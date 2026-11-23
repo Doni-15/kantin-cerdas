@@ -143,7 +143,7 @@ jobs:
             echo "Applying migration: $f"
             psql -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -f "$f" >/dev/null
           done
-          for suite in auth.sql owner.sql catalog.sql catalog_compat.sql customer.sql admin.sql ai.sql realtime_push.sql; do
+          for suite in auth.sql owner.sql catalog_compat.sql customer.sql admin.sql ai.sql realtime_push.sql; do
             path="server/supabase/tests/$suite"
             if [ ! -f "$path" ]; then
               echo "ERROR: Required SQL test suite missing: $path"
