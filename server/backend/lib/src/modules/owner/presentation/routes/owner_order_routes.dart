@@ -4,5 +4,5 @@
 // TODO: Terapkan autentikasi dan otorisasi Owner.
 // TODO: Validasi request dan respons API.
 class OwnerOrderRoutes {
-  
+
 }
