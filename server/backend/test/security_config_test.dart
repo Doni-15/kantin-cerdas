@@ -47,6 +47,21 @@ void main() {
       expect(config.allowedHosts, {'localhost:8080'});
     });
 
+    test('supports Railway public domain paired with healthcheck host', () {
+      final config = SecurityConfig.fromEnv(
+        EnvConfig.fromMap({
+          'SECURITY_ALLOWED_HOSTS':
+              'kantin-cerdas.up.railway.app,healthcheck.railway.app',
+        }),
+      );
+
+      expect(config.allowAnyHost, isFalse);
+      expect(config.allowedHosts, {
+        'kantin-cerdas.up.railway.app',
+        'healthcheck.railway.app',
+      });
+    });
+
     test('rejects empty allowed hosts', () {
       expect(
         () => SecurityConfig.fromEnv(

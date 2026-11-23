@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class ServerConfig {
   const ServerConfig._({
@@ -22,7 +23,7 @@ class ServerConfig {
   final int maxConcurrentBodyRequests;
 
   factory ServerConfig.fromEnv(EnvConfig env) {
-    final host = _readString(env, 'SERVER_HOST', defaultValue: '0.0.0.0');
+    final host = readEnvString(env, 'SERVER_HOST', defaultValue: '0.0.0.0');
 
     if (host.contains(RegExp(r'\s'))) {
       throw const FormatException(
@@ -32,18 +33,18 @@ class ServerConfig {
 
     return ServerConfig._(
       host: host,
-      port: _readInt(
+      port: readEnvInt(
         env,
         'SERVER_PORT',
         defaultValue: 8080,
-        min: 1,
+        min: 0,
         max: 65535,
       ),
       apiPrefix: _normalizeApiPrefix(
-        _readString(env, 'API_PREFIX', defaultValue: '/v1'),
+        readEnvString(env, 'API_PREFIX', defaultValue: '/v1'),
       ),
       requestTimeout: Duration(
-        seconds: _readInt(
+        seconds: readEnvInt(
           env,
           'SERVER_REQUEST_TIMEOUT_SECONDS',
           defaultValue: 30,
@@ -52,7 +53,7 @@ class ServerConfig {
         ),
       ),
       shutdownTimeout: Duration(
-        seconds: _readInt(
+        seconds: readEnvInt(
           env,
           'SERVER_SHUTDOWN_TIMEOUT_SECONDS',
           defaultValue: 30,
@@ -60,14 +61,14 @@ class ServerConfig {
           max: 3600,
         ),
       ),
-      maxRequestBodyBytes: _readInt(
+      maxRequestBodyBytes: readEnvInt(
         env,
         'SERVER_MAX_REQUEST_BODY_BYTES',
         defaultValue: 10485760,
         min: 1,
         max: 10485760,
       ),
-      maxConcurrentBodyRequests: _readInt(
+      maxConcurrentBodyRequests: readEnvInt(
         env,
         'SERVER_MAX_CONCURRENT_BODY_REQUESTS',
         defaultValue: 10,
@@ -75,42 +76,6 @@ class ServerConfig {
         max: 100,
       ),
     );
-  }
-
-  static String _readString(
-    EnvConfig env,
-    String key, {
-    required String defaultValue,
-  }) {
-    final value = env[key]?.trim();
-
-    if (value == null || value.isEmpty) {
-      return defaultValue;
-    }
-
-    return value;
-  }
-
-  static int _readInt(
-    EnvConfig env,
-    String key, {
-    required int defaultValue,
-    required int min,
-    required int max,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    final value = int.tryParse(rawValue.trim());
-
-    if (value == null || value < min || value > max) {
-      throw FormatException('$key harus berupa angka antara $min dan $max.');
-    }
-
-    return value;
   }
 
   static String _normalizeApiPrefix(String value) {

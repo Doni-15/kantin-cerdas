@@ -10,8 +10,8 @@ void main() {
   setUp(() {
     final config = SupabaseConfig.fromEnv(
       EnvConfig.fromMap({
-        'SUPABASE_PROJECT_REF': 'diprwrdomyqrhllqlche',
-        'SUPABASE_URL': 'https://diprwrdomyqrhllqlche.supabase.co',
+        'SUPABASE_PROJECT_REF': 'exampleprojectref001',
+        'SUPABASE_URL': 'https://exampleprojectref001.supabase.co',
         'SUPABASE_PUBLISHABLE_KEY': 'sb_publishable_test',
         'SUPABASE_SECRET_KEY': 'sb_secret_test',
       }),
@@ -25,6 +25,15 @@ void main() {
       final client = factory.createServerClient();
 
       expect(client, isA<SupabaseClient>());
+
+      await client.dispose();
+    });
+
+    test('creates and disposes auth client', () async {
+      final client = factory.createAuthClient();
+
+      expect(client, isA<SupabaseClient>());
+      expect(() => client.auth, returnsNormally);
 
       await client.dispose();
     });

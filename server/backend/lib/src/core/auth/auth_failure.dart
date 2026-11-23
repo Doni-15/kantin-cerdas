@@ -1,0 +1,18 @@
+enum AuthFailure implements Exception {
+  invalidCredentials,
+  invalidSession,
+  emailNotVerified,
+  inactiveAccount,
+  profileIncomplete,
+  providerManaged,
+  googleDisabled,
+  signupEmailInvalid,
+  signupEmailDeliveryRestricted,
+  invalidInput,
+  invalidCode,
+  weakPassword,
+  samePassword,
+  emailUnavailable,
+  rateLimited,
+  unavailable,
+}

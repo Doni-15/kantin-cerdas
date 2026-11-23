@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "kantin_cerdas" "\0"
+            VALUE "CompanyName", "Kantin Cerdas" "\0"
+            VALUE "FileDescription", "Aplikasi Kantin Cerdas" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "kantin_cerdas" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 Kantin Cerdas. All rights reserved." "\0"
             VALUE "OriginalFilename", "kantin_cerdas.exe" "\0"
-            VALUE "ProductName", "kantin_cerdas" "\0"
+            VALUE "ProductName", "Kantin Cerdas" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

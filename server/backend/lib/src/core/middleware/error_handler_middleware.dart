@@ -6,6 +6,7 @@ import 'package:shelf/shelf.dart';
 import 'package:kantin_cerdas_backend/src/core/config/logging_config.dart';
 import 'package:kantin_cerdas_backend/src/core/errors/api_exception.dart';
 import 'package:kantin_cerdas_backend/src/core/http/api_response.dart';
+import 'package:kantin_cerdas_backend/src/core/middleware/request_id_middleware.dart';
 
 typedef ErrorLogWriter = void Function(String message);
 
@@ -58,11 +59,13 @@ class ErrorHandlerMiddleware {
 
     final timestamp = _clock();
     final exceptionType = error.runtimeType.toString();
+    final requestId = requestIdFromContext(request);
 
     if (config.isJsonFormat) {
       final event = <String, Object?>{
         'timestamp': timestamp.toIso8601String(),
         'level': 'error',
+        'request_id': ?requestId,
         'method': request.method,
         'path': '/${request.url.path}',
         'status': 500,
@@ -82,7 +85,16 @@ class ErrorHandlerMiddleware {
       ..write(' ERROR ')
       ..write(request.method)
       ..write(' /${request.url.path}')
-      ..write(' [500] exception=')
+      ..write(' [500]');
+
+    if (requestId != null) {
+      message
+        ..write(' request_id=')
+        ..write(requestId);
+    }
+
+    message
+      ..write(' exception=')
       ..write(exceptionType);
 
     if (config.includeStackTrace) {

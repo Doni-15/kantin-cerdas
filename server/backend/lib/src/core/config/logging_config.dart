@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class LoggingConfig {
   const LoggingConfig._({
@@ -18,7 +19,7 @@ class LoggingConfig {
   bool get isTextFormat => format == 'text';
 
   factory LoggingConfig.fromEnv(EnvConfig env) {
-    final level = _readString(
+    final level = readEnvString(
       env,
       'LOG_LEVEL',
       defaultValue: 'info',
@@ -33,7 +34,7 @@ class LoggingConfig {
       );
     }
 
-    final format = _readString(
+    final format = readEnvString(
       env,
       'LOG_FORMAT',
       defaultValue: 'text',
@@ -51,47 +52,16 @@ class LoggingConfig {
     return LoggingConfig._(
       level: level,
       format: format,
-      requestEnabled: _readBool(env, 'LOG_REQUEST_ENABLED', defaultValue: true),
-      includeStackTrace: _readBool(
+      requestEnabled: readEnvBool(
+        env,
+        'LOG_REQUEST_ENABLED',
+        defaultValue: true,
+      ),
+      includeStackTrace: readEnvBool(
         env,
         'LOG_INCLUDE_STACK_TRACE',
         defaultValue: false,
       ),
     );
-  }
-
-  static String _readString(
-    EnvConfig env,
-    String key, {
-    required String defaultValue,
-  }) {
-    final value = env[key]?.trim();
-
-    if (value == null || value.isEmpty) {
-      return defaultValue;
-    }
-
-    return value;
-  }
-
-  static bool _readBool(
-    EnvConfig env,
-    String key, {
-    required bool defaultValue,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    switch (rawValue.trim().toLowerCase()) {
-      case 'true':
-        return true;
-      case 'false':
-        return false;
-      default:
-        throw FormatException('$key harus bernilai true atau false.');
-    }
   }
 }

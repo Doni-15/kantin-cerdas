@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class SecurityConfig {
   const SecurityConfig._({
@@ -17,7 +18,7 @@ class SecurityConfig {
     return SecurityConfig._(
       allowedHosts: Set.unmodifiable(hosts),
       allowAnyHost: hosts.contains('*'),
-      enableSecurityHeaders: _readBool(
+      enableSecurityHeaders: readEnvBool(
         env,
         'SECURITY_ENABLE_SECURITY_HEADERS',
         defaultValue: true,
@@ -108,26 +109,5 @@ class SecurityConfig {
     }
 
     return hosts;
-  }
-
-  static bool _readBool(
-    EnvConfig env,
-    String key, {
-    required bool defaultValue,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    switch (rawValue.trim().toLowerCase()) {
-      case 'true':
-        return true;
-      case 'false':
-        return false;
-      default:
-        throw FormatException('$key harus bernilai true atau false.');
-    }
   }
 }

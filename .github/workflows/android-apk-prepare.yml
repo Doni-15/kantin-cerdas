@@ -1,0 +1,291 @@
+name: Android APK Preparation (Manual, No Publish)
+
+# Build APK only. No Git tag, GitHub Release, database migration, or deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: Application version (example 2.0.0)
+        required: true
+        default: '2.0.0'
+        type: string
+      build_number:
+        description: Positive Android versionCode
+        required: true
+        default: '1'
+        type: string
+      build_mode:
+        description: Debug APK or signed release candidate
+        required: true
+        default: debug
+        type: choice
+        options:
+          - debug
+          - release_prepare
+      api_base_url:
+        description: Backend API base URL (real HTTPS required for release)
+        required: true
+        default: https://api-staging-placeholder.invalid
+        type: string
+      auth_email_link_host:
+        description: Optional App Links hostname; leave empty if unavailable
+        required: false
+        default: ''
+        type: string
+      supabase_url:
+        description: Optional public Supabase URL (overrides repository variable)
+        required: false
+        default: ''
+        type: string
+      auth_google_enabled:
+        description: Enable Google OAuth in this APK
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: '3.44.9'
+  JAVA_VERSION: '17'
+
+jobs:
+  verify-and-build-android:
+    name: Verify and build (${{ inputs.build_mode }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: app
+        shell: bash
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Validate build inputs
+        id: build_inputs
+        env:
+          INPUT_VERSION_NAME: ${{ inputs.version_name }}
+          INPUT_BUILD_NUMBER: ${{ inputs.build_number }}
+          INPUT_BUILD_MODE: ${{ inputs.build_mode }}
+          INPUT_API_BASE_URL: ${{ inputs.api_base_url }}
+          INPUT_EMAIL_LINK_HOST: ${{ inputs.auth_email_link_host }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import re
+          from urllib.parse import urlsplit
+
+          version = os.environ['INPUT_VERSION_NAME']
+          build_number = os.environ['INPUT_BUILD_NUMBER']
+          mode = os.environ['INPUT_BUILD_MODE']
+          base_url = os.environ['INPUT_API_BASE_URL']
+          email_host = os.environ['INPUT_EMAIL_LINK_HOST']
+
+          def fail(message):
+              raise SystemExit(f'ERROR: {message}')
+
+          if not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', version):
+              fail('version_name must be X.Y.Z')
+          if not re.fullmatch(r'[1-9][0-9]*', build_number) or int(build_number) > 2100000000:
+              fail('build_number must be between 1 and 2100000000')
+          if mode not in ('debug', 'release_prepare'):
+              fail('Unsupported build_mode')
+          if any(c.isspace() for c in base_url):
+              fail('api_base_url must not contain whitespace')
+
+          try:
+              parsed = urlsplit(base_url)
+              port = parsed.port
+          except ValueError:
+              fail('Invalid api_base_url')
+          if (parsed.scheme not in ('http', 'https') or not parsed.hostname
+                  or parsed.username or parsed.password or parsed.path not in ('', '/')
+                  or parsed.query or parsed.fragment or port == 0):
+              fail('api_base_url must be a clean HTTP(S) origin without path, query or credentials')
+          if mode == 'release_prepare' and (
+              parsed.scheme != 'https'
+              or parsed.hostname.endswith(('.invalid', '.local'))
+              or parsed.hostname in ('localhost', '127.0.0.1', '0.0.0.0')
+          ):
+              fail('release_prepare requires a real public HTTPS backend origin')
+
+          label = r'[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?'
+          if email_host and (
+              len(email_host) > 253
+              or not re.fullmatch(rf'{label}(?:\.{label})+', email_host)
+              or email_host.lower().endswith('.invalid')
+          ):
+              fail('auth_email_link_host must be a valid hostname or empty')
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write(f'api_base_url={base_url}\n')
+              out.write(f'gradle_email_link_host={email_host or "auth.kantincerdas.invalid"}\n')
+              out.write(f'dart_email_link_host={email_host}\n')
+          PY
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies and run Flutter tests
+        run: |
+          set -euo pipefail
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub --fatal-infos --fatal-warnings lib test
+          flutter test --no-pub
+
+      - name: Verify release signing secrets
+        if: inputs.build_mode == 'release_prepare'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$ANDROID_KEYSTORE_BASE64" || -z "$ANDROID_KEYSTORE_PASSWORD" || -z "$ANDROID_KEY_ALIAS" || -z "$ANDROID_KEY_PASSWORD" ]]; then
+            echo '::error::Release signing secrets are incomplete; no release APK will be built.'
+            exit 1
+          fi
+
+      - name: Install and validate Firebase Android configuration
+        env:
+          INPUT_BUILD_MODE: ${{ inputs.build_mode }}
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$GOOGLE_SERVICES_JSON_BASE64" ]]; then
+            if [[ "$INPUT_BUILD_MODE" == 'release_prepare' ]]; then
+              echo '::error::GOOGLE_SERVICES_JSON_BASE64 is required for the release APK.'
+              exit 1
+            fi
+            echo '::notice::Debug build without Firebase configuration; FCM cannot be validated.'
+            exit 0
+          fi
+
+          umask 077
+          printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path('android/app/google-services.json').read_text())
+          packages = {
+              client.get('client_info', {}).get('android_client_info', {}).get('package_name')
+              for client in data.get('client', [])
+          }
+          if 'id.kantincerdas.app' not in packages:
+              raise SystemExit('ERROR: Firebase Android package does not match id.kantincerdas.app')
+          print('Firebase Android package verified.')
+          PY
+
+      - name: Install release signing material
+        if: inputs.build_mode == 'release_prepare'
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          def value(key):
+              return os.environ[key].replace('\\', '\\\\').replace('\r', '\\r').replace('\n', '\\n')
+
+          lines = [
+              'storeFile=app/upload-keystore.jks',
+              'storePassword=' + value('ANDROID_KEYSTORE_PASSWORD'),
+              'keyAlias=' + value('ANDROID_KEY_ALIAS'),
+              'keyPassword=' + value('ANDROID_KEY_PASSWORD'),
+          ]
+          Path('android/key.properties').write_text('\n'.join(lines) + '\n')
+          PY
+
+      - name: Build APK
+        env:
+          INPUT_BUILD_MODE: ${{ inputs.build_mode }}
+          BUILD_VERSION_NAME: ${{ inputs.version_name }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          API_BASE_URL: ${{ steps.build_inputs.outputs.api_base_url }}
+          AUTH_EMAIL_LINK_HOST: ${{ steps.build_inputs.outputs.gradle_email_link_host }}
+          DART_EMAIL_LINK_HOST: ${{ steps.build_inputs.outputs.dart_email_link_host }}
+          AUTH_GOOGLE_ENABLED: ${{ inputs.auth_google_enabled }}
+          INPUT_SUPABASE_URL: ${{ inputs.supabase_url }}
+          VAR_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SECRET_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4g
+        run: |
+          set -euo pipefail
+          if [[ "$INPUT_BUILD_MODE" == 'release_prepare' ]]; then
+            build_flag='--release'
+          else
+            build_flag='--debug'
+          fi
+          resolved_supabase_url="${INPUT_SUPABASE_URL:-${VAR_SUPABASE_URL:-${SECRET_SUPABASE_URL:-}}}"
+
+          flutter build apk "$build_flag" --no-pub \
+            --build-name="$BUILD_VERSION_NAME" \
+            --build-number="$BUILD_NUMBER" \
+            --dart-define="API_BASE_URL=$API_BASE_URL" \
+            --dart-define="AUTH_EMAIL_LINK_HOST=$DART_EMAIL_LINK_HOST" \
+            --dart-define="AUTH_GOOGLE_ENABLED=$AUTH_GOOGLE_ENABLED" \
+            --dart-define="SUPABASE_URL=$resolved_supabase_url"
+
+      - name: Generate APK SHA-256 checksum
+        env:
+          INPUT_BUILD_MODE: ${{ inputs.build_mode }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/release-artifacts
+          if [[ "$INPUT_BUILD_MODE" == 'release_prepare' ]]; then
+            apk='app-release.apk'
+          else
+            apk='app-debug.apk'
+          fi
+          cp "build/app/outputs/flutter-apk/$apk" "build/release-artifacts/$apk"
+          (cd build/release-artifacts && sha256sum "$apk" > SHA256SUMS.txt)
+
+      - name: Remove temporary Firebase and signing files
+        if: always()
+        run: |
+          rm -f android/key.properties android/app/upload-keystore.jks android/app/google-services.json
+
+      - name: Upload APK as GitHub Actions artifact (not a Release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kantin-cerdas-apk-v${{ inputs.version_name }}+${{ inputs.build_number }}-${{ inputs.build_mode }}
+          path: app/build/release-artifacts/*
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Report artifact status
+        env:
+          INPUT_BUILD_MODE: ${{ inputs.build_mode }}
+        run: |
+          {
+            echo '### Android APK built successfully'
+            echo "- Build mode: $INPUT_BUILD_MODE"
+            echo '- Output: GitHub Actions artifact (APK + SHA256SUMS.txt)'
+            echo '- Publication: disabled; no GitHub Release, tag, or deployment created'
+          } >> "$GITHUB_STEP_SUMMARY"

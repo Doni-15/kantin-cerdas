@@ -41,6 +41,28 @@ void main() {
       expect(config.requireEmailVerified, isTrue);
     });
 
+    test('web sessions bind to a configured HTTPS origin', () {
+      final config = AuthConfig.fromEnv(
+        EnvConfig.fromMap({
+          ...validValues,
+          'AUTH_WEB_ORIGIN': 'https://app.example.test/',
+        }),
+      );
+      expect(config.webOrigin, 'https://app.example.test');
+      for (final invalid in [
+        'http://app.example.test',
+        'https://app.example.test/anything',
+        'https://app.example.test/?foo=bar',
+      ]) {
+        expect(
+          () => AuthConfig.fromEnv(
+            EnvConfig.fromMap({...validValues, 'AUTH_WEB_ORIGIN': invalid}),
+          ),
+          throwsFormatException,
+        );
+      }
+    });
+
     test('rejects missing JWKS URL', () {
       expect(
         () => AuthConfig.fromEnv(

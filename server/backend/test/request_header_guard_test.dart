@@ -131,6 +131,54 @@ void main() {
       expect(response.statusCode, 403);
     });
 
+    test(
+      'allows Railway healthcheck host only when explicitly configured',
+      () async {
+        final strictHandler = createHandler(
+          allowedHosts: 'kantin-cerdas.up.railway.app,healthcheck.railway.app',
+        );
+
+        final healthcheckResponse = await strictHandler(
+          Request(
+            'GET',
+            Uri.parse('http://request.test/v1/health'),
+            headers: const {'host': 'healthcheck.railway.app'},
+          ),
+        );
+        final publicResponse = await strictHandler(
+          Request(
+            'GET',
+            Uri.parse('http://request.test/v1/health'),
+            headers: const {'host': 'kantin-cerdas.up.railway.app'},
+          ),
+        );
+        final untrustedResponse = await strictHandler(
+          Request(
+            'GET',
+            Uri.parse('http://request.test/v1/health'),
+            headers: const {'host': 'evil.example.com'},
+          ),
+        );
+
+        expect(healthcheckResponse.statusCode, 200);
+        expect(publicResponse.statusCode, 200);
+        expect(untrustedResponse.statusCode, 403);
+
+        // Does not weaken Host enforcement globally when healthcheck host is omitted.
+        final withoutHealthcheckHost = createHandler(
+          allowedHosts: 'kantin-cerdas.up.railway.app',
+        );
+        final omittedResponse = await withoutHealthcheckHost(
+          Request(
+            'GET',
+            Uri.parse('http://request.test/v1/health'),
+            headers: const {'host': 'healthcheck.railway.app'},
+          ),
+        );
+        expect(omittedResponse.statusCode, 403);
+      },
+    );
+
     test('allows configured hostname with a different port', () async {
       final response = await createHandler()(
         createRequest(host: 'api.example.com:8080'),

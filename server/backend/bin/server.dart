@@ -47,12 +47,15 @@ Future<ProcessSignal> _waitForShutdownSignal() async {
 }
 
 /// Menutup server dengan graceful shutdown dan batas waktu.
-Future<void> _shutdownServer(HttpServer server, Duration timeout) async {
+Future<void> _shutdownServer(
+  HttpServer server,
+  Duration timeout, {
+  Future<void> Function()? onDispose,
+}) async {
   print('Stopping HTTP server...');
 
   try {
     await server.close(force: false).timeout(timeout);
-
     print('All active connections have been closed.');
   } on TimeoutException {
     print(
@@ -61,6 +64,10 @@ Future<void> _shutdownServer(HttpServer server, Duration timeout) async {
     );
 
     await server.close(force: true);
+  } finally {
+    if (onDispose != null) {
+      await onDispose();
+    }
   }
 
   print('HTTP server stopped successfully.');
@@ -69,26 +76,33 @@ Future<void> _shutdownServer(HttpServer server, Duration timeout) async {
 Future<void> main(List<String> args) async {
   final env = await EnvConfig.load();
   final config = AppConfig.fromEnv(env);
-
   final address = await _resolveAddress(config.server.host);
-  final handler = buildAppHandler(config);
-
-  final server = await serve(handler, address, config.server.port);
+  final runtime = buildAppRuntime(config, env: env);
+  final server = await serve(runtime.handler, address, config.server.port);
+  final apiPrefix = config.server.apiPrefix;
 
   print('${config.appName} started successfully.');
   print('Environment : ${config.environment.name}');
   print('Version     : ${config.version}');
-  print('Address     : ${server.address.address}');
+  print('Bind address: ${server.address.address}');
   print('Port        : ${server.port}');
-  print('API Prefix  : ${config.server.apiPrefix}');
-  print(
-    'Health      : http://${config.server.host}:${server.port}'
-    '${config.server.apiPrefix}/health',
-  );
+  print('API Prefix  : $apiPrefix');
+  print('Health path : $apiPrefix/health');
+  print('Auth path   : $apiPrefix/auth');
+  print('Catalog path: $apiPrefix/catalog');
+  print('Owner path  : $apiPrefix/owner');
+  print('Customer    : $apiPrefix/customer');
+  print('Admin path  : $apiPrefix/admin');
+  print('AI path     : $apiPrefix/ai');
+  print('Notif path  : $apiPrefix/notifications');
 
   final signal = await _waitForShutdownSignal();
 
   print('\nReceived shutdown signal: $signal');
 
-  await _shutdownServer(server, config.server.shutdownTimeout);
+  await _shutdownServer(
+    server,
+    config.server.shutdownTimeout,
+    onDispose: runtime.dispose,
+  );
 }

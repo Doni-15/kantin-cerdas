@@ -2,6 +2,7 @@ import 'package:kantin_cerdas_backend/src/core/config/app_environment.dart';
 import 'package:kantin_cerdas_backend/src/core/config/auth_config.dart';
 import 'package:kantin_cerdas_backend/src/core/config/cors_config.dart';
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 import 'package:kantin_cerdas_backend/src/core/config/logging_config.dart';
 import 'package:kantin_cerdas_backend/src/core/config/proxy_config.dart';
 import 'package:kantin_cerdas_backend/src/core/config/rate_limit_config.dart';
@@ -54,31 +55,30 @@ class AppConfig {
 
   factory AppConfig.fromEnv(EnvConfig env) {
     // A. APPLICATION
-    final appName = _readString(
+    final appName = readEnvString(
       env,
       'APP_NAME',
       defaultValue: 'Kantin Cerdas API',
     );
 
     final environment = AppEnvironment.parse(
-      _readString(env, 'APP_ENV', defaultValue: 'development'),
+      readEnvString(env, 'APP_ENV', defaultValue: 'development'),
     );
 
-    final debug = _readBool(
+    final debug = readEnvBool(
       env,
       'APP_DEBUG',
       defaultValue: environment == AppEnvironment.development,
     );
 
-    final timezone = _readString(
+    final timezone = readEnvString(
       env,
       'APP_TIMEZONE',
       defaultValue: 'Asia/Jakarta',
     );
 
-    final locale = _readString(env, 'APP_LOCALE', defaultValue: 'id_ID');
-
-    final version = _readString(env, 'APP_VERSION', defaultValue: '1.0.0');
+    final locale = readEnvString(env, 'APP_LOCALE', defaultValue: 'id_ID');
+    final version = readEnvString(env, 'APP_VERSION', defaultValue: '1.0.0');
 
     if (!RegExp(r'^[a-z]{2}_[A-Z]{2}$').hasMatch(locale)) {
       throw FormatException('APP_LOCALE tidak valid: $locale');
@@ -90,12 +90,26 @@ class AppConfig {
 
     // B-I. Parse each configuration using its own class.
     final server = ServerConfig.fromEnv(env);
-    final supabase = SupabaseConfig.fromEnv(env);
-    final auth = AuthConfig.fromEnv(env);
+    final supabase = SupabaseConfig.fromEnv(
+      env,
+      allowLocal: environment == AppEnvironment.development,
+    );
+    final googleProductionVerified = readEnvBool(
+      env,
+      'AUTH_GOOGLE_PRODUCTION_VERIFIED',
+      defaultValue: false,
+    );
+    final auth = AuthConfig.fromEnv(
+      env,
+      projectUrl: supabase.url,
+      allowLocal: supabase.url.scheme == 'http',
+      allowGoogle:
+          environment != AppEnvironment.production || googleProductionVerified,
+    );
     final security = SecurityConfig.fromEnv(env);
     final cors = CorsConfig.fromEnv(env);
     final rateLimit = RateLimitConfig.fromEnv(env);
-    final storage = StorageConfig.fromEnv(env);
+    final storage = StorageConfig.fromEnv(env, projectUrl: supabase.url);
     final logging = LoggingConfig.fromEnv(env);
     final proxy = ProxyConfig.fromEnv(env);
 
@@ -130,57 +144,17 @@ class AppConfig {
     required AuthConfig auth,
     required StorageConfig storage,
   }) {
-    final expectedHost = '${supabase.projectRef}.supabase.co';
-
-    if (supabase.url.host != expectedHost) {
-      throw FormatException(
-        'SUPABASE_URL tidak sesuai dengan SUPABASE_PROJECT_REF.',
-      );
-    }
-
-    if (auth.jwksUrl.host != supabase.url.host ||
-        auth.issuer.host != supabase.url.host) {
+    if (auth.jwksUrl.origin != supabase.url.origin ||
+        auth.issuer.origin != supabase.url.origin) {
       throw FormatException(
         'Konfigurasi AUTH harus mengarah ke project Supabase yang sama.',
       );
     }
 
-    if (storage.publicBaseUrl.host != supabase.url.host) {
+    if (storage.publicBaseUrl.origin != supabase.url.origin) {
       throw FormatException(
         'STORAGE_PUBLIC_BASE_URL harus mengarah ke project Supabase yang sama.',
       );
     }
-  }
-
-  static String _readString(
-    EnvConfig env,
-    String key, {
-    required String defaultValue,
-  }) {
-    final value = env[key]?.trim();
-
-    if (value == null || value.isEmpty) {
-      return defaultValue;
-    }
-
-    return value;
-  }
-
-  static bool _readBool(
-    EnvConfig env,
-    String key, {
-    required bool defaultValue,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    return switch (rawValue.trim().toLowerCase()) {
-      'true' => true,
-      'false' => false,
-      _ => throw FormatException('$key harus bernilai true atau false.'),
-    };
   }
 }

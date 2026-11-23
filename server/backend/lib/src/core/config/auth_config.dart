@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class AuthConfig {
   const AuthConfig._({
@@ -9,6 +10,10 @@ class AuthConfig {
     required this.jwksCacheTtl,
     required this.clockSkew,
     required this.requireEmailVerified,
+    required this.webOrigin,
+    required this.googleEnabled,
+    required this.googleProductionVerified,
+    required this.recoveryLinkTtlSeconds,
   });
 
   final Uri jwksUrl;
@@ -18,14 +23,34 @@ class AuthConfig {
   final Duration jwksCacheTtl;
   final Duration clockSkew;
   final bool requireEmailVerified;
+  final String? webOrigin;
+  final bool googleEnabled;
+  final bool googleProductionVerified;
+  final int recoveryLinkTtlSeconds;
 
-  factory AuthConfig.fromEnv(EnvConfig env) {
-    final jwksUrl = _readHttpsUrl(env, 'AUTH_JWKS_URL');
-    final issuer = _readHttpsUrl(env, 'AUTH_JWT_ISSUER');
+  factory AuthConfig.fromEnv(
+    EnvConfig env, {
+    Uri? projectUrl,
+    bool allowLocal = false,
+    bool allowGoogle = true,
+  }) {
+    final jwksUrl = _readHttpsUrl(
+      env,
+      'AUTH_JWKS_URL',
+      fallback: projectUrl?.resolve('/auth/v1/.well-known/jwks.json'),
+      allowLocal: allowLocal,
+    );
+    final issuer = _readHttpsUrl(
+      env,
+      'AUTH_JWT_ISSUER',
+      fallback: projectUrl?.resolve('/auth/v1'),
+      allowLocal: allowLocal,
+    );
     final audience = _readRequiredString(env, 'AUTH_JWT_AUDIENCE');
 
     final algorithms = _readAlgorithms(
-      env['AUTH_JWT_ALLOWED_ALGORITHMS'] ?? 'ES256',
+      env['AUTH_JWT_ALLOWED_ALGORITHMS'] ?? (allowLocal ? 'HS256' : 'ES256'),
+      allowLocal: allowLocal,
     );
 
     return AuthConfig._(
@@ -34,7 +59,7 @@ class AuthConfig {
       audience: audience,
       allowedAlgorithms: List.unmodifiable(algorithms),
       jwksCacheTtl: Duration(
-        seconds: _readInt(
+        seconds: readEnvInt(
           env,
           'AUTH_JWKS_CACHE_TTL_SECONDS',
           defaultValue: 3600,
@@ -43,7 +68,7 @@ class AuthConfig {
         ),
       ),
       clockSkew: Duration(
-        seconds: _readInt(
+        seconds: readEnvInt(
           env,
           'AUTH_CLOCK_SKEW_SECONDS',
           defaultValue: 30,
@@ -51,12 +76,41 @@ class AuthConfig {
           max: 300,
         ),
       ),
-      requireEmailVerified: _readBool(
+      requireEmailVerified: readEnvBool(
         env,
         'AUTH_REQUIRE_EMAIL_VERIFIED',
         defaultValue: false,
       ),
+      webOrigin: _readWebOrigin(env),
+      googleEnabled:
+          readEnvBool(env, 'AUTH_GOOGLE_ENABLED', defaultValue: false) &&
+          allowGoogle,
+      googleProductionVerified: readEnvBool(
+        env,
+        'AUTH_GOOGLE_PRODUCTION_VERIFIED',
+        defaultValue: false,
+      ),
+      recoveryLinkTtlSeconds: readEnvInt(
+        env,
+        'AUTH_RECOVERY_LINK_TTL_SECONDS',
+        defaultValue: 3600,
+        min: 1,
+        max: 86400,
+      ),
     );
+  }
+
+  static String? _readWebOrigin(EnvConfig env) {
+    final value = env['AUTH_WEB_ORIGIN']?.trim();
+    if (value == null || value.isEmpty) return null;
+    final uri = _readHttpsUrl(env, 'AUTH_WEB_ORIGIN');
+    if ((uri.path.isNotEmpty && uri.path != '/') ||
+        RegExp(r'[\s,]').hasMatch(value)) {
+      throw const FormatException(
+        'AUTH_WEB_ORIGIN harus berupa origin HTTPS tanpa path.',
+      );
+    }
+    return uri.origin;
   }
 
   static String _readRequiredString(EnvConfig env, String key) {
@@ -69,12 +123,22 @@ class AuthConfig {
     return value;
   }
 
-  static Uri _readHttpsUrl(EnvConfig env, String key) {
-    final value = _readRequiredString(env, key);
+  static Uri _readHttpsUrl(
+    EnvConfig env,
+    String key, {
+    Uri? fallback,
+    bool allowLocal = false,
+  }) {
+    final value = env[key]?.trim();
+    if (value == null || value.isEmpty) {
+      if (fallback != null) return fallback;
+      throw FormatException('$key wajib diisi.');
+    }
     final uri = Uri.tryParse(value);
 
     if (uri == null ||
-        uri.scheme != 'https' ||
+        (uri.scheme != 'https' &&
+            !(allowLocal && uri.scheme == 'http' && uri.host == '127.0.0.1')) ||
         uri.host.isEmpty ||
         uri.userInfo.isNotEmpty ||
         uri.hasQuery ||
@@ -85,8 +149,11 @@ class AuthConfig {
     return uri;
   }
 
-  static List<String> _readAlgorithms(String value) {
-    const supportedAlgorithms = {'ES256', 'RS256'};
+  static List<String> _readAlgorithms(
+    String value, {
+    required bool allowLocal,
+  }) {
+    final supportedAlgorithms = {'ES256', 'RS256', if (allowLocal) 'HS256'};
 
     final algorithms = value
         .split(',')
@@ -113,48 +180,5 @@ class AuthConfig {
     }
 
     return algorithms;
-  }
-
-  static int _readInt(
-    EnvConfig env,
-    String key, {
-    required int defaultValue,
-    required int min,
-    required int max,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    final value = int.tryParse(rawValue.trim());
-
-    if (value == null || value < min || value > max) {
-      throw FormatException('$key harus berupa angka antara $min dan $max.');
-    }
-
-    return value;
-  }
-
-  static bool _readBool(
-    EnvConfig env,
-    String key, {
-    required bool defaultValue,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    switch (rawValue.trim().toLowerCase()) {
-      case 'true':
-        return true;
-      case 'false':
-        return false;
-      default:
-        throw FormatException('$key harus bernilai true atau false.');
-    }
   }
 }

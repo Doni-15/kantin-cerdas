@@ -1,12 +1,12 @@
 {
-    "name": "kantin_cerdas",
-    "short_name": "kantin_cerdas",
+    "name": "Kantin Cerdas",
+    "short_name": "Kantin Cerdas",
+    "lang": "id",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#FAFAFA",
+    "theme_color": "#B83D13",
+    "description": "Aplikasi pemesanan makanan kantin kampus.",
     "prefer_related_applications": false,
     "icons": [
         {

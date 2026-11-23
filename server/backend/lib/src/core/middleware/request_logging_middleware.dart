@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shelf/shelf.dart';
 
 import 'package:kantin_cerdas_backend/src/core/config/logging_config.dart';
+import 'package:kantin_cerdas_backend/src/core/middleware/request_id_middleware.dart';
 
 typedef LogWriter = void Function(String message);
 
@@ -27,6 +28,7 @@ class RequestLoggingMiddleware {
 
         final stopwatch = Stopwatch()..start();
         final timestamp = _clock();
+        final requestId = requestIdFromContext(request);
 
         try {
           final response = await innerHandler(request);
@@ -39,6 +41,7 @@ class RequestLoggingMiddleware {
             path: _normalizePath(request.url.path),
             status: response.statusCode,
             duration: stopwatch.elapsedMilliseconds,
+            requestId: requestId,
           );
 
           return response;
@@ -52,6 +55,7 @@ class RequestLoggingMiddleware {
             path: _normalizePath(request.url.path),
             status: 500,
             duration: stopwatch.elapsedMilliseconds,
+            requestId: requestId,
             exceptionType: error.runtimeType.toString(),
             stackTrace: config.includeStackTrace ? stackTrace : null,
           );
@@ -85,6 +89,7 @@ class RequestLoggingMiddleware {
     required String path,
     required int status,
     required int duration,
+    String? requestId,
     String? exceptionType,
     StackTrace? stackTrace,
   }) {
@@ -94,6 +99,7 @@ class RequestLoggingMiddleware {
       final event = <String, dynamic>{
         'timestamp': timestamp.toIso8601String(),
         'level': level,
+        'request_id': ?requestId,
         'method': method,
         'path': path,
         'status': status,
@@ -122,6 +128,12 @@ class RequestLoggingMiddleware {
       ..write(path)
       ..write(' [$status] ')
       ..write('${duration}ms');
+
+    if (requestId != null) {
+      message
+        ..write(' request_id=')
+        ..write(requestId);
+    }
 
     if (exceptionType != null) {
       message

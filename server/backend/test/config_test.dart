@@ -23,15 +23,15 @@ Map<String, String> validEnvironment({
     'API_PREFIX': '/v1',
 
     // C. Supabase
-    'SUPABASE_PROJECT_REF': 'diprwrdomyqrhllqlche',
-    'SUPABASE_URL': 'https://diprwrdomyqrhllqlche.supabase.co',
+    'SUPABASE_PROJECT_REF': 'exampleprojectref001',
+    'SUPABASE_URL': 'https://exampleprojectref001.supabase.co',
     'SUPABASE_PUBLISHABLE_KEY': 'sb_publishable_test',
     'SUPABASE_SECRET_KEY': 'sb_secret_test',
 
     // D. Authentication
     'AUTH_JWKS_URL':
-        'https://diprwrdomyqrhllqlche.supabase.co/auth/v1/.well-known/jwks.json',
-    'AUTH_JWT_ISSUER': 'https://diprwrdomyqrhllqlche.supabase.co/auth/v1',
+        'https://exampleprojectref001.supabase.co/auth/v1/.well-known/jwks.json',
+    'AUTH_JWT_ISSUER': 'https://exampleprojectref001.supabase.co/auth/v1',
     'AUTH_JWT_AUDIENCE': 'authenticated',
     'AUTH_JWT_ALLOWED_ALGORITHMS': 'ES256',
 
@@ -53,7 +53,7 @@ Map<String, String> validEnvironment({
     // H. Storage
     'STORAGE_BUCKET_NAME': 'kantin-media',
     'STORAGE_PUBLIC_BASE_URL':
-        'https://diprwrdomyqrhllqlche.supabase.co/storage/v1/object/public/kantin-media',
+        'https://exampleprojectref001.supabase.co/storage/v1/object/public/kantin-media',
 
     // I. Logging
     'LOG_LEVEL': 'info',
@@ -119,6 +119,57 @@ void main() {
   });
 
   group('AppConfig', () {
+    test('production cannot enable the Google QA gate', () {
+      for (final environment in ['development', 'staging', 'production']) {
+        final config = AppConfig.fromEnv(
+          EnvConfig.fromMap(
+            validEnvironment(
+              overrides: {
+                'APP_ENV': environment,
+                'AUTH_GOOGLE_ENABLED': 'true',
+              },
+            ),
+          ),
+        );
+        expect(config.auth.googleEnabled, environment != 'production');
+        expect(config.auth.googleProductionVerified, isFalse);
+      }
+    });
+
+    test(
+      'production enables Google Sign-In only when AUTH_GOOGLE_PRODUCTION_VERIFIED is true',
+      () {
+        final verifiedProd = AppConfig.fromEnv(
+          EnvConfig.fromMap(
+            validEnvironment(
+              overrides: {
+                'APP_ENV': 'production',
+                'AUTH_GOOGLE_ENABLED': 'true',
+                'AUTH_GOOGLE_PRODUCTION_VERIFIED': 'true',
+              },
+            ),
+          ),
+        );
+        expect(verifiedProd.isProduction, isTrue);
+        expect(verifiedProd.auth.googleProductionVerified, isTrue);
+        expect(verifiedProd.auth.googleEnabled, isTrue);
+
+        final disabledDespiteVerified = AppConfig.fromEnv(
+          EnvConfig.fromMap(
+            validEnvironment(
+              overrides: {
+                'APP_ENV': 'production',
+                'AUTH_GOOGLE_ENABLED': 'false',
+                'AUTH_GOOGLE_PRODUCTION_VERIFIED': 'true',
+              },
+            ),
+          ),
+        );
+        expect(disabledDespiteVerified.auth.googleProductionVerified, isTrue);
+        expect(disabledDespiteVerified.auth.googleEnabled, isFalse);
+      },
+    );
+
     test('loads all configuration groups', () {
       final config = AppConfig.fromEnv(EnvConfig.fromMap(validEnvironment()));
 
@@ -133,7 +184,7 @@ void main() {
       expect(config.server.port, 8080);
       expect(config.server.apiPrefix, '/v1');
 
-      expect(config.supabase.projectRef, 'diprwrdomyqrhllqlche');
+      expect(config.supabase.projectRef, 'exampleprojectref001');
       expect(config.auth.audience, 'authenticated');
 
       expect(config.cors.enabled, isTrue);
@@ -197,16 +248,81 @@ void main() {
       );
     });
 
+    test('derives service addresses from a single Supabase URL', () {
+      final config = AppConfig.fromEnv(
+        EnvConfig.fromMap(
+          validEnvironment(
+              overrides: {
+                'SUPABASE_URL': 'https://abcdefghijklmnopqrst.supabase.co',
+                'STORAGE_BUCKET_NAME': 'project-media',
+              },
+            )
+            ..remove('SUPABASE_PROJECT_REF')
+            ..remove('AUTH_JWT_ISSUER')
+            ..remove('AUTH_JWKS_URL')
+            ..remove('STORAGE_PUBLIC_BASE_URL'),
+        ),
+      );
+      const url = 'https://abcdefghijklmnopqrst.supabase.co';
+      expect(config.supabase.projectRef, 'abcdefghijklmnopqrst');
+      expect(config.auth.issuer.toString(), '$url/auth/v1');
+      expect(
+        config.auth.jwksUrl.toString(),
+        '$url/auth/v1/.well-known/jwks.json',
+      );
+      expect(
+        config.storage.publicBaseUrl.toString(),
+        '$url/storage/v1/object/public/project-media',
+      );
+    });
+
     test('rejects Supabase URL from another project', () {
       expect(
         () => AppConfig.fromEnv(
           EnvConfig.fromMap(
             validEnvironment(
               overrides: {
-                'SUPABASE_URL': 'https://another-project.supabase.co',
+                'SUPABASE_URL': 'https://abcdefghijklmnopqrst.supabase.co',
               },
             ),
           ),
+        ),
+        throwsFormatException,
+      );
+    });
+
+    test('loopback Supabase with local JWTs only works in development', () {
+      const loopback = 'http://127.0.0.1:54321';
+      final values =
+          validEnvironment(
+              overrides: {
+                'SUPABASE_URL': loopback,
+                'SUPABASE_PROJECT_REF': 'local',
+                'SUPABASE_PUBLISHABLE_KEY': 'test.anon.signature',
+                'SUPABASE_SECRET_KEY': 'test.service.signature',
+              },
+            )
+            ..remove('AUTH_JWT_ISSUER')
+            ..remove('AUTH_JWKS_URL')
+            ..remove('AUTH_JWT_ALLOWED_ALGORITHMS')
+            ..remove('STORAGE_PUBLIC_BASE_URL');
+      final config = AppConfig.fromEnv(EnvConfig.fromMap(values));
+      expect(config.auth.issuer.toString(), '$loopback/auth/v1');
+      expect(config.auth.allowedAlgorithms, ['HS256']);
+      for (final environment in ['staging', 'production']) {
+        expect(
+          () => AppConfig.fromEnv(
+            EnvConfig.fromMap({...values, 'APP_ENV': environment}),
+          ),
+          throwsFormatException,
+        );
+      }
+      expect(
+        () => AppConfig.fromEnv(
+          EnvConfig.fromMap({
+            ...values,
+            'SUPABASE_URL': 'http://192.0.2.1:54321',
+          }),
         ),
         throwsFormatException,
       );

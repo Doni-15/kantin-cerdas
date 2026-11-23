@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class SupabaseConfig {
   const SupabaseConfig._({
@@ -17,32 +18,49 @@ class SupabaseConfig {
   final Duration requestTimeout;
   final int maxRetries;
 
-  factory SupabaseConfig.fromEnv(EnvConfig env) {
-    final projectRef = _requiredString(env, 'SUPABASE_PROJECT_REF');
-
-    if (!RegExp(r'^[a-z0-9]{20}$').hasMatch(projectRef)) {
+  factory SupabaseConfig.fromEnv(EnvConfig env, {bool allowLocal = false}) {
+    final url = _readUrl(
+      _requiredString(env, 'SUPABASE_URL'),
+      allowLocal: allowLocal,
+    );
+    final local = url.scheme == 'http';
+    final project = RegExp(
+      r'^([a-z0-9]{20})\.supabase\.co$',
+    ).firstMatch(url.host);
+    if (project == null && !local) {
       throw const FormatException(
-        'SUPABASE_PROJECT_REF harus berupa 20 karakter '
-        'huruf kecil dan angka.',
+        'SUPABASE_URL harus memakai hostname proyek Supabase Cloud.',
+      );
+    }
+    final projectRef = local ? 'local' : project!.group(1)!;
+    final configuredRef = env['SUPABASE_PROJECT_REF']?.trim();
+    if (configuredRef != null &&
+        configuredRef.isNotEmpty &&
+        configuredRef != projectRef) {
+      throw const FormatException(
+        'SUPABASE_URL tidak sesuai dengan SUPABASE_PROJECT_REF.',
       );
     }
 
-    final url = _readUrl(_requiredString(env, 'SUPABASE_URL'));
     final publishableKey = _requiredString(env, 'SUPABASE_PUBLISHABLE_KEY');
 
-    if (!publishableKey.startsWith('sb_publishable_')) {
+    if (local
+        ? !_jwt.hasMatch(publishableKey)
+        : !publishableKey.startsWith('sb_publishable_')) {
       throw const FormatException(
         'SUPABASE_PUBLISHABLE_KEY harus menggunakan '
-        'format sb_publishable_.',
+        'format sb_publishable_ pada Supabase Cloud atau JWT pada Supabase lokal.',
       );
     }
 
     final secretKey = _requiredString(env, 'SUPABASE_SECRET_KEY');
 
-    if (!secretKey.startsWith('sb_secret_')) {
+    if (local
+        ? !_jwt.hasMatch(secretKey)
+        : !secretKey.startsWith('sb_secret_')) {
       throw const FormatException(
         'SUPABASE_SECRET_KEY harus menggunakan '
-        'format sb_secret_.',
+        'format sb_secret_ pada Supabase Cloud atau JWT pada Supabase lokal.',
       );
     }
 
@@ -52,7 +70,7 @@ class SupabaseConfig {
       publishableKey: publishableKey,
       secretKey: secretKey,
       requestTimeout: Duration(
-        seconds: _readInt(
+        seconds: readEnvInt(
           env,
           'SUPABASE_REQUEST_TIMEOUT_SECONDS',
           defaultValue: 15,
@@ -60,7 +78,7 @@ class SupabaseConfig {
           max: 300,
         ),
       ),
-      maxRetries: _readInt(
+      maxRetries: readEnvInt(
         env,
         'SUPABASE_MAX_RETRIES',
         defaultValue: 2,
@@ -80,13 +98,21 @@ class SupabaseConfig {
     return value;
   }
 
-  static Uri _readUrl(String value) {
+  static final _jwt = RegExp(
+    r'^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$',
+  );
+
+  static Uri _readUrl(String value, {required bool allowLocal}) {
     final uri = Uri.tryParse(value);
+    final local =
+        allowLocal && uri?.scheme == 'http' && uri?.host == '127.0.0.1';
 
     if (uri == null ||
-        uri.scheme != 'https' ||
+        (!local && uri.scheme != 'https') ||
         uri.host.isEmpty ||
+        (!local && uri.hasPort) ||
         uri.userInfo.isNotEmpty ||
+        (uri.path.isNotEmpty && uri.path != '/') ||
         uri.hasQuery ||
         uri.hasFragment) {
       throw const FormatException(
@@ -95,27 +121,5 @@ class SupabaseConfig {
     }
 
     return uri;
-  }
-
-  static int _readInt(
-    EnvConfig env,
-    String key, {
-    required int defaultValue,
-    required int min,
-    required int max,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    final value = int.tryParse(rawValue.trim());
-
-    if (value == null || value < min || value > max) {
-      throw FormatException('$key harus berupa angka antara $min dan $max.');
-    }
-
-    return value;
   }
 }

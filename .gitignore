@@ -42,7 +42,22 @@ coverage/
 
 # Secrets
 secrets/
+**/google-services.json
+**/key.properties
+**/dart_defines.json
+*firebase-adminsdk*.json
+*service-account*.json
+*.jks
+*.keystore
+*.pem
+*.p12
+*.p8
 
 # Temporary and backup files
 *.tmp
 *.bak
+all_dart_source.txt
+
+# Python cache
+__pycache__/
+*.pyc

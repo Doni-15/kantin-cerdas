@@ -1,5 +1,6 @@
-import 'package:kantin_cerdas_backend/src/core/config/supabase_config.dart';
+import 'package:http/http.dart' as http;
 import 'package:supabase/supabase.dart';
+import 'package:kantin_cerdas_backend/src/core/config/supabase_config.dart';
 
 /// Membuat Supabase client berdasarkan konteks akses.
 ///
@@ -13,11 +14,37 @@ class SupabaseClientFactory {
   /// Client untuk operasi internal yang membutuhkan hak akses server.
   ///
   /// Client ini dapat digunakan sebagai singleton selama lifecycle server.
-  SupabaseClient createServerClient() {
+  SupabaseClient createServerClient({http.Client? httpClient}) {
     return SupabaseClient(
       _config.url.toString(),
       _config.secretKey,
+      httpClient: httpClient,
       authOptions: const AuthClientOptions(autoRefreshToken: false),
+      postgrestOptions: _postgrestOptions,
+      storageOptions: _storageOptions,
+    );
+  }
+
+  /// Client untuk operasi autentikasi pengguna.
+  ///
+  /// Gunakan instance terpisah untuk setiap operasi Auth.
+  /// Client tidak menyimpan session secara persisten dan tidak melakukan
+  /// refresh token otomatis.
+  SupabaseClient createAuthClient({
+    http.Client? httpClient,
+    GotrueAsyncStorage? pkceStorage,
+  }) {
+    return SupabaseClient(
+      _config.url.toString(),
+      _config.publishableKey,
+      httpClient: httpClient,
+      authOptions: AuthClientOptions(
+        autoRefreshToken: false,
+        authFlowType: pkceStorage == null
+            ? AuthFlowType.implicit
+            : AuthFlowType.pkce,
+        pkceAsyncStorage: pkceStorage,
+      ),
       postgrestOptions: _postgrestOptions,
       storageOptions: _storageOptions,
     );

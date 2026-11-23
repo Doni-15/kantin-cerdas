@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -17,20 +17,22 @@
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aplikasi pemesanan makanan kantin kampus.">
+  <meta name="theme-color" content="#B83D13">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="kantin_cerdas">
+  <meta name="apple-mobile-web-app-title" content="Kantin Cerdas">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>kantin_cerdas</title>
+  <title>Kantin Cerdas</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="launch.css">
 </head>
 <body>
   <!--
@@ -41,6 +43,10 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
-  <script src="flutter_bootstrap.js" async></script>
+  <div id="kantin-launch" role="status" aria-label="Memuat Kantin Cerdas">
+    <noscript>Aktifkan JavaScript untuk membuka Kantin Cerdas.</noscript>
+  </div>
+  <script src="launch.js"></script>
+  <script id="kantin-bootstrap" src="flutter_bootstrap.js" async></script>
 </body>
 </html>

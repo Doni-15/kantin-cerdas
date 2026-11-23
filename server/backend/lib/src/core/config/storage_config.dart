@@ -1,4 +1,5 @@
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
+import 'package:kantin_cerdas_backend/src/core/config/env_parsers.dart';
 
 class StorageConfig {
   const StorageConfig._({
@@ -15,8 +16,8 @@ class StorageConfig {
   final int maxFilesPerUser;
   final Uri publicBaseUrl;
 
-  factory StorageConfig.fromEnv(EnvConfig env) {
-    final bucketName = _readString(
+  factory StorageConfig.fromEnv(EnvConfig env, {Uri? projectUrl}) {
+    final bucketName = readEnvString(
       env,
       'STORAGE_BUCKET_NAME',
       defaultValue: 'kantin-media',
@@ -26,14 +27,21 @@ class StorageConfig {
       throw const FormatException('STORAGE_BUCKET_NAME tidak valid.');
     }
 
-    final publicBaseUrl = _readPublicBaseUrl(
-      _readRequiredString(env, 'STORAGE_PUBLIC_BASE_URL'),
-      bucketName,
-    );
+    final configuredUrl = env['STORAGE_PUBLIC_BASE_URL']?.trim();
+    final Uri publicBaseUrl;
+    if (configuredUrl != null && configuredUrl.isNotEmpty) {
+      publicBaseUrl = _readPublicBaseUrl(configuredUrl, bucketName);
+    } else if (projectUrl != null) {
+      publicBaseUrl = projectUrl.resolve(
+        '/storage/v1/object/public/$bucketName',
+      );
+    } else {
+      throw const FormatException('STORAGE_PUBLIC_BASE_URL wajib diisi.');
+    }
 
     return StorageConfig._(
       bucketName: bucketName,
-      maxUploadBytes: _readInt(
+      maxUploadBytes: readEnvInt(
         env,
         'STORAGE_MAX_UPLOAD_BYTES',
         defaultValue: 2097152,
@@ -46,7 +54,7 @@ class StorageConfig {
               'image/jpeg,image/png,image/webp',
         ),
       ),
-      maxFilesPerUser: _readInt(
+      maxFilesPerUser: readEnvInt(
         env,
         'STORAGE_MAX_FILES_PER_USER',
         defaultValue: 200,
@@ -55,30 +63,6 @@ class StorageConfig {
       ),
       publicBaseUrl: publicBaseUrl,
     );
-  }
-
-  static String _readString(
-    EnvConfig env,
-    String key, {
-    required String defaultValue,
-  }) {
-    final value = env[key]?.trim();
-
-    if (value == null || value.isEmpty) {
-      return defaultValue;
-    }
-
-    return value;
-  }
-
-  static String _readRequiredString(EnvConfig env, String key) {
-    final value = env[key]?.trim();
-
-    if (value == null || value.isEmpty) {
-      throw FormatException('$key wajib diisi.');
-    }
-
-    return value;
   }
 
   static Uri _readPublicBaseUrl(String value, String bucketName) {
@@ -128,27 +112,5 @@ class StorageConfig {
     }
 
     return types;
-  }
-
-  static int _readInt(
-    EnvConfig env,
-    String key, {
-    required int defaultValue,
-    required int min,
-    required int max,
-  }) {
-    final rawValue = env[key];
-
-    if (rawValue == null || rawValue.trim().isEmpty) {
-      return defaultValue;
-    }
-
-    final value = int.tryParse(rawValue.trim());
-
-    if (value == null || value < min || value > max) {
-      throw FormatException('$key harus berupa angka antara $min dan $max.');
-    }
-
-    return value;
   }
 }
