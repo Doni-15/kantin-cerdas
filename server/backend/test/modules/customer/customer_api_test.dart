@@ -3,18 +3,18 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:kantin_cerdas_backend/src/app/bootstrap.dart';
 import 'package:kantin_cerdas_backend/src/core/config/app_config.dart';
 import 'package:kantin_cerdas_backend/src/core/config/env_config.dart';
 import 'package:kantin_cerdas_backend/src/infrastructure/supabase/supabase_client_factory.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/domain/auth_gateway.dart';
 import 'package:kantin_cerdas_backend/src/modules/auth/domain/avatar_store.dart';
-import 'package:kantin_cerdas_backend/src/modules/catalog/domain/catalog_store.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/application/customer_service.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/data/supabase_customer_store.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/domain/customer_errors.dart';
 import 'package:kantin_cerdas_backend/src/modules/customer/domain/customer_store.dart';
-import 'package:kantin_cerdas_backend/src/modules/owner/domain/owner_store.dart';
+import 'package:kantin_cerdas_backend/src/modules/customer/presentation/customer_router.dart';
 import 'package:shelf/shelf.dart';
+import 'package:shelf_router/shelf_router.dart';
 import 'package:test/test.dart';
 
 import '../../config_test.dart' show validEnvironment;
@@ -37,29 +37,20 @@ void main() {
   late Handler app;
 
   setUp(() {
-    final config = AppConfig.fromEnv(
-      EnvConfig.fromMap(
-        validEnvironment(
-          overrides: {
-            'RATE_LIMIT_ENABLED': 'false',
-            'LOG_REQUEST_ENABLED': 'false',
-          },
-        ),
-      ),
-    );
     auth = _FakeAuthGateway();
     avatars = _FakeAvatarStore();
     media = _FakeMediaStore();
     customerStore = _FakeCustomerStore();
-    app = buildAppHandlerWithCustomerAndOwner(
-      config,
-      authGateway: auth,
-      avatarStore: avatars,
-      catalogStore: _StubCatalogStore(),
-      ownerStore: _StubOwnerStore(),
-      ownerMediaStore: media,
-      customerStore: customerStore,
+    final router = Router();
+    router.mount(
+      '/v1/customer/',
+      buildCustomerHandler(
+        auth,
+        avatars: avatars,
+        service: CustomerService(store: customerStore, readMedia: media.read),
+      ),
     );
+    app = router.call;
   });
 
   test('enforces auth, complete profile, and role isolation', () async {
@@ -560,37 +551,10 @@ class _FakeAvatarStore implements AvatarStore {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-class _FakeMediaStore implements OwnerMediaStore {
+class _FakeMediaStore {
   final files = <String, Uint8List>{};
 
-  @override
   Future<Uint8List?> read(String objectPath) async => files[objectPath];
-
-  @override
-  Future<void> write(String objectPath, Uint8List jpegBytes) async {
-    files[objectPath] = jpegBytes;
-  }
-
-  @override
-  Future<void> delete(String objectPath) async {
-    files.remove(objectPath);
-  }
-}
-
-class _StubCatalogStore implements CatalogStore {
-  @override
-  Future<List<CatalogEntry>> read(
-    CatalogCollection collection, {
-    required String query,
-    required String? after,
-    required String? stallId,
-    required int limit,
-  }) async => const [];
-}
-
-class _StubOwnerStore implements OwnerStore {
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _FakeCustomerStore implements CustomerStore {
